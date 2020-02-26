@@ -10,6 +10,9 @@ namespace PokeU
     {
         static void Main(string[] args)
         {
+            MainWindow window = new MainWindow();
+
+            window.Run();
         }
     }
 }
