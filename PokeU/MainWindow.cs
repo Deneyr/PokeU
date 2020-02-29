@@ -16,6 +16,8 @@ namespace PokeU
 
         private Vector2f resolutionScreen;
 
+        private FloatRect boundsView;
+
         private LandWorld landWorld;
 
         private LandWorld2D landWorld2D;
@@ -48,7 +50,7 @@ namespace PokeU
 
             this.resolutionScreen = new Vector2f(view.Size.X, view.Size.Y);
             view.Center = new Vector2f(0, 0);
-            window.SetView(view);
+            this.SetView(window, view);
 
             window.SetVerticalSyncEnabled(true);
 
@@ -67,7 +69,7 @@ namespace PokeU
                 // Draw window
                 window.Clear();
 
-                this.landWorld2D.DrawIn(window);
+                this.landWorld2D.DrawIn(window, ref this.boundsView);
 
                 // Process events
                 window.DispatchEvents();
@@ -79,7 +81,7 @@ namespace PokeU
 
                     this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
-                    window.SetView(view);
+                    this.SetView(window, view);
                 }
                 else if(Keyboard.IsKeyPressed(Keyboard.Key.S))
                 {
@@ -87,7 +89,7 @@ namespace PokeU
 
                     this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
-                    window.SetView(view);
+                    this.SetView(window, view);
                 }
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.D))
@@ -96,7 +98,7 @@ namespace PokeU
 
                     this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
-                    window.SetView(view);
+                    this.SetView(window, view);
                 }
                 else if (Keyboard.IsKeyPressed(Keyboard.Key.Q))
                 {
@@ -104,12 +106,19 @@ namespace PokeU
 
                     this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
-                    window.SetView(view);
+                    this.SetView(window, view);
                 }
 
                 // Finally, display the rendered frame on screen
                 window.Display();
             }
+        }
+
+        private void SetView(SFML.Graphics.RenderWindow window, SFML.Graphics.View view)
+        {
+            this.boundsView = new FloatRect(view.Center.X - view.Size.X / 2, view.Center.Y - view.Size.Y / 2, view.Size.X, view.Size.Y);
+
+            window.SetView(view);
         }
 
         private void OnMouseMoved(object sender, SFML.Window.MouseMoveEventArgs e)

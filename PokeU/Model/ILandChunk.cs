@@ -24,9 +24,7 @@ namespace PokeU.Model
             get;
         }
 
-        void AddLandLayer(ILandLayer layer);
-
-        List<ILandObject> GetLandObjectsAtAltitude(int altitude);
+        List<ILandObject>[,] GetLandObjectsAtAltitude(int altitude);
 
         ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax);
     }

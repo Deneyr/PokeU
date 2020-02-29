@@ -13,13 +13,11 @@ namespace PokeU.View
 {
     public class LandChunk2D : IObject2D
     {
-        private List<List<IObject2D>> listLayersLandObject;
+        private List<List<ILandObject2D>[,]> landObjects2DLayers;
 
         private int altitudeMin;
 
-        private int altitudeMax;
-
-        //private RenderTexture renderTexture;
+        private int altitudeMax;      
 
         private int width;
 
@@ -88,51 +86,121 @@ namespace PokeU.View
 
             this.sprite = new Sprite();
 
-            this.listLayersLandObject = new List<List<IObject2D>>();
+            this.landObjects2DLayers = new List<List<ILandObject2D>[,]>();
 
-            for(int i = 0; i < altitudeMax - altitudeMin + 1; i++)
+            for(int z = 0; z < altitudeMax - altitudeMin + 1; z++)
             {
                 List<IObject2D> listobject2Ds = new List<IObject2D>();
 
-                List<ILandObject> landObjects = landChunk.GetLandObjectsAtAltitude(altitudeMin + i);
+                List<ILandObject>[,] landObjects = landChunk.GetLandObjectsAtAltitude(altitudeMin + z);
+                List<ILandObject2D>[,] landObject2Ds = new List<ILandObject2D>[landChunk.Area.Height, landChunk.Area.Width];
 
-                foreach(GroundLandObject landObject in landObjects)
+
+                for (int i = 0; i < landChunk.Area.Height; i++)
                 {
-                    IObject2D object2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landObject);
+                    for (int j = 0; j < landChunk.Area.Width; j++)
+                    {
+                        List<ILandObject2D> listLandObject2Ds = new List<ILandObject2D>();
 
-                    listobject2Ds.Add(object2D);
+                        if (landObjects[i, j] != null)
+                        {
+                            foreach (ILandObject landObject in landObjects[i, j])
+                            {
+                                ILandObject2D landObject2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landObject) as ILandObject2D;
+
+                                listLandObject2Ds.Add(landObject2D);
+                            }
+                        }
+
+                        landObject2Ds[i, j] = listLandObject2Ds;
+                    }
                 }
 
-                this.listLayersLandObject.Add(listobject2Ds);
+                this.landObjects2DLayers.Add(landObject2Ds);
             }
 
             this.Position = new Vector2f(landChunk.Area.Left, landChunk.Area.Top);
         }
 
-        public void DrawIn(RenderWindow window)
+        /*public void DrawIn(RenderWindow window)
         {
-            foreach (List<IObject2D> listObject2D in this.listLayersLandObject)
+            foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
             {
-                foreach (IObject2D object2D in listObject2D)
+                for (int i = 0; i < landObject2DsArray.GetLength(0); i++)
                 {
-                    object2D.DrawIn(window);
+                    for (int j = 0; j < landObject2DsArray.GetLength(1); j++)
+                    {
+                        /*FloatRect bounds = new FloatRect(this.Position.X + j * MainWindow.MODEL_TO_VIEW, this.Position.Y + i * MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW);
+
+                        FloatRect boundsView = new FloatRect(view.Center.X - view.Size.X / 2, view.Center.Y - view.Size.Y / 2, view.Size.X, view.Size.Y);
+
+                        if (bounds.Left < boundsView.Left + boundsView.Width
+                            && bounds.Left + bounds.Width > boundsView.Left
+                            && bounds.Top < boundsView.Top + boundsView.Height
+                            && bounds.Top + bounds.Height > boundsView.Top)
+                        {
+                            List<ILandObject2D> landObjectsList = landObject2DsArray[i, j];
+
+                            foreach (ILandObject2D object2D in landObjectsList)
+                            {
+                                object2D.DrawIn(window);
+                            }
+                        //}
+                    }
+                }
+            }
+        }*/
+
+        public void DrawIn(RenderWindow window, ref FloatRect boundsView)
+        {
+            foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
+            {
+                for (int i = 0; i < landObject2DsArray.GetLength(0); i++)
+                {
+                    for (int j = 0; j < landObject2DsArray.GetLength(1); j++)
+                    {
+                        FloatRect bounds = new FloatRect(this.Position.X + j * MainWindow.MODEL_TO_VIEW, this.Position.Y + i * MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW);
+
+                        /*if (bounds.Left < boundsView.Left + boundsView.Width
+                            && bounds.Left + bounds.Width > boundsView.Left
+                            && bounds.Top < boundsView.Top + boundsView.Height
+                            && bounds.Top + bounds.Height > boundsView.Top)
+                        {*/
+                        if(bounds.Intersects(boundsView))
+                        { 
+                            List<ILandObject2D> landObjectsList = landObject2DsArray[i, j];
+
+                            foreach (ILandObject2D object2D in landObjectsList)
+                            {
+                                object2D.DrawIn(window, ref boundsView);
+                            }
+                        }
+                    }
                 }
             }
         }
 
         public void Dispose()
         {
-            foreach (List<IObject2D> listObject2D in this.listLayersLandObject)
+            foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
             {
-                foreach (IObject2D object2D in listObject2D)
+                for (int i = 0; i < landObject2DsArray.GetLength(0); i++)
                 {
-                    object2D.Dispose();
-                }
+                    for (int j = 0; j < landObject2DsArray.GetLength(1); j++)
+                    {
+                        List<ILandObject2D> landObjectsList = landObject2DsArray[i, j];
 
-                listObject2D.Clear();
+                        foreach (ILandObject2D object2D in landObjectsList)
+                        {
+                            object2D.Dispose();
+                        }
+
+                        landObjectsList.Clear();
+                    }
+                }
             }
 
-            this.listLayersLandObject.Clear();
+            this.landObjects2DLayers.Clear();
         }
     }
 }

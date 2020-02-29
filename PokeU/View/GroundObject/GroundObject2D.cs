@@ -54,7 +54,7 @@ namespace PokeU.View.GroundObject
             this.Position = new Vector2f(landObject.Position.X, landObject.Position.Y);
         }
 
-        public void DrawIn(RenderWindow window)
+        public void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
             window.Draw(this.ObjectSprite);
         }

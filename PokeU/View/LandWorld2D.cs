@@ -47,23 +47,15 @@ namespace PokeU.View
             landWorld.ChunkRemoved += OnChunkRemoved;
         }
 
-        public void DrawIn(RenderWindow window)
+        public void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
             foreach (LandChunk2D landChunk2D in this.landChunksDictionary.Values)
             {
-                SFML.Graphics.View view = window.GetView();
-
                 FloatRect bounds = new FloatRect(landChunk2D.Position, new SFML.System.Vector2f(landChunk2D.Width, landChunk2D.Height));
-
-                FloatRect boundsView = new FloatRect(view.Center.X - view.Size.X / 2, view.Center.Y - view.Size.Y / 2, view.Size.X, view.Size.Y);
 
                 if (bounds.Intersects(boundsView))
                 {
-                    landChunk2D.DrawIn(window);
-                    landChunk2D.DrawIn(window);
-                    landChunk2D.DrawIn(window);
-                    landChunk2D.DrawIn(window);
-                    landChunk2D.DrawIn(window);
+                    landChunk2D.DrawIn(window, ref boundsView);
                 }
             }
         }

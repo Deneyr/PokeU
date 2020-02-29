@@ -120,16 +120,9 @@ namespace PokeU.Model
                     {
                         IntRect area = new IntRect((newChunksArea.Left + j) * CHUNK_SIZE, (newChunksArea.Top + i) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE);
 
-                        LandChunk landChunk = new LandChunk(area);
-
                         this.worldGenerator.GenerateEpicenterChunk(area);
 
-                        List<ILandLayer> layersList = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
-
-                        foreach (ILandLayer layer in layersList)
-                        {
-                            landChunk.AddLandLayer(layer);
-                        }
+                        LandChunk landChunk = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
 
                         chunksAdded.Add(landChunk);
                     }
@@ -153,16 +146,9 @@ namespace PokeU.Model
                     {
                         IntRect area = new IntRect((newChunksArea.Left + row.Count + j) * CHUNK_SIZE, (newChunksArea.Top + i) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE);
 
-                        LandChunk landChunk = new LandChunk(area);
-
                         this.worldGenerator.GenerateEpicenterChunk(area);
 
-                        List<ILandLayer> layersList = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
-
-                        foreach (ILandLayer layer in layersList)
-                        {
-                            landChunk.AddLandLayer(layer);
-                        }
+                        LandChunk landChunk = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
 
                         chunksAdded.Add(landChunk);
                     }
@@ -188,19 +174,11 @@ namespace PokeU.Model
 
                     for (int j = 0; j < newChunksArea.Width; j++)
                     {
-
                         IntRect area = new IntRect((newChunksArea.Left + j) * CHUNK_SIZE, (newChunksArea.Top + i) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE);
-
-                        LandChunk landChunk = new LandChunk(area);
 
                         this.worldGenerator.GenerateEpicenterChunk(area);
 
-                        List<ILandLayer> layersList = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
-
-                        foreach (ILandLayer layer in layersList)
-                        {
-                            landChunk.AddLandLayer(layer);
-                        }
+                        LandChunk landChunk = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
 
                         chunksAdded.Add(landChunk);
                     }
@@ -223,16 +201,9 @@ namespace PokeU.Model
 
                         IntRect area = new IntRect((newChunksArea.Left + j) * CHUNK_SIZE, (newChunksArea.Top + (newChunksArea.Height - maxNbAdd) + i) * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE);
 
-                        LandChunk landChunk = new LandChunk(area);
-
                         this.worldGenerator.GenerateEpicenterChunk(area);
 
-                        List<ILandLayer> layersList = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
-
-                        foreach (ILandLayer layer in layersList)
-                        {
-                            landChunk.AddLandLayer(layer);
-                        }
+                        LandChunk landChunk = this.worldGenerator.GenerateLandChunk(area, -ALTITUDE_RANGE, ALTITUDE_RANGE);
 
                         chunksAdded.Add(landChunk);
                     }

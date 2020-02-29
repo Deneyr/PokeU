@@ -20,6 +20,6 @@ namespace PokeU.View
             get;
         }
 
-        void DrawIn(RenderWindow window);
+        void DrawIn(RenderWindow window, ref FloatRect boundsView);
     }
 }

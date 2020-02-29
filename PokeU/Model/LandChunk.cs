@@ -9,7 +9,7 @@ namespace PokeU.Model
 {
     public class LandChunk : ILandChunk
     {
-        protected List<ILandLayer> landLayersList;
+        protected List<List<ILandObject>[,]> landObjectsArray;
 
         public IntRect Area
         {
@@ -29,53 +29,64 @@ namespace PokeU.Model
             protected set;
         }
 
-        public LandChunk(IntRect area)
+        public LandChunk(int altitudeMin, int altitudeMax, IntRect area)
         {
             this.Area = area;
 
-            this.landLayersList = new List<ILandLayer>();
+            this.landObjectsArray = new List<List<ILandObject>[,]>();
 
-            this.AltitudeMin = 0;
-            this.AltitudeMax = 0;
+            this.AltitudeMin = altitudeMin;
+            this.AltitudeMax = altitudeMax;
         }
 
-        public void AddLandLayer(ILandLayer layer)
+        public void ComputeObjectsArray(List<ILandLayer> landLayerLists)
         {
-            this.landLayersList.Add(layer);
+            this.landObjectsArray = new List<List<ILandObject>[,]>();
 
-            if(layer.AltitudeMin < this.AltitudeMin)
+            for (int z = 0; z < this.AltitudeMax - this.AltitudeMin + 1; z++)
             {
-                this.AltitudeMin = layer.AltitudeMin;
-            }
+                List<ILandObject>[,] currentArray = new List<ILandObject>[this.Area.Height, this.Area.Width];
+                for (int i = 0; i < Area.Height; i++)
+                {
+                    for (int j = 0; j < Area.Width; j++)
+                    {
+                        List<ILandObject> listLandObject = new List<ILandObject>();
 
-            if (layer.AltitudeMax > this.AltitudeMax)
-            {
-                this.AltitudeMax = layer.AltitudeMax;
+                        foreach (ILandLayer landLayer in landLayerLists)
+                        {
+                            ILandObject landObject = landLayer.GetLandObjectAtCoord(i, j, this.AltitudeMin + z);
+                            listLandObject.Add(landObject);
+                        }
+
+                        currentArray[i, j] = null;
+                        if (listLandObject.Any())
+                        {
+                            currentArray[i, j] = listLandObject;
+                        }
+                    }
+                }
+
+                this.landObjectsArray.Add(currentArray);
             }
         }
 
-        public List<ILandObject> GetLandObjectsAtAltitude(int altitude)
+        public List<ILandObject>[,] GetLandObjectsAtAltitude(int altitude)
         {
-            List<ILandObject> landObjectsResult = new List<ILandObject>();
-
-            foreach(ILandLayer layer in this.landLayersList)
-            {
-                landObjectsResult.AddRange(layer.GetLandObjectsAtAltitude(altitude));
-            }
-
-            return landObjectsResult;
+            return this.landObjectsArray[this.AltitudeMin + altitude];
         }
 
         public ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax)
         {
-            LandChunk landChunkResult = new LandChunk(this.Area);
+            LandChunk landChunk = new LandChunk(altitudeMin, altitudeMax, this.Area);
 
-            foreach (ILandLayer layer in this.landLayersList)
+            for (int i = 0; i < altitudeMax - altitudeMin; i++)
             {
-                landChunkResult.AddLandLayer(layer.GetSubLandLayer(altitudeMin, altitudeMax));
+                int thisIndex = i + altitudeMin - this.AltitudeMin;
+
+                landChunk.landObjectsArray.Add(this.landObjectsArray[thisIndex]);
             }
 
-            return landChunkResult;
+            return landChunk;
         }
     }
 }

@@ -68,19 +68,29 @@ namespace PokeU.View.ResourcesManager
                 HashSet<string> resourcesPath = new HashSet<string>();
                 HashSet<ILandObject> objects = new HashSet<ILandObject>();
 
-                List<ILandObject> landObjects = landChunk.GetLandObjectsAtAltitude(altitudeRect.Width);
-                foreach (ILandObject landObject in landObjects)
+                List<ILandObject>[,] landObjects = landChunk.GetLandObjectsAtAltitude(altitudeRect.Width);
+
+                for (int i = 0; i < landChunk.Area.Height; i++)
                 {
-                    if (objects.Contains(landObject) == false)
+                    for (int j = 0; j < landChunk.Area.Width; j++)
                     {
-                        IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
-
-                        foreach (string path in resources)
+                        if (landObjects[i, j] != null)
                         {
-                            resourcesPath.Add(path);
-                        }
+                            foreach (ILandObject landObject in landObjects[i, j])
+                            {
+                                if (objects.Contains(landObject) == false)
+                                {
+                                    IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
 
-                        objects.Add(landObject);
+                                    foreach (string path in resources)
+                                    {
+                                        resourcesPath.Add(path);
+                                    }
+
+                                    objects.Add(landObject);
+                                }
+                            }
+                        }
                     }
                 }
 

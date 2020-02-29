@@ -56,27 +56,12 @@ namespace PokeU.Model
             this.landObjectsArray[landObject.Altitude][i, j] = landObject;
         }
 
-        public List<ILandObject> GetLandObjectsAtAltitude(int altitude)
+        public ILandObject GetLandObjectAtCoord(int i, int j, int z)
         {
-            List<ILandObject> listLandObject = new List<ILandObject>();
-
-            ILandObject[,] landObjectsArray = this.landObjectsArray[altitude - this.AltitudeMin];
-
-            for (int i = 0; i < landObjectsArray.GetLength(0); i++)
-            {
-                for (int j = 0; j < landObjectsArray.GetLength(1); j++)
-                {
-                    if (landObjectsArray[i, j] != null)
-                    {
-                        listLandObject.Add(landObjectsArray[i, j]);
-                    }
-                }
-            }
-
-            return listLandObject;
+            return this.landObjectsArray[this.AltitudeMin + z][i, j];
         }
 
-        public virtual ILandLayer GetSubLandLayer(int altitudeMin, int altitudeMax)
+        /*public virtual ILandLayer GetSubLandLayer(int altitudeMin, int altitudeMax)
         {
             LandLayer landLayer = new LandLayer(altitudeMin, altitudeMax, this.area);
 
@@ -88,6 +73,6 @@ namespace PokeU.Model
             }
 
             return landLayer;
-        }
+        }*/
     }
 }
