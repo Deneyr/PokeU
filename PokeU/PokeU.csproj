@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\IObject.cs" />
     <Compile Include="LandGenerator\EpicenterData\ALandLayerGenerator.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterLayer.cs" />
     <Compile Include="LandGenerator\EpicenterData\WorldGenerator.cs" />
@@ -71,12 +72,17 @@
     <Compile Include="Model\LandWorld.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\AObject2DFactory.cs" />
     <Compile Include="View\GroundObject\GroundObject2D.cs" />
+    <Compile Include="View\GroundObject\GroundObject2DFactory.cs" />
+    <Compile Include="View\IObject2DFactory.cs" />
     <Compile Include="View\ILandObject2D.cs" />
     <Compile Include="View\IObject2D.cs" />
     <Compile Include="View\LandChunk2D.cs" />
+    <Compile Include="View\LandChunk2DFactory.cs" />
     <Compile Include="View\LandWorld2D.cs" />
-    <Compile Include="View\TextureManager\TextureManager.cs" />
+    <Compile Include="View\ResourcesManager\ChunkResourcesLoader.cs" />
+    <Compile Include="View\ResourcesManager\TextureManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

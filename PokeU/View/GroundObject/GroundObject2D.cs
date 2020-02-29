@@ -43,14 +43,25 @@ namespace PokeU.View.GroundObject
             }
         }
 
-        public GroundObject2D(GroundLandObject landObject, Vector2i chunkPosition)
+        public GroundObject2D(IObject2DFactory factory, GroundLandObject landObject)
         {
-            this.ObjectSprite = new Sprite(TEXT_LIST[(int)landObject.Type], new IntRect(2 * MainWindow.MODEL_TO_VIEW, 4 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW));
+            Texture texture = factory.GetTextureByIndex((int)landObject.Type);
+
+            this.ObjectSprite = new Sprite(texture, new IntRect(2 * MainWindow.MODEL_TO_VIEW, 4 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW));
 
             this.ObjectSprite.Scale = new Vector2f(0.5f, 0.5f);
 
-            this.Position = new Vector2f(landObject.Position.X - chunkPosition.X, landObject.Position.Y - chunkPosition.Y);          
+            this.Position = new Vector2f(landObject.Position.X, landObject.Position.Y);
         }
 
+        public void DrawIn(RenderWindow window)
+        {
+            window.Draw(this.ObjectSprite);
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

@@ -18,9 +18,9 @@ namespace PokeU.Model.GroundObject
 
         protected override void InitializeGenerator()
         {
-            this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 5, 4);
+            this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 5, 1);
 
-            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 3);
+            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 1);
 
             this.AddEpicenterLayer(64, DigressionMethod.SQUARE_DEC, 50, 2);
         }
@@ -33,9 +33,9 @@ namespace PokeU.Model.GroundObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    float power = this.GetPowerAt(new Vector2f(j, i));
+                    float power = this.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
 
-                    LandType landType = (LandType) Math.Max(Math.Min(3, power), 0);
+                    LandType landType = (LandType) Math.Max(Math.Min(3, power / 2), 0);
 
                     groundLandLayer.AddLandObject(new GroundLandObject(area.Left + j, area.Top + i, 0, landType), i, j);
                 }

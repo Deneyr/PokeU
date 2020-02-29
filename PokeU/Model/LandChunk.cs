@@ -17,16 +17,41 @@ namespace PokeU.Model
             protected set;
         }
 
+        public int AltitudeMin
+        {
+            get;
+            protected set;
+        }
+
+        public int AltitudeMax
+        {
+            get;
+            protected set;
+        }
+
         public LandChunk(IntRect area)
         {
             this.Area = area;
 
             this.landLayersList = new List<ILandLayer>();
+
+            this.AltitudeMin = 0;
+            this.AltitudeMax = 0;
         }
 
         public void AddLandLayer(ILandLayer layer)
         {
             this.landLayersList.Add(layer);
+
+            if(layer.AltitudeMin < this.AltitudeMin)
+            {
+                this.AltitudeMin = layer.AltitudeMin;
+            }
+
+            if (layer.AltitudeMax > this.AltitudeMax)
+            {
+                this.AltitudeMax = layer.AltitudeMax;
+            }
         }
 
         public List<ILandObject> GetLandObjectsAtAltitude(int altitude)

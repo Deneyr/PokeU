@@ -9,19 +9,15 @@ namespace PokeU.Model
 {
     public class LandLayer : ILandLayer
     {
-        protected int altitudeMin;
-
-        protected int altitudeMax;
-
         protected IntRect area;
 
         protected List<ILandObject[,]> landObjectsArray;
 
         public LandLayer(int altitudeMin, int altitudeMax, IntRect area)
         {
-            this.altitudeMin = altitudeMin;
+            this.AltitudeMin = altitudeMin;
 
-            this.altitudeMax = altitudeMax;
+            this.AltitudeMax = altitudeMax;
 
             this.area = area;
 
@@ -43,6 +39,18 @@ namespace PokeU.Model
             }
         }
 
+        public int AltitudeMin
+        {
+            get;
+            protected set;
+        }
+
+        public int AltitudeMax
+        {
+            get;
+            protected set;
+        }
+
         public void AddLandObject(ILandObject landObject, int i, int j)
         {
             this.landObjectsArray[landObject.Altitude][i, j] = landObject;
@@ -52,7 +60,7 @@ namespace PokeU.Model
         {
             List<ILandObject> listLandObject = new List<ILandObject>();
 
-            ILandObject[,] landObjectsArray = this.landObjectsArray[altitude - this.altitudeMin];
+            ILandObject[,] landObjectsArray = this.landObjectsArray[altitude - this.AltitudeMin];
 
             for (int i = 0; i < landObjectsArray.GetLength(0); i++)
             {
@@ -74,7 +82,7 @@ namespace PokeU.Model
 
             for (int i = 0; i < altitudeMax - altitudeMin; i++)
             {
-                int thisIndex = i + altitudeMin - this.altitudeMin;
+                int thisIndex = i + altitudeMin - this.AltitudeMin;
 
                 landLayer.landObjectsArray.Add(this.landObjectsArray[thisIndex]);
             }

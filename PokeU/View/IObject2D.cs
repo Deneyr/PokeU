@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View
 {
-    public interface IObject2D
+    public interface IObject2D: IDisposable
     {
         Sprite ObjectSprite
         {
@@ -20,5 +20,6 @@ namespace PokeU.View
             get;
         }
 
+        void DrawIn(RenderWindow window);
     }
 }

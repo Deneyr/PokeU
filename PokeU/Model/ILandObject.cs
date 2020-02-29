@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model
 {
-    public interface ILandObject
+    public interface ILandObject: IObject
     {
         Vector2i Position
         {

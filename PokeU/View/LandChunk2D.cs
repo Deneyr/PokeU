@@ -19,7 +19,7 @@ namespace PokeU.View
 
         private int altitudeMax;
 
-        private RenderTexture renderTexture;
+        //private RenderTexture renderTexture;
 
         private int width;
 
@@ -74,17 +74,17 @@ namespace PokeU.View
             }
         }
 
-        public LandChunk2D(ILandChunk landChunk, int altitudeMin, int altitudeMax)
+        public LandChunk2D(ILandChunk landChunk)
         {
-            this.altitudeMin = altitudeMin;
+            this.altitudeMin = landChunk.AltitudeMin;
 
-            this.altitudeMax = altitudeMax;
+            this.altitudeMax = landChunk.AltitudeMax;
 
             this.Width = landChunk.Area.Width;
 
             this.Height = landChunk.Area.Height;
 
-            this.renderTexture = new RenderTexture((uint)this.Width, (uint)this.Height);
+            //this.renderTexture = new RenderTexture((uint)this.Width, (uint)this.Height);
 
             this.sprite = new Sprite();
 
@@ -98,32 +98,41 @@ namespace PokeU.View
 
                 foreach(GroundLandObject landObject in landObjects)
                 {
-                    listobject2Ds.Add(new GroundObject2D(landObject, new Vector2i(landChunk.Area.Left, landChunk.Area.Top)));
+                    IObject2D object2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landObject);
+
+                    listobject2Ds.Add(object2D);
                 }
 
                 this.listLayersLandObject.Add(listobject2Ds);
             }
 
             this.Position = new Vector2f(landChunk.Area.Left, landChunk.Area.Top);
-
-            this.RenderTexture();
         }
 
-        private void RenderTexture()
+        public void DrawIn(RenderWindow window)
         {
-            this.renderTexture.Clear();
-
             foreach (List<IObject2D> listObject2D in this.listLayersLandObject)
             {
                 foreach (IObject2D object2D in listObject2D)
                 {
-                    this.renderTexture.Draw(object2D.ObjectSprite);
+                    object2D.DrawIn(window);
                 }
             }
+        }
 
-            this.renderTexture.Display();
+        public void Dispose()
+        {
+            foreach (List<IObject2D> listObject2D in this.listLayersLandObject)
+            {
+                foreach (IObject2D object2D in listObject2D)
+                {
+                    object2D.Dispose();
+                }
 
-            this.sprite.Texture = this.renderTexture.Texture;
+                listObject2D.Clear();
+            }
+
+            this.listLayersLandObject.Clear();
         }
     }
 }

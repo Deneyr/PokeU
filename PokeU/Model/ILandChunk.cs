@@ -7,9 +7,19 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model
 {
-    public interface ILandChunk
-    {
+    public interface ILandChunk: IObject
+    { 
         IntRect Area
+        {
+            get;
+        }
+
+        int AltitudeMin
+        {
+            get;
+        }
+
+        int AltitudeMax
         {
             get;
         }

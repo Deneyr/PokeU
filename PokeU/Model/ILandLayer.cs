@@ -7,8 +7,18 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model
 {
-    public interface ILandLayer
+    public interface ILandLayer: IObject
     {
+        int AltitudeMin
+        {
+            get;
+        }
+
+        int AltitudeMax
+        {
+            get;
+        }
+
         void AddLandObject(ILandObject landObject, int i, int j);
 
         List<ILandObject> GetLandObjectsAtAltitude(int altitude);

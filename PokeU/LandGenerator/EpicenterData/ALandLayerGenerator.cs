@@ -46,7 +46,5 @@ namespace PokeU.LandGenerator.EpicenterData
 
             return powerResult; 
         }
-
-        
     }
 }
