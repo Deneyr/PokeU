@@ -67,6 +67,8 @@ namespace PokeU
 
 
                 // Draw window
+                AObject2D.UpdateZoomAnimationManager(deltaTime);
+
                 window.Clear();
 
                 this.landWorld2D.DrawIn(window, ref this.boundsView);
@@ -112,6 +114,8 @@ namespace PokeU
                 // Finally, display the rendered frame on screen
                 window.Display();
             }
+
+            AObject2D.StopAnimationManager();
         }
 
         private void SetView(SFML.Graphics.RenderWindow window, SFML.Graphics.View view)

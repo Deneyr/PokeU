@@ -21,11 +21,36 @@ namespace PokeU.Model
             protected set;
         }
 
+        public LandTransition LandTransition
+        {
+            get;
+            protected set;
+        }
+
         public ALandObject(int positionX, int positionY, int positionZ)
         {
             this.Position = new Vector2i(positionX, positionY);
 
             this.Altitude = positionZ;
+
+            this.LandTransition = LandTransition.NONE;
         }
+    }
+
+    public enum LandTransition
+    {
+        NONE,
+        RIGHT,
+        LEFT,
+        TOP,
+        BOT,
+        TOP_LEFT,
+        BOT_LEFT,
+        TOP_RIGHT,
+        BOT_RIGHT,
+        TOP_INT_LEFT,
+        BOT_INT_LEFT,
+        TOP_INT_RIGHT,
+        BOT_INT_RIGHT,
     }
 }

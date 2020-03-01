@@ -46,5 +46,96 @@ namespace PokeU.LandGenerator.EpicenterData
 
             return powerResult; 
         }
+
+        protected static LandTransition GetLandTransitionFrom(ref bool[,] array)
+        {
+            // Sides check
+            if (array[1,0])
+            {
+                if (array[0,1])
+                {
+                    return LandTransition.BOT_INT_RIGHT;
+                }
+                else if (array[2,1])
+                {
+                    return LandTransition.TOP_INT_RIGHT;
+                }
+                else
+                {
+                    return LandTransition.RIGHT;
+                }
+            }
+
+            if (array[0,1])
+            {
+                if (array[1,0])
+                {
+                    return LandTransition.BOT_INT_RIGHT;
+                }
+                else if (array[1,2])
+                {
+                    return LandTransition.BOT_INT_LEFT;
+                }
+                else
+                {
+                    return LandTransition.BOT;
+                }
+            }
+
+            if (array[1,2])
+            {
+                if (array[0,1])
+                {
+                    return LandTransition.BOT_INT_LEFT;
+                }
+                else if (array[2,1])
+                {
+                    return LandTransition.TOP_INT_LEFT;
+                }
+                else
+                {
+                    return LandTransition.LEFT;
+                }
+            }
+
+            if (array[2,1])
+            {
+                if (array[1,0])
+                {
+                    return LandTransition.TOP_INT_RIGHT;
+                }
+                else if (array[1,2])
+                {
+                    return LandTransition.TOP_INT_LEFT;
+                }
+                else
+                {
+                    return LandTransition.TOP;
+                }
+            }
+
+            //Corners check
+            if (array[0,0])
+            {
+                return LandTransition.TOP_LEFT;
+            }
+
+            if (array[0,2])
+            {
+                return LandTransition.TOP_RIGHT;
+            }
+
+            if (array[2,2])
+            {
+                return LandTransition.BOT_RIGHT;
+            }
+
+            if (array[2,0])
+            {
+                return LandTransition.BOT_LEFT;
+            }
+
+            return LandTransition.NONE;
+        }
     }
 }

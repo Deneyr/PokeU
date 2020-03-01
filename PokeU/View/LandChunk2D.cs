@@ -11,7 +11,7 @@ using SFML.System;
 
 namespace PokeU.View
 {
-    public class LandChunk2D : IObject2D
+    public class LandChunk2D : AObject2D
     {
         private List<List<ILandObject2D>[,]> landObjects2DLayers;
 
@@ -22,29 +22,6 @@ namespace PokeU.View
         private int width;
 
         private int height;
-
-        private Sprite sprite;
-
-        public Sprite ObjectSprite
-        {
-            get
-            {
-                return this.sprite;
-            }
-        }
-
-        public Vector2f Position
-        {
-            get
-            {
-                return this.ObjectSprite.Position;
-            }
-
-            protected set
-            {
-                this.ObjectSprite.Position = value * MainWindow.MODEL_TO_VIEW;
-            }
-        }
 
         public int Width
         {
@@ -72,7 +49,8 @@ namespace PokeU.View
             }
         }
 
-        public LandChunk2D(ILandChunk landChunk)
+        public LandChunk2D(ILandChunk landChunk):
+            base()
         {
             this.altitudeMin = landChunk.AltitudeMin;
 
@@ -81,10 +59,6 @@ namespace PokeU.View
             this.Width = landChunk.Area.Width;
 
             this.Height = landChunk.Area.Height;
-
-            //this.renderTexture = new RenderTexture((uint)this.Width, (uint)this.Height);
-
-            this.sprite = new Sprite();
 
             this.landObjects2DLayers = new List<List<ILandObject2D>[,]>();
 
@@ -122,36 +96,7 @@ namespace PokeU.View
             this.Position = new Vector2f(landChunk.Area.Left, landChunk.Area.Top);
         }
 
-        /*public void DrawIn(RenderWindow window)
-        {
-            foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
-            {
-                for (int i = 0; i < landObject2DsArray.GetLength(0); i++)
-                {
-                    for (int j = 0; j < landObject2DsArray.GetLength(1); j++)
-                    {
-                        /*FloatRect bounds = new FloatRect(this.Position.X + j * MainWindow.MODEL_TO_VIEW, this.Position.Y + i * MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW);
-
-                        FloatRect boundsView = new FloatRect(view.Center.X - view.Size.X / 2, view.Center.Y - view.Size.Y / 2, view.Size.X, view.Size.Y);
-
-                        if (bounds.Left < boundsView.Left + boundsView.Width
-                            && bounds.Left + bounds.Width > boundsView.Left
-                            && bounds.Top < boundsView.Top + boundsView.Height
-                            && bounds.Top + bounds.Height > boundsView.Top)
-                        {
-                            List<ILandObject2D> landObjectsList = landObject2DsArray[i, j];
-
-                            foreach (ILandObject2D object2D in landObjectsList)
-                            {
-                                object2D.DrawIn(window);
-                            }
-                        //}
-                    }
-                }
-            }
-        }*/
-
-        public void DrawIn(RenderWindow window, ref FloatRect boundsView)
+        public override void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
             foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
             {
@@ -180,7 +125,7 @@ namespace PokeU.View
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             foreach (List<ILandObject2D>[,] landObject2DsArray in this.landObjects2DLayers)
             {

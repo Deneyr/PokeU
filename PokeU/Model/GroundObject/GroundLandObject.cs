@@ -11,6 +11,8 @@ namespace PokeU.Model.GroundObject
     {
         private LandType landType;
 
+        private LandType secondLandType;
+
         public LandType Type
         {
             get
@@ -19,10 +21,27 @@ namespace PokeU.Model.GroundObject
             }
         }
 
+        public LandType SecondType
+        {
+            get
+            {
+                return this.secondLandType;
+            }
+        }
+
         public GroundLandObject(int positionX, int positionY, int positionZ, LandType landType): 
             base(positionX, positionY, positionZ)
         {
             this.landType = landType;
+
+            this.secondLandType = this.landType;
+        }
+
+        public void SetSecondLandType(LandType secondLandType, LandTransition landTransition)
+        {
+            this.secondLandType = secondLandType;
+
+            this.LandTransition = landTransition;
         }
     }
 

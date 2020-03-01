@@ -29,19 +29,92 @@ namespace PokeU.Model.GroundObject
         {
             LandLayer groundLandLayer = new LandLayer(minAltitude, maxAltitude, area);
 
-            for(int i = 0; i < area.Height; i++)
+            bool[,] subArea = new bool[3, 3];
+
+            for (int i = 0; i < area.Height; i++)
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    float power = this.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
 
-                    LandType landType = (LandType) Math.Max(Math.Min(3, power / 2), 0);
+                    LandType landType;
+                    LandType secondType;
+                    LandTransition landTransition;
+                    this.GetLandType(area, i, j, out landType, out secondType, out landTransition);
 
-                    groundLandLayer.AddLandObject(new GroundLandObject(area.Left + j, area.Top + i, 0, landType), i, j);
+                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, 0, landType);
+                    groundLandLayer.AddLandObject(groundLandObject, i, j);
+
+                    if(secondType != landType)
+                    {
+                        groundLandObject.SetSecondLandType(secondType, landTransition);
+                    }
                 }
             }
 
             return groundLandLayer;
+        }
+
+        protected virtual LandType GetLandTypeFromPower(float power)
+        {
+            return (LandType)Math.Max(Math.Min(3, power / 2), 0);
+        }
+
+        private void GetLandType(
+            IntRect area,
+            int i, int j,
+            out LandType landType,
+            out LandType secondType,
+            out LandTransition landtransition)
+        {
+            bool[,] subAreaBool = new bool[3, 3];
+            int[,] subAreaInt = new int[3, 3];
+
+            int maxValue = int.MinValue;
+            int minValue = int.MaxValue;
+            for (int y = -1; y < 2; y++)
+            {
+                for (int x = -1; x < 2; x++)
+                {
+                    float power = this.GetPowerAt(new Vector2f(area.Left + j + x, area.Top + i + y));
+
+                    int currentValue = (int)this.GetLandTypeFromPower(power);
+
+                    maxValue = Math.Max(maxValue, currentValue);
+
+                    minValue = Math.Min(minValue, currentValue);
+
+                    subAreaInt[y + 1, x + 1] = currentValue;
+                }
+            }
+
+            landType = (LandType)subAreaInt[1, 1];
+            landtransition = LandTransition.NONE;
+            secondType = landType;
+
+            if (subAreaInt[1, 1] != maxValue)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    for (int x = 0; x < 3; x++)
+                    {
+                        if (subAreaInt[y, x] != maxValue)
+                        {
+                            subAreaBool[y, x] = false;
+                        }
+                        else
+                        {
+                            subAreaBool[y, x] = true;
+                        }
+                    }
+                }
+
+                landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
+
+                if (landtransition != LandTransition.NONE)
+                {
+                    secondType = (LandType)maxValue;
+                }
+            }
         }
     }
 }

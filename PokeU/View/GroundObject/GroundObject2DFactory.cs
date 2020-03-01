@@ -16,9 +16,9 @@ namespace PokeU.View.GroundObject
         protected override void InitializeFactory()
         {
             this.texturesPath.Add(@"Autotiles\Red cave highlight.png");
-            this.texturesPath.Add(@"Autotiles\Brown cave sand.png");
-            this.texturesPath.Add(@"Autotiles\Snow cave highlight.png");
-            this.texturesPath.Add(@"Autotiles\White cave highlight.png");
+            this.texturesPath.Add(@"Autotiles\Brown cave sand2.png");
+            this.texturesPath.Add(@"Autotiles\Snow cave highlight2.png");
+            this.texturesPath.Add(@"Autotiles\Brick path2.png");
 
             base.InitializeFactory();
         }

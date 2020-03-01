@@ -72,6 +72,12 @@
     <Compile Include="Model\LandWorld.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\Animations\Animation.cs" />
+    <Compile Include="View\Animations\AnimationManager.cs" />
+    <Compile Include="View\Animations\IAnimation.cs" />
+    <Compile Include="View\Animations\ZoomAnimation.cs" />
+    <Compile Include="View\Animations\ZoomAnimationManager.cs" />
+    <Compile Include="View\AObject2D.cs" />
     <Compile Include="View\AObject2DFactory.cs" />
     <Compile Include="View\GroundObject\GroundObject2D.cs" />
     <Compile Include="View\GroundObject\GroundObject2DFactory.cs" />

@@ -21,5 +21,10 @@ namespace PokeU.View
         }
 
         void DrawIn(RenderWindow window, ref FloatRect boundsView);
+
+        // Part animations
+        void SetCanevas(IntRect newCanevas);
+
+        void SetZoom(float newZoom);
     }
 }
