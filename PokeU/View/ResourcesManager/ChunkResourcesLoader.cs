@@ -10,7 +10,7 @@ namespace PokeU.View.ResourcesManager
 {
     public class ChunkResourcesLoader
     {
-        private static readonly int NB_MAX_CACHE_ALTITUDE = 8;
+        private static readonly int NB_MAX_CACHE_ALTITUDE = 0;
 
         private HashSet<IntRect> loadedAltitudes;
 

@@ -70,6 +70,7 @@
     <Compile Include="Model\ILandLayer.cs" />
     <Compile Include="Model\ILandObject.cs" />
     <Compile Include="Model\LandWorld.cs" />
+    <Compile Include="Model\Loader\LandChunkLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\Animations\Animation.cs" />
