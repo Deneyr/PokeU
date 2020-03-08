@@ -29,6 +29,15 @@ namespace PokeU.LandGenerator.EpicenterData
             }
         }
 
+        public Dictionary<string, ALandLayerGenerator> Generators
+        {
+            get
+            {
+                return this.generatorsDictionary;
+            }
+        }
+            
+
         public WorldGenerator(int seed, Vector2f temperatureVector, Vector2f positionZero)
         {
             this.generatorsSortedList = new SortedList<int, ALandLayerGenerator>();
@@ -50,11 +59,11 @@ namespace PokeU.LandGenerator.EpicenterData
             return component;
         }
 
-        public void AddGenerator(string generatorName, int generatorPriority, ALandLayerGenerator generator)
+        public void AddGenerator(int generatorPriority, ALandLayerGenerator generator)
         {
             this.generatorsSortedList.Add(generatorPriority, generator);
 
-            this.generatorsDictionary.Add(generatorName, generator);
+            this.generatorsDictionary.Add(generator.Name, generator);
         }
 
         public void GenerateEpicenterChunk(IntRect area)
@@ -72,7 +81,12 @@ namespace PokeU.LandGenerator.EpicenterData
             List<ILandLayer> landLayers = new List<ILandLayer>();
             foreach (ALandLayerGenerator generator in this.generatorsSortedList.Values)
             {
-                landLayers.Add(generator.GenerateLandLayer(this, area, minAltitude, maxAltitude));
+                ILandLayer landLayer = generator.GenerateLandLayer(this, area, minAltitude, maxAltitude);
+
+                if (landLayer != null)
+                {
+                    landLayers.Add(landLayer);
+                }
             }
 
             landChunk.ComputeObjectsArray(landLayers);

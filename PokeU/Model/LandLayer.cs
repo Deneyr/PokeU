@@ -53,12 +53,12 @@ namespace PokeU.Model
 
         public void AddLandObject(ILandObject landObject, int i, int j)
         {
-            this.landObjectsArray[landObject.Altitude][i, j] = landObject;
+            this.landObjectsArray[landObject.Altitude - this.AltitudeMin][i, j] = landObject;
         }
 
         public ILandObject GetLandObjectAtCoord(int i, int j, int z)
         {
-            return this.landObjectsArray[this.AltitudeMin + z][i, j];
+            return this.landObjectsArray[z - this.AltitudeMin][i, j];
         }
 
         /*public virtual ILandLayer GetSubLandLayer(int altitudeMin, int altitudeMax)

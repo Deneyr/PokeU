@@ -18,8 +18,6 @@ namespace PokeU.Model
 
         private static readonly int NB_MAX_CACHE_CHUNK = 8;
 
-        private static readonly int LOADED_ALTITUDE_RANGE = 0;
-
         private LandChunkLoader landChunkLoader;
         private Mutex mainMutex;
 
@@ -35,6 +33,8 @@ namespace PokeU.Model
         public event Action<ILandChunk> ChunkAdded;
 
         public event Action<ILandChunk> ChunkRemoved;
+
+        public event Action<int> AltitudeChanged;
 
         public LandWorld()
         {
@@ -280,7 +280,8 @@ namespace PokeU.Model
                     && (this.landChunkLoader.IsLandChunkLoading(container.Area) || this.pendingLandChunksImported.ContainsKey(container.Area) == false))
                 {
                     this.landChunksToRemove.Add(container);
-                }else if(container.LandChunk != null
+                }
+                else if(container.LandChunk != null
                     && this.currentLoadedLandChunks.ContainsKey(container.Area)
                     && this.currentLoadedLandChunks[container.Area] == container
                     && this.landChunksCache.Contains(container) == false)
@@ -363,80 +364,7 @@ namespace PokeU.Model
                 }
             }
 
-                /*foreach (LandChunkContainer containerToRemove in firstLandChunksToRemove)
-                {
-                    if (this.currentLoadedLandChunks.ContainsKey(containerToRemove.Area))
-                    {
-                        //firstLandChunksToRemove.Add(areaToRemove);
-
-                        this.landChunksCache.Add(this.currentLoadedLandChunks[containerToRemove.Area]);
-                        if (this.landChunksCache.Count > NB_MAX_CACHE_CHUNK)
-                        {
-                            ILandChunk landChunkFront = this.landChunksCache.ElementAt(0).LandChunk;
-                            this.landChunksCache.RemoveAt(0);
-
-                            //this.currentLoadedLandChunks[landChunk.Area].LandChunk = null;
-
-                            this.currentLoadedLandChunks.Remove(landChunkFront.Area);
-
-                            realLandChunksToRemove.Add(landChunkFront);
-                        }
-
-                        this.landChunksToRemove.Remove(containerToRemove);
-                    }
-                }
-
-                foreach (Tuple<LandChunkContainer, ILandChunk> tupleImported in tuplesImported)
-                {
-                    tupleImported.Item1.LandChunk = tupleImported.Item2;
-
-                    this.currentLoadedLandChunks.Add(tupleImported.Item1.Area, tupleImported.Item1);
-
-                    if (firstLandChunksToRemove.Contains(tupleImported.Item1))
-                    {
-                        this.landChunksToRemove.Remove(tupleImported.Item1);
-
-                        this.landChunksCache.Add(tupleImported.Item1);
-
-                        if(this.landChunksCache.Count > NB_MAX_CACHE_CHUNK)
-                        {
-                            ILandChunk landChunk = this.landChunksCache.ElementAt(0).LandChunk;
-                            this.landChunksCache.RemoveAt(0);
-
-                            //this.currentLoadedLandChunks[landChunk.Area].LandChunk = null;
-
-                            this.currentLoadedLandChunks.Remove(landChunk.Area);
-
-                            realLandChunksToRemove.Add(landChunk);
-                        }
-                    }
-                    else
-                    {
-                        landChunksToImport.Add(tupleImported.Item2);
-                    }
-
-                this.mainMutex.WaitOne();
-
-                this.pendingLandChunksImported.Remove(tupleImported.Item1.Area);
-
-                this.mainMutex.ReleaseMutex();
-            }*/
-
-                //this.landChunksToRemove.Clear();
-
-                /*HashSet<IntRect> test = new HashSet<IntRect>();
-
-
-                foreach (ILandChunk landChunkReleased in landChunksToRemove)
-                {
-                    test.Add(landChunkReleased.Area);
-                }
-                if(test.Count != landChunksToRemove.Count)
-                {
-                    throw new Exception("dqsd");
-                }*/
-
-                foreach (ILandChunk landChunkReleased in realLandChunksToRemove)
+            foreach (ILandChunk landChunkReleased in realLandChunksToRemove)
             {
                 this.NotifyChunkRemoved(landChunkReleased);
             }
@@ -466,6 +394,14 @@ namespace PokeU.Model
                 Console.WriteLine("chunk removed" + landChunkRemoved.Area.Left + " : " + landChunkRemoved.Area.Top + " - " + remainingChunks.Count);
                 remainingChunks.Remove(landChunkRemoved);
                 this.ChunkRemoved(landChunkRemoved);
+            }
+        }
+
+        private void NotifyAltitudeChanged(int newAltitude)
+        {
+            if (this.AltitudeChanged != null)
+            {
+                this.AltitudeChanged(newAltitude);
             }
         }
 

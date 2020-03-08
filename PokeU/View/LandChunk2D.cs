@@ -49,12 +49,12 @@ namespace PokeU.View
             }
         }
 
-        public LandChunk2D(ILandChunk landChunk):
+        public LandChunk2D(LandWorld2D landWorld2D, ILandChunk landChunk, int altitudeMin, int altitudeMax):
             base()
         {
-            this.altitudeMin = landChunk.AltitudeMin;
+            this.altitudeMin = Math.Max(landChunk.AltitudeMin, altitudeMin);
 
-            this.altitudeMax = landChunk.AltitudeMax;
+            this.altitudeMax = Math.Min(landChunk.AltitudeMax, altitudeMax);
 
             this.Width = landChunk.Area.Width;
 
@@ -62,11 +62,11 @@ namespace PokeU.View
 
             this.landObjects2DLayers = new List<List<ILandObject2D>[,]>();
 
-            for(int z = 0; z < altitudeMax - altitudeMin + 1; z++)
+            for(int z = 0; z < this.altitudeMax - this.altitudeMin + 1; z++)
             {
                 List<IObject2D> listobject2Ds = new List<IObject2D>();
 
-                List<ILandObject>[,] landObjects = landChunk.GetLandObjectsAtAltitude(altitudeMin + z);
+                List<ILandObject>[,] landObjects = landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z);
                 List<ILandObject2D>[,] landObject2Ds = new List<ILandObject2D>[landChunk.Area.Height, landChunk.Area.Width];
 
 
@@ -80,7 +80,7 @@ namespace PokeU.View
                         {
                             foreach (ILandObject landObject in landObjects[i, j])
                             {
-                                ILandObject2D landObject2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landObject) as ILandObject2D;
+                                ILandObject2D landObject2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landWorld2D, landObject) as ILandObject2D;
 
                                 listLandObject2Ds.Add(landObject2D);
                             }

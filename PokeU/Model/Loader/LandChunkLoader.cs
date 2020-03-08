@@ -13,7 +13,7 @@ namespace PokeU.Model.Loader
 {
     public class LandChunkLoader
     {
-        private static readonly int ALTITUDE_RANGE = 0;
+        private static readonly int ALTITUDE_RANGE = 10;
 
         WorldGenerator worldGenerator;
 
@@ -33,7 +33,9 @@ namespace PokeU.Model.Loader
         {
             this.worldGenerator = new WorldGenerator(789, new Vector2f(0, 1f / 128), new SFML.System.Vector2f(0, 0));
 
-            this.worldGenerator.AddGenerator("ground", 0, new GroundLayerGenerator());
+            this.worldGenerator.AddGenerator(0, new AltitudeLayerGenerator(ALTITUDE_RANGE));
+
+            this.worldGenerator.AddGenerator(1, new GroundLayerGenerator());
 
             this.pendingLandChunks = new Dictionary<IntRect, LandChunkContainer>();
 

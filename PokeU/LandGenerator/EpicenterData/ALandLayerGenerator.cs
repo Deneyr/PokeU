@@ -11,31 +11,41 @@ namespace PokeU.LandGenerator.EpicenterData
 {
     public abstract class ALandLayerGenerator
     {
-        private List<EpicenterLayer> epicenterLayersList;
+        protected List<EpicenterLayer> epicenterLayersList;
 
-        public ALandLayerGenerator()
+        public ALandLayerGenerator(string name)
         {
+            this.Name = name;
+
             this.epicenterLayersList = new List<EpicenterLayer>();
+        }
+
+        public string Name
+        {
+            get;
+            protected set;
         }
 
         protected abstract void InitializeGenerator();
 
-        protected void AddEpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPower)
+        protected void AddEpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPowerMin, float pointPowerMax)
         {
-            this.epicenterLayersList.Add(new EpicenterLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPower));
+            this.epicenterLayersList.Add(new EpicenterLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPowerMin, pointPowerMax));
         }
 
         public virtual void GenerateEpicenterLayer(int seed, IntRect area)
         {
+            int i = 0;
             foreach (EpicenterLayer layer in this.epicenterLayersList)
             {
-                layer.GenerateEpicenterPoints(seed, area);
+                layer.GenerateEpicenterPoints(seed * this.Name.GetHashCode() * i, area);
+                i++;
             }
         }
 
         public abstract ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude);
 
-        protected float GetPowerAt(Vector2f position)
+        public virtual float GetPowerAt(Vector2f position)
         {
             float powerResult = 0;
 

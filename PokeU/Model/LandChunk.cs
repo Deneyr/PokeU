@@ -55,7 +55,10 @@ namespace PokeU.Model
                         foreach (ILandLayer landLayer in landLayerLists)
                         {
                             ILandObject landObject = landLayer.GetLandObjectAtCoord(i, j, this.AltitudeMin + z);
-                            listLandObject.Add(landObject);
+                            if (landObject != null)
+                            {
+                                listLandObject.Add(landObject);
+                            }
                         }
 
                         currentArray[i, j] = null;
@@ -72,7 +75,7 @@ namespace PokeU.Model
 
         public List<ILandObject>[,] GetLandObjectsAtAltitude(int altitude)
         {
-            return this.landObjectsArray[this.AltitudeMin + altitude];
+            return this.landObjectsArray[altitude - this.AltitudeMin];
         }
 
         public ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax)

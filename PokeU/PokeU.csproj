@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\GroundObject\AltitudeLayerGenerator.cs" />
     <Compile Include="Model\IObject.cs" />
     <Compile Include="LandGenerator\EpicenterData\ALandLayerGenerator.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterLayer.cs" />

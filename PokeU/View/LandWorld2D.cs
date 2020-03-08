@@ -13,6 +13,8 @@ namespace PokeU.View
 {
     public class LandWorld2D
     {
+        public static readonly int LOADED_ALTITUDE_RANGE = 1;
+
         public static readonly Dictionary<Type, IObject2DFactory> MappingObjectModelView;
 
         public static readonly TextureManager TextureManager;
@@ -43,8 +45,16 @@ namespace PokeU.View
 
             this.chunkResourcesLoader = new ChunkResourcesLoader();
 
+            this.CurrentAltitude = 0;
+
             landWorld.ChunkAdded += OnChunkAdded;
             landWorld.ChunkRemoved += OnChunkRemoved;
+        }
+
+        public int CurrentAltitude
+        {
+            get;
+            protected set;
         }
 
         public void DrawIn(RenderWindow window, ref FloatRect boundsView)
@@ -66,7 +76,7 @@ namespace PokeU.View
 
             IObject2DFactory landChunk2DFactory = LandWorld2D.MappingObjectModelView[obj.GetType()];
 
-            this.landChunksDictionary.Add(obj, landChunk2DFactory.CreateObject2D(obj) as LandChunk2D);
+            this.landChunksDictionary.Add(obj, landChunk2DFactory.CreateObject2D(this, obj) as LandChunk2D);
         }
 
 

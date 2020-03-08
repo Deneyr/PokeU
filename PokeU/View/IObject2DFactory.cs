@@ -10,7 +10,7 @@ namespace PokeU.View
 {
     public interface IObject2DFactory
     {
-        IObject2D CreateObject2D(IObject obj);
+        IObject2D CreateObject2D(LandWorld2D landWorld2D, IObject obj);
 
         Dictionary<string, Texture> Resources
         {

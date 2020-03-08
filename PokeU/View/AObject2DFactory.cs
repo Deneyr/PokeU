@@ -38,7 +38,7 @@ namespace PokeU.View
             }
         }
 
-        public abstract IObject2D CreateObject2D(IObject obj);
+        public abstract IObject2D CreateObject2D(LandWorld2D landWorld2D, IObject obj);
 
         public Dictionary<string, Texture> Resources
         {

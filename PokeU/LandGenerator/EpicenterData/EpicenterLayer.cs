@@ -14,16 +14,18 @@ namespace PokeU.LandGenerator.EpicenterData
 
         private int probability;
 
-        private float pointPower;
+        private float pointPowerMin;
+
+        private float pointPowerMax;
 
         private IntRect currentGeneratedArea;
 
         private DigressionMethod digressionMethod;
 
-        private List<Vector2f> epicenterPoints;
+        private List<Tuple<Vector2f, float>> epicenterPoints;
 
 
-        public EpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int probability, float pointPower)
+        public EpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int probability, float pointPowerMin, float pointPowerMax)
         {
             this.influenceRadius = influenceRadius;
 
@@ -31,7 +33,9 @@ namespace PokeU.LandGenerator.EpicenterData
 
             this.probability = probability;
 
-            this.pointPower = pointPower;
+            this.pointPowerMin = pointPowerMin;
+
+            this.pointPowerMax = pointPowerMax;
 
             this.InitializeGeneration();
         }
@@ -40,7 +44,7 @@ namespace PokeU.LandGenerator.EpicenterData
         {
             this.currentGeneratedArea = new IntRect(0, 0, 0, 0);
 
-            this.epicenterPoints = new List<Vector2f>();
+            this.epicenterPoints = new List<Tuple<Vector2f, float>>();
         }
 
         public void GenerateEpicenterPoints(int seed, IntRect area)
@@ -52,12 +56,6 @@ namespace PokeU.LandGenerator.EpicenterData
             int nbAreasHeight = 2 * ((int) Math.Ceiling( (decimal)(this.influenceRadius / area.Width) )) + 1;
             int nbAreasWidth = 2 * ((int)Math.Ceiling( (decimal)(this.influenceRadius / area.Height) )) + 1;
 
-            /*string folderName = "log_left_" + area.Left + "_top_" + area.Top;
-            if (System.IO.Directory.Exists(folderName) == false)
-            {
-                System.IO.Directory.CreateDirectory(folderName);
-            }*/
-
             for (int i = 0; i < nbAreasHeight; i++)
             {
                 for (int j = 0; j < nbAreasWidth; j++)
@@ -65,37 +63,18 @@ namespace PokeU.LandGenerator.EpicenterData
                     IntRect currentArea = new IntRect(area.Left - area.Width * (nbAreasWidth / 2 - j), area.Top - area.Height * (nbAreasHeight / 2 - i), area.Width, area.Height);
 
                     int areaSeed = seed + currentArea.Left + currentArea.Top * 1000 + this.influenceRadius * 5000;
-                    // int areaSeed = seed * currentArea.Left * currentArea.Top;
 
                     Random random = new Random(areaSeed);
 
                     int chanceToAddPoint = random.Next(0, 100);
 
-                    //List<Vector2f> epicenterPointsArea = new List<Vector2f>();
                     while(chanceToAddPoint < this.probability)
                     {
-                        //epicenterPointsArea.Add(new Vector2f(currentArea.Left + random.Next(0, currentArea.Width), currentArea.Top + random.Next(0, currentArea.Height)));
-
-                        this.epicenterPoints.Add(new Vector2f(currentArea.Left + random.Next(0, currentArea.Width), currentArea.Top + random.Next(0, currentArea.Height)));
+                        this.epicenterPoints.Add(new Tuple<Vector2f, float>(new Vector2f(currentArea.Left + random.Next(0, currentArea.Width), currentArea.Top + random.Next(0, currentArea.Height)), 
+                            (float) (random.NextDouble() * (this.pointPowerMax - this.pointPowerMin) + this.pointPowerMin)));
 
                         chanceToAddPoint = random.Next(0, 100);
                     }
-
-                    /*this.epicenterPoints.AddRange(epicenterPointsArea);
-
-                    string fileName = "log_left_" + currentArea.Left + "_top_" + currentArea.Top + ".txt";
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(folderName + @"\" + fileName, true))
-                    {
-                        foreach (Vector2f vector in epicenterPointsArea)
-                        {
-                            file.WriteLine(vector.X + " : " + vector.Y + " : " + this.influenceRadius);
-                        }
-                    }*/
-
-                    /*for(int counter = 0; counter < nbPoints; counter++)
-                    {
-                        this.epicenterPoints.Add(new Vector2f(currentArea.Left + random.Next(0, currentArea.Width), currentArea.Top + random.Next(0, currentArea.Height)));
-                    }*/
                 }
             }
 
@@ -105,31 +84,31 @@ namespace PokeU.LandGenerator.EpicenterData
         {
             float powerResult = 0;
 
-            foreach(Vector2f point in this.epicenterPoints)
+            foreach(Tuple<Vector2f, float> tuplePoint in this.epicenterPoints)
             {
-                float norm = (float) Math.Sqrt((position.X - point.X) * (position.X - point.X) + (position.Y - point.Y) * (position.Y - point.Y));
+                float norm = (float) Math.Sqrt((position.X - tuplePoint.Item1.X) * (position.X - tuplePoint.Item1.X) + (position.Y - tuplePoint.Item1.Y) * (position.Y - tuplePoint.Item1.Y));
 
                 if (norm < this.influenceRadius)
                 {
-                    powerResult += this.GetPowerFromDistance(norm / this.influenceRadius);
+                    powerResult += this.GetPowerFromDistance(norm / this.influenceRadius, tuplePoint.Item2);
                 }
             }
 
             return powerResult;
         }
 
-        private float GetPowerFromDistance(float distanceRatio)
+        private float GetPowerFromDistance(float distanceRatio, float pointPower)
         {
             switch (this.digressionMethod)
             {
                 case DigressionMethod.LINEAR:
-                    return (1 - distanceRatio) * this.pointPower;
+                    return (1 - distanceRatio) * pointPower;
                 case DigressionMethod.SQUARE_ACC:
-                    return (1 - distanceRatio) * (1 - distanceRatio) * this.pointPower;
+                    return (1 - distanceRatio) * (1 - distanceRatio) * pointPower;
                 case DigressionMethod.SQUARE_DEC:
-                    return (1 - distanceRatio * distanceRatio) * this.pointPower;
+                    return (1 - distanceRatio * distanceRatio) * pointPower;
                 case DigressionMethod.SMOOTH:
-                    return (((1 - distanceRatio * distanceRatio) * this.pointPower) + ((1 - distanceRatio) * (1 - distanceRatio) * this.pointPower)) / 2;
+                    return (((1 - distanceRatio * distanceRatio) * pointPower) + ((1 - distanceRatio) * (1 - distanceRatio) * pointPower)) / 2;
             }
 
             return 0f;

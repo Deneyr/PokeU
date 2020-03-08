@@ -12,10 +12,9 @@ namespace PokeU.View.GroundObject
 {
     public class GroundObject2DFactory : AObject2DFactory
     {
-
         protected override void InitializeFactory()
         {
-            this.texturesPath.Add(@"Autotiles\Red cave highlight.png");
+            this.texturesPath.Add(@"Autotiles\Red cave floor2.png");
             this.texturesPath.Add(@"Autotiles\Brown cave sand2.png");
             this.texturesPath.Add(@"Autotiles\Snow cave highlight2.png");
             this.texturesPath.Add(@"Autotiles\Brick path2.png");
@@ -23,7 +22,7 @@ namespace PokeU.View.GroundObject
             base.InitializeFactory();
         }
 
-        public override IObject2D CreateObject2D(IObject obj)
+        public override IObject2D CreateObject2D(LandWorld2D landWorld2D, IObject obj)
         {
             GroundLandObject groundLandObject = obj as GroundLandObject;
 
