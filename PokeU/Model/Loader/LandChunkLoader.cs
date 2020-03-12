@@ -31,11 +31,11 @@ namespace PokeU.Model.Loader
 
         public LandChunkLoader()
         {
-            this.worldGenerator = new WorldGenerator(789, new Vector2f(0, 1f / 128), new SFML.System.Vector2f(0, 0));
+            this.worldGenerator = new WorldGenerator(12, new Vector2f(0, 1f / 128), new SFML.System.Vector2f(0, 0));
 
-            this.worldGenerator.AddGenerator(0, new AltitudeLayerGenerator(ALTITUDE_RANGE));
+            this.worldGenerator.AddGenerator(0, new GroundLayerGenerator());
 
-            this.worldGenerator.AddGenerator(1, new GroundLayerGenerator());
+            this.worldGenerator.AddGenerator(1, new AltitudeLayerGenerator(ALTITUDE_RANGE));
 
             this.pendingLandChunks = new Dictionary<IntRect, LandChunkContainer>();
 

@@ -19,5 +19,10 @@ namespace PokeU.Model
             get;
         }
 
+        LandTransition LandTransition
+        {
+            get;
+        }
+
     }
 }

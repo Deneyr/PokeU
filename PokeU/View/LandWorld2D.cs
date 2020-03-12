@@ -30,9 +30,11 @@ namespace PokeU.View
             MappingObjectModelView = new Dictionary<Type, IObject2DFactory>();
 
             MappingObjectModelView.Add(typeof(GroundLandObject), new GroundObject2DFactory());
+            MappingObjectModelView.Add(typeof(AltitudeLandObject), new AltitudeObject2DFactory());
+
             MappingObjectModelView.Add(typeof(LandChunk), new LandChunk2DFactory());
 
-            foreach(IObject2DFactory factory in MappingObjectModelView.Values)
+            foreach (IObject2DFactory factory in MappingObjectModelView.Values)
             {
                 TextureManager.TextureLoaded += factory.OnTextureLoaded;
                 TextureManager.TextureUnloaded += factory.OnTextureUnloaded;

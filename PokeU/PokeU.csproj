@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\GroundObject\AltitudeLandObject.cs" />
     <Compile Include="Model\GroundObject\AltitudeLayerGenerator.cs" />
     <Compile Include="Model\IObject.cs" />
     <Compile Include="LandGenerator\EpicenterData\ALandLayerGenerator.cs" />
@@ -81,6 +82,8 @@
     <Compile Include="View\Animations\ZoomAnimationManager.cs" />
     <Compile Include="View\AObject2D.cs" />
     <Compile Include="View\AObject2DFactory.cs" />
+    <Compile Include="View\GroundObject\AltitudeObject2D.cs" />
+    <Compile Include="View\GroundObject\AltitudeObject2DFactory.cs" />
     <Compile Include="View\GroundObject\GroundObject2D.cs" />
     <Compile Include="View\GroundObject\GroundObject2DFactory.cs" />
     <Compile Include="View\IObject2DFactory.cs" />

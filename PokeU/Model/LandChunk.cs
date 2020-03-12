@@ -64,6 +64,17 @@ namespace PokeU.Model
                         currentArray[i, j] = null;
                         if (listLandObject.Any())
                         {
+                            List<ILandObject> copyListObject = listLandObject.ToList();
+                            copyListObject.Reverse();
+                            IEnumerator<ILandObject> copyListObjectEnumerable = copyListObject.GetEnumerator();
+
+                            int counter = 0;
+                            while (copyListObjectEnumerable.MoveNext() && copyListObjectEnumerable.Current.LandTransition != LandTransition.NONE)
+                            {
+                                counter++;
+                            }
+                            listLandObject.RemoveRange(0, Math.Max(0, listLandObject.Count - counter - 1));
+
                             currentArray[i, j] = listLandObject;
                         }
                     }
