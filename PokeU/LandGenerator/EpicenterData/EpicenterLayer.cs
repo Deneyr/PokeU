@@ -10,19 +10,19 @@ namespace PokeU.LandGenerator.EpicenterData
 {
     public class EpicenterLayer
     {
-        private int influenceRadius;
+        protected int influenceRadius;
 
-        private int probability;
+        protected int probability;
 
-        private float pointPowerMin;
+        protected float pointPowerMin;
 
-        private float pointPowerMax;
+        protected float pointPowerMax;
 
-        private IntRect currentGeneratedArea;
+        protected IntRect currentGeneratedArea;
 
-        private DigressionMethod digressionMethod;
+        protected DigressionMethod digressionMethod;
 
-        private List<Tuple<Vector2f, float>> epicenterPoints;
+        protected List<Tuple<Vector2f, float>> epicenterPoints;
 
 
         public EpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int probability, float pointPowerMin, float pointPowerMax)
@@ -47,14 +47,14 @@ namespace PokeU.LandGenerator.EpicenterData
             this.epicenterPoints = new List<Tuple<Vector2f, float>>();
         }
 
-        public void GenerateEpicenterPoints(int seed, IntRect area)
+        public virtual void GenerateEpicenterPoints(int seed, IntRect area)
         {
             this.InitializeGeneration();
 
             this.currentGeneratedArea = area;
 
-            int nbAreasHeight = 2 * ((int) Math.Ceiling( (decimal)(this.influenceRadius / area.Width) )) + 1;
-            int nbAreasWidth = 2 * ((int)Math.Ceiling( (decimal)(this.influenceRadius / area.Height) )) + 1;
+            int nbAreasHeight = 2 * ((int) Math.Ceiling( (decimal)(this.influenceRadius / area.Width) )) + 3;
+            int nbAreasWidth = 2 * ((int)Math.Ceiling( (decimal)(this.influenceRadius / area.Height) )) + 3;
 
             for (int i = 0; i < nbAreasHeight; i++)
             {
@@ -80,7 +80,7 @@ namespace PokeU.LandGenerator.EpicenterData
 
         }
 
-        public float GetPowerAt(Vector2f position)
+        public virtual float GetPowerAt(Vector2f position)
         {
             float powerResult = 0;
 
@@ -97,10 +97,12 @@ namespace PokeU.LandGenerator.EpicenterData
             return powerResult;
         }
 
-        private float GetPowerFromDistance(float distanceRatio, float pointPower)
+        protected float GetPowerFromDistance(float distanceRatio, float pointPower)
         {
             switch (this.digressionMethod)
             {
+                case DigressionMethod.CONSTANT:
+                    return pointPower;
                 case DigressionMethod.LINEAR:
                     return (1 - distanceRatio) * pointPower;
                 case DigressionMethod.SQUARE_ACC:
@@ -118,6 +120,7 @@ namespace PokeU.LandGenerator.EpicenterData
 
     public enum DigressionMethod
     {
+        CONSTANT,
         LINEAR,
         SQUARE_ACC,
         SQUARE_DEC,

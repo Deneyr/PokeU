@@ -12,7 +12,7 @@ namespace PokeU.View.GroundObject
     {
         protected override void InitializeFactory()
         {
-            this.texturesPath.Add(@"Autotiles\grassCliff.png");
+            this.texturesPath.Add(@"Autotiles\cliff.png");
 
             base.InitializeFactory();
         }

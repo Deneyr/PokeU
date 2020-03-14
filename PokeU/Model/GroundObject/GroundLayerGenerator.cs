@@ -17,13 +17,18 @@ namespace PokeU.Model.GroundObject
             this.InitializeGenerator();
         }
 
+        protected override void AddEpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPowerMin, float pointPowerMax)
+        {
+            this.epicenterLayersList.Add(new EpicenterAreaLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPowerMin, pointPowerMax));
+        }
+
         protected override void InitializeGenerator()
         {
-            this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 5, 1, 1);
+            this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 5, 0, 4);
 
-            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 1, 1);
+            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 0, 4);
 
-            this.AddEpicenterLayer(64, DigressionMethod.SQUARE_DEC, 50, 2, 2);
+            this.AddEpicenterLayer(64, DigressionMethod.SQUARE_DEC, 80, 0, 4);
         }
 
         public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
@@ -40,7 +45,7 @@ namespace PokeU.Model.GroundObject
                 {
                     this.GetLandType(area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
 
-                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, (int) altitudeLandLayerGenerator.GetPowerAt(new Vector2f(area.Left + j, area.Top + i)), landType);
+                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, 0, landType);
                     groundLandLayer.AddLandObject(groundLandObject, i, j);
 
                     if(secondType != landType)

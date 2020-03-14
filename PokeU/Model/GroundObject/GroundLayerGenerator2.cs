@@ -9,43 +9,28 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model.GroundObject
 {
-    public class AltitudeLayerGenerator : ALandLayerGenerator
+    public class GroundLayerGenerator2 : ALandLayerGenerator
     {
-        private int altitudeRange;
-
-        public AltitudeLayerGenerator(int altitudeRange) :
-            base("altitude")
+        public GroundLayerGenerator2():
+            base("ground")
         {
             this.InitializeGenerator();
-
-            this.altitudeRange = Math.Abs(altitudeRange);
         }
 
         protected override void InitializeGenerator()
         {
-            this.AddEpicenterLayer(256, DigressionMethod.SQUARE_DEC, 4, -20, 20);
+            this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 5, 1, 1);
 
-            //this.AddEpicenterLayer(256, DigressionMethod.SMOOTH, 10, 0, 10);
+            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 1, 1);
 
-            this.AddEpicenterLayer(128, DigressionMethod.LINEAR, 20, 0, 5);
-
-            this.AddEpicenterLayer(16, DigressionMethod.LINEAR, 50, 5, 3);
-        }
-
-        public override float GetPowerAt(Vector2f position)
-        {
-            float powerResult = base.GetPowerAt(position);
-
-            powerResult = Math.Max(-this.altitudeRange, Math.Min(this.altitudeRange, powerResult));
-
-            return powerResult;
+            this.AddEpicenterLayer(64, DigressionMethod.SQUARE_DEC, 50, 2, 2);
         }
 
         public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
         {
-            ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["ground"];
+            ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
-            LandLayer altitudeLandLayer = new LandLayer(minAltitude, maxAltitude, area);
+            LandLayer groundLandLayer = new LandLayer(minAltitude, maxAltitude, area);
 
             bool[,] subArea = new bool[3, 3];
 
@@ -53,26 +38,31 @@ namespace PokeU.Model.GroundObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    int altitude = (int)this.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
+                    this.GetLandType(area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
 
-                    this.GetLandType(area, i, j, out LandTransition landTransition);
+                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, (int) altitudeLandLayerGenerator.GetPowerAt(new Vector2f(area.Left + j, area.Top + i)), landType);
+                    groundLandLayer.AddLandObject(groundLandObject, i, j);
 
-                    if (landTransition != LandTransition.NONE)
+                    if(secondType != landType)
                     {
-                        AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, 0, LandType.GRASS);
-                        altitudeLandLayer.AddLandObject(altitudeLandObject, i, j);
-
-                        altitudeLandObject.SetLandTransition(landTransition);
+                        groundLandObject.SetSecondLandType(secondType, landTransition);
                     }
                 }
             }
 
-            return altitudeLandLayer;
+            return groundLandLayer;
+        }
+
+        protected virtual LandType GetLandTypeFromPower(float power)
+        {
+            return (LandType)Math.Max(Math.Min(3, power / 2), 0);
         }
 
         private void GetLandType(
             IntRect area,
             int i, int j,
+            out LandType landType,
+            out LandType secondType,
             out LandTransition landtransition)
         {
             bool[,] subAreaBool = new bool[3, 3];
@@ -84,17 +74,21 @@ namespace PokeU.Model.GroundObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    int altitude = (int)this.GetPowerAt(new Vector2f(area.Left + j + x, area.Top + i + y));
+                    float power = this.GetPowerAt(new Vector2f(area.Left + j + x, area.Top + i + y));
 
-                    maxValue = Math.Max(maxValue, altitude);
+                    int currentValue = (int)this.GetLandTypeFromPower(power);
 
-                    minValue = Math.Min(minValue, altitude);
+                    maxValue = Math.Max(maxValue, currentValue);
 
-                    subAreaInt[y + 1, x + 1] = altitude;
+                    minValue = Math.Min(minValue, currentValue);
+
+                    subAreaInt[y + 1, x + 1] = currentValue;
                 }
             }
 
+            landType = (LandType)subAreaInt[1, 1];
             landtransition = LandTransition.NONE;
+            secondType = landType;
 
             if (subAreaInt[1, 1] != maxValue)
             {
@@ -114,6 +108,11 @@ namespace PokeU.Model.GroundObject
                 }
 
                 landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
+
+                if (landtransition != LandTransition.NONE)
+                {
+                    secondType = (LandType)maxValue;
+                }
             }
         }
     }

@@ -28,7 +28,7 @@ namespace PokeU.LandGenerator.EpicenterData
 
         protected abstract void InitializeGenerator();
 
-        protected void AddEpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPowerMin, float pointPowerMax)
+        protected virtual void AddEpicenterLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPowerMin, float pointPowerMax)
         {
             this.epicenterLayersList.Add(new EpicenterLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPowerMin, pointPowerMax));
         }

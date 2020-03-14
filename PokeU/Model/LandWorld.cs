@@ -267,7 +267,7 @@ namespace PokeU.Model
                 {
                     this.mainMutex.ReleaseMutex();
 
-                    //chunksRemoved.RemoveAll(pElem => pElem.Area.Equals(container.Area));
+                    chunksRemoved.RemoveAll(pElem => pElem.Area.Equals(container.Area));
                 }
 
             }

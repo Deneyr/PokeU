@@ -13,7 +13,7 @@ namespace PokeU.Model.Loader
 {
     public class LandChunkLoader
     {
-        private static readonly int ALTITUDE_RANGE = 10;
+        private static readonly int ALTITUDE_RANGE = 32;
 
         WorldGenerator worldGenerator;
 
