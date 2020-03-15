@@ -48,8 +48,9 @@ namespace PokeU.Model.GroundObject
     public enum LandType
     {
         GROUND = 0,
-        GRASS = 1,
-        SAND = 2,
-        STONE = 3
+        SAND = 1,
+        GRASS = 2,
+        STONE = 3,
+        SNOW = 4
     }
 }

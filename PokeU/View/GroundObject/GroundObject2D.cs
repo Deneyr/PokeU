@@ -47,7 +47,7 @@ namespace PokeU.View.GroundObject
             this.Position = new Vector2f(landObject.Position.X, landObject.Position.Y);
 
             this.SecondSprite = null;
-            if (landObject.Type != landObject.SecondType && (int)landObject.Type < 3)
+            if (landObject.Type != landObject.SecondType)
             {
                 texture = factory.GetTextureByIndex((int)landObject.SecondType);
                 this.SecondSprite = new Sprite(texture, this.GetTransitionTextureCoord(landObject.LandTransition));

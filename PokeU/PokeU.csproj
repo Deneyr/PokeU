@@ -59,6 +59,7 @@
     <Compile Include="LandGenerator\EpicenterData\EpicenterAreaLayer.cs" />
     <Compile Include="Model\GroundObject\AltitudeLandObject.cs" />
     <Compile Include="Model\GroundObject\AltitudeLayerGenerator.cs" />
+    <Compile Include="Model\GroundObject\DefaultGroundLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\GroundLayerGenerator2.cs" />
     <Compile Include="Model\IObject.cs" />
     <Compile Include="LandGenerator\EpicenterData\ALandLayerGenerator.cs" />

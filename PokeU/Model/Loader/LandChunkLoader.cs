@@ -33,7 +33,7 @@ namespace PokeU.Model.Loader
         {
             this.worldGenerator = new WorldGenerator(12, new Vector2f(0, 1f / 128), new SFML.System.Vector2f(0, 0));
 
-            this.worldGenerator.AddGenerator(0, new GroundLayerGenerator());
+            this.worldGenerator.AddGenerator(0, new DefaultGroundLayerGenerator());
 
             this.worldGenerator.AddGenerator(1, new AltitudeLayerGenerator(ALTITUDE_RANGE));
 
