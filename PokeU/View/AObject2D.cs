@@ -83,20 +83,20 @@ namespace PokeU.View
                     result.Top = 2;
                     break;
                 case LandTransition.TOP_LEFT:
-                    result.Left = 2;
-                    result.Top = 3;
+                    result.Left = 0;
+                    result.Top = 1;
                     break;
                 case LandTransition.TOP_RIGHT:
-                    result.Left = 0;
-                    result.Top = 3;
-                    break;
-                case LandTransition.BOT_LEFT:
                     result.Left = 2;
                     result.Top = 1;
                     break;
-                case LandTransition.BOT_RIGHT:
+                case LandTransition.BOT_LEFT:
                     result.Left = 0;
-                    result.Top = 1;
+                    result.Top = 3;
+                    break;
+                case LandTransition.BOT_RIGHT:
+                    result.Left = 2;
+                    result.Top = 3;
                     break;
                 case LandTransition.TOP_INT_LEFT:
                     result.Left = 3;

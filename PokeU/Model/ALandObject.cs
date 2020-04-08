@@ -40,6 +40,7 @@ namespace PokeU.Model
     public enum LandTransition
     {
         NONE,
+        WHOLE,
         RIGHT,
         LEFT,
         TOP,

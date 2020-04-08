@@ -24,8 +24,8 @@ namespace PokeU.Model
         private Dictionary<IntRect, Tuple<LandChunkContainer, ILandChunk>> pendingLandChunksImported;
 
         private Dictionary<IntRect, LandChunkContainer> currentLoadedLandChunks;
-        private List<LandChunkContainer> landChunksCache;
-        private HashSet<LandChunkContainer> landChunksToRemove;
+        private List<ILandChunk> landChunksCache;
+        private HashSet<IntRect> landChunksToRemove;
 
         private List<List<LandChunkContainer>> landChunkArea;
         private IntRect currentChunksArea;
@@ -44,8 +44,8 @@ namespace PokeU.Model
             this.pendingLandChunksImported = new Dictionary<IntRect, Tuple<LandChunkContainer, ILandChunk>>();
 
             this.currentLoadedLandChunks = new Dictionary<IntRect, LandChunkContainer>();
-            this.landChunksCache = new List<LandChunkContainer>();
-            this.landChunksToRemove = new HashSet<LandChunkContainer>();
+            this.landChunksCache = new List<ILandChunk>();
+            this.landChunksToRemove = new HashSet<IntRect>();
 
             this.mainMutex = new Mutex();
 
@@ -228,6 +228,21 @@ namespace PokeU.Model
 
         private void PrepareChunksUpdated(List<LandChunkContainer> chunksRemoved, List<LandChunkContainer> chunksAdded)
         {
+            foreach (LandChunkContainer container in chunksRemoved)
+            {
+                this.landChunksToRemove.Add(container.Area);
+                /*if (container.LandChunk != null
+                    && this.currentLoadedLandChunks.ContainsKey(container.Area)
+                    && this.landChunksCache.Contains(container.LandChunk) == false)
+                {
+                    this.landChunksToRemove.Add(container.Area);
+                }
+                else if(this.landChunkLoader.IsLandChunkLoading(container.Area) || this.pendingLandChunksImported.ContainsKey(container.Area) == false)
+                {
+                    this.landChunksToRemove.Add(container.Area);
+                }*/
+            }
+
             List<LandChunkContainer> subChunksAddedList = new List<LandChunkContainer>();
             foreach (LandChunkContainer container in chunksAdded)
             {
@@ -242,20 +257,14 @@ namespace PokeU.Model
                     if (this.currentLoadedLandChunks.ContainsKey(container.Area))
                     {
                         LandChunkContainer landChunkContainer = this.currentLoadedLandChunks[container.Area];
-                        LandChunkContainer landChunkCache = this.landChunksCache.FirstOrDefault(pElem => pElem.Area == container.Area);
+                        ILandChunk landChunkCache = this.landChunksCache.FirstOrDefault(pElem => pElem.Area == container.Area);
                         if (landChunkCache != null)
                         {
                             this.landChunksCache.Remove(landChunkCache);
 
                             container.LandChunk = landChunkContainer.LandChunk;
-
-                            this.currentLoadedLandChunks[container.Area] = container;
-
-                            /*this.pendingLandChunksImported.Add(container.Area, new Tuple<LandChunkContainer, ILandChunk>(container, landChunkContainer.LandChunk));
-
-                            this.currentLoadedLandChunks.Remove(container.Area);*/
-
                             landChunkContainer.LandChunk = null;
+                            this.currentLoadedLandChunks[container.Area] = container;
                         }
                     }
                     else
@@ -266,29 +275,12 @@ namespace PokeU.Model
                 else
                 {
                     this.mainMutex.ReleaseMutex();
-
-                    chunksRemoved.RemoveAll(pElem => pElem.Area.Equals(container.Area));
                 }
 
+                this.landChunksToRemove.Remove(container.Area);
             }
 
             this.landChunkLoader.RequestChunk(subChunksAddedList);
-
-            foreach (LandChunkContainer container in chunksRemoved)
-            {
-                if (container.LandChunk == null
-                    && (this.landChunkLoader.IsLandChunkLoading(container.Area) || this.pendingLandChunksImported.ContainsKey(container.Area) == false))
-                {
-                    this.landChunksToRemove.Add(container);
-                }
-                else if(container.LandChunk != null
-                    && this.currentLoadedLandChunks.ContainsKey(container.Area)
-                    && this.currentLoadedLandChunks[container.Area] == container
-                    && this.landChunksCache.Contains(container) == false)
-                {
-                    this.landChunksToRemove.Add(container);
-                }
-            }
         }
 
         private void OnLandChunkImported(List<Tuple<LandChunkContainer, ILandChunk>> containersImported)
@@ -307,7 +299,7 @@ namespace PokeU.Model
         {
             this.UpdateLandChunks();
 
-
+            // Next update.
         }
 
         private void UpdateLandChunks()
@@ -319,7 +311,7 @@ namespace PokeU.Model
             this.mainMutex.ReleaseMutex();
 
             List<ILandChunk> realLandChunksToRemove = new List<ILandChunk>();
-            List<LandChunkContainer> firstLandChunksToRemove = this.landChunksToRemove.ToList();
+            List<IntRect> firstLandChunksToRemove = this.landChunksToRemove.ToList();
             HashSet<ILandChunk> realLandChunksToImport = new HashSet<ILandChunk>();
 
             foreach (Tuple<LandChunkContainer, ILandChunk> tupleImported in tuplesImported)
@@ -338,29 +330,42 @@ namespace PokeU.Model
             }
 
 
-            foreach (LandChunkContainer containerToRemove in firstLandChunksToRemove)
+            foreach (IntRect areaToRemove in firstLandChunksToRemove)
             {
-                if (this.currentLoadedLandChunks.ContainsKey(containerToRemove.Area))
+                if (this.currentLoadedLandChunks.ContainsKey(areaToRemove))
                 {
-                    this.landChunksCache.Add(this.currentLoadedLandChunks[containerToRemove.Area]);
+                    LandChunkContainer containerToRemove = this.currentLoadedLandChunks[areaToRemove];
+
+                    ILandChunk landChunkToRemove;
+
+                    this.landChunksCache.Add(containerToRemove.LandChunk);
                     if (this.landChunksCache.Count > NB_MAX_CACHE_CHUNK)
                     {
-                        ILandChunk landChunkFront = this.landChunksCache.ElementAt(0).LandChunk;
+                        ILandChunk landChunkFront = this.landChunksCache.ElementAt(0);
                         this.landChunksCache.RemoveAt(0);
 
                         this.currentLoadedLandChunks.Remove(landChunkFront.Area);
 
-                        if (realLandChunksToImport.Contains(landChunkFront))
+                        landChunkToRemove = landChunkFront;
+                    }
+                    else
+                    {
+                        landChunkToRemove = null;
+                    }
+
+                    this.landChunksToRemove.Remove(containerToRemove.LandChunk.Area);
+
+                    if (landChunkToRemove != null)
+                    {
+                        if (realLandChunksToImport.Contains(landChunkToRemove))
                         {
-                            realLandChunksToImport.Remove(landChunkFront);
+                            realLandChunksToImport.Remove(landChunkToRemove);
                         }
                         else
                         {
-                            realLandChunksToRemove.Add(landChunkFront);
+                            realLandChunksToRemove.Add(landChunkToRemove);
                         }
                     }
-
-                    this.landChunksToRemove.Remove(containerToRemove);
                 }
             }
 

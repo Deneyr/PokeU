@@ -34,7 +34,7 @@ namespace PokeU.Model.GroundObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    this.GetLandType(altitudeLandLayerGenerator, area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
+                    this.GetComputedLandType(altitudeLandLayerGenerator, area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
 
                     GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, 0, landType);
                     groundLandLayer.AddLandObject(groundLandObject, i, j);
@@ -77,7 +77,7 @@ namespace PokeU.Model.GroundObject
             return landType;
         }
 
-        private void GetLandType(
+        private void GetComputedLandType(
             ALandLayerGenerator altitudeLandLayerGenerato,
             IntRect area,
             int i, int j,
@@ -94,7 +94,7 @@ namespace PokeU.Model.GroundObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    float power = altitudeLandLayerGenerato.GetPowerAt(new Vector2f(area.Left + j + x, area.Top + i + y));
+                    float power = altitudeLandLayerGenerato.GetComputedPowerAt(j + x, i + y);
 
                     int currentValue = (int)this.GetLandTypeFromPower(power);
 

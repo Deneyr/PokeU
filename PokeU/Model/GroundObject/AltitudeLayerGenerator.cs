@@ -32,7 +32,7 @@ namespace PokeU.Model.GroundObject
             this.AddEpicenterLayer(16, DigressionMethod.LINEAR, 50, 5, 3);
         }
 
-        public override float GetPowerAt(Vector2f position)
+        protected override float GetPowerAt(Vector2f position)
         {
             float powerResult = base.GetPowerAt(position);
 
@@ -53,11 +53,11 @@ namespace PokeU.Model.GroundObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    int altitude = (int)this.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
+                    int altitude = this.GetComputedPowerAt(j, i);
 
-                    this.GetLandType(area, i, j, out LandTransition landTransition);
+                    this.GetComputedLandType(area, i, j, out LandTransition landTransition);
 
-                    if (landTransition != LandTransition.NONE)
+                    if (landTransition != LandTransition.NONE && landTransition != LandTransition.WHOLE)
                     {
                         AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, 0, LandType.GRASS);
                         altitudeLandLayer.AddLandObject(altitudeLandObject, i, j);
@@ -70,7 +70,7 @@ namespace PokeU.Model.GroundObject
             return altitudeLandLayer;
         }
 
-        private void GetLandType(
+        protected int GetComputedLandType(
             IntRect area,
             int i, int j,
             out LandTransition landtransition)
@@ -84,7 +84,7 @@ namespace PokeU.Model.GroundObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    int altitude = (int)this.GetPowerAt(new Vector2f(area.Left + j + x, area.Top + i + y));
+                    int altitude = this.GetComputedPowerAt(j + x, i + y);
 
                     maxValue = Math.Max(maxValue, altitude);
 
@@ -115,6 +115,12 @@ namespace PokeU.Model.GroundObject
 
                 landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
             }
+
+            if (landtransition == LandTransition.WHOLE)
+            {
+                return maxValue;
+            }
+            return subAreaInt[1, 1];
         }
     }
 }
