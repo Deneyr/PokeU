@@ -9,6 +9,11 @@ namespace PokeU.Model
 {
     public interface ILandLayer: IObject
     {
+        HashSet<Type> TypesInLayer
+        {
+            get;
+        }
+
         int AltitudeMin
         {
             get;
@@ -19,8 +24,10 @@ namespace PokeU.Model
             get;
         }
 
-        void AddLandObject(ILandObject landObject, int i, int j);
+        void InitializeLandCase(int i, int j, int z);
 
-        ILandObject GetLandObjectAtCoord(int i, int j, int z);
+        LandCase GetLandCase(int i, int j, int z);
+
+        void AddTypeInLayer(Type type);
     }
 }

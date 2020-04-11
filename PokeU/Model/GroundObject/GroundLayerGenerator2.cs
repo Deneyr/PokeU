@@ -40,15 +40,25 @@ namespace PokeU.Model.GroundObject
                 {
                     this.GetLandType(area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
 
-                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, (int) altitudeLandLayerGenerator.GetComputedPowerAt(j, i), landType);
-                    groundLandLayer.AddLandObject(groundLandObject, i, j);
+                    int altitude = altitudeLandLayerGenerator.GetComputedPowerAt(j, i);
+                    LandCase landCase = groundLandLayer.GetLandCase(i, j, altitude);
 
-                    if(secondType != landType)
+                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
+
+                    groundLandLayer.InitializeLandCase(i, j, altitude);
+                    landCase.AddLandGround(groundLandObject);
+
+                    if (secondType != landType)
                     {
-                        groundLandObject.SetSecondLandType(secondType, landTransition);
+                        GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
+                        secondGroundLandObject.SetTransition(landTransition);
+
+                        landCase.AddLandGround(secondGroundLandObject);
                     }
                 }
             }
+
+            groundLandLayer.AddTypeInLayer(typeof(GroundLandObject));
 
             return groundLandLayer;
         }

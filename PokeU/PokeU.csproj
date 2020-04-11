@@ -66,7 +66,13 @@
     <Compile Include="LandGenerator\EpicenterData\EpicenterLayer.cs" />
     <Compile Include="LandGenerator\EpicenterData\WorldGenerator.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="Model\LandCase.cs" />
     <Compile Include="Model\LandChunk.cs" />
+    <Compile Include="Model\LandInterface\ILandGround.cs" />
+    <Compile Include="Model\LandInterface\ILandOverGround.cs" />
+    <Compile Include="Model\LandInterface\ILandOverWall.cs" />
+    <Compile Include="Model\LandInterface\ILandWall.cs" />
+    <Compile Include="Model\LandInterface\ILandWater.cs" />
     <Compile Include="Model\LandLayer.cs" />
     <Compile Include="Model\ALandObject.cs" />
     <Compile Include="Model\GroundObject\GroundLayerGenerator.cs" />
@@ -92,6 +98,8 @@
     <Compile Include="View\IObject2DFactory.cs" />
     <Compile Include="View\ILandObject2D.cs" />
     <Compile Include="View\IObject2D.cs" />
+    <Compile Include="View\LandCase2D.cs" />
+    <Compile Include="View\LandCase2DFactory.cs" />
     <Compile Include="View\LandChunk2D.cs" />
     <Compile Include="View\LandChunk2DFactory.cs" />
     <Compile Include="View\LandWorld2D.cs" />

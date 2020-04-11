@@ -66,31 +66,57 @@ namespace PokeU.View.ResourcesManager
             else
             {
                 HashSet<string> resourcesPath = new HashSet<string>();
-                HashSet<ILandObject> objects = new HashSet<ILandObject>();
 
-                List<ILandObject>[,] landObjects = landChunk.GetLandObjectsAtAltitude(altitudeRect.Width);
+                LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(altitudeRect.Width);
 
-                for (int i = 0; i < landChunk.Area.Height; i++)
+                HashSet<Type> landObjectTypes = landChunk.TypesInChunk;
+
+                //HashSet<Type> landObjectTypes = new HashSet<Type>();
+                //for (int i = 0; i < landChunk.Area.Height; i++)
+                //{
+                //    for (int j = 0; j < landChunk.Area.Width; j++)
+                //    {
+                //        //if (landObjects[i, j] != null)
+                //        //{
+                //        //    foreach (ILandObject landObject in landObjects[i, j])
+                //        //    {
+                //        //        if (objects.Contains(landObject) == false)
+                //        //        {
+                //        //            IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
+
+                //        //            foreach (string path in resources)
+                //        //            {
+                //        //                resourcesPath.Add(path);
+                //        //            }
+
+                //        //            objects.Add(landObject);
+                //        //        }
+                //        //    }
+                //        //}
+
+                //        if(landCases[i, j].IsValid)
+                //        {
+                //            //landCases[i, j].AppendTypes(landObjectTypes);
+
+                //            List<ILandObject> objectList = landCases[i, j].GetLandObjects();
+
+                //            foreach(ILandObject landObject in objectList)
+                //            {
+                //                IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
+
+                //                resourcesPath.UnionWith(resources);
+                //            }
+                //        }
+                //    }
+                //}
+
+                foreach(Type type in landObjectTypes)
                 {
-                    for (int j = 0; j < landChunk.Area.Width; j++)
+                    IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[type].Resources.Keys;
+
+                    foreach (string path in resources)
                     {
-                        if (landObjects[i, j] != null)
-                        {
-                            foreach (ILandObject landObject in landObjects[i, j])
-                            {
-                                if (objects.Contains(landObject) == false)
-                                {
-                                    IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
-
-                                    foreach (string path in resources)
-                                    {
-                                        resourcesPath.Add(path);
-                                    }
-
-                                    objects.Add(landObject);
-                                }
-                            }
-                        }
+                        resourcesPath.Add(path);
                     }
                 }
 

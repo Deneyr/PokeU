@@ -33,18 +33,29 @@ namespace PokeU.Model.GroundObject
             for (int i = 0; i < area.Height; i++)
             {
                 for (int j = 0; j < area.Width; j++)
-                {
+                {                    
                     this.GetComputedLandType(altitudeLandLayerGenerator, area, i, j, out LandType landType, out LandType secondType, out LandTransition landTransition);
 
-                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, 0, landType);
-                    groundLandLayer.AddLandObject(groundLandObject, i, j);
+                    int altitude = altitudeLandLayerGenerator.GetComputedPowerAt(j, i);
+
+                    groundLandLayer.InitializeLandCase(i, j, altitude);
+                    LandCase landCase = groundLandLayer.GetLandCase(i, j, altitude);
+
+                    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
+
+                    landCase.AddLandGround(groundLandObject);
 
                     if (secondType != landType)
                     {
-                        groundLandObject.SetSecondLandType(secondType, landTransition);
+                        GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, secondType);
+                        secondGroundLandObject.SetTransition(landTransition);
+
+                        landCase.AddLandGroundOverGround(secondGroundLandObject);
                     }
                 }
             }
+
+            groundLandLayer.AddTypeInLayer(typeof(GroundLandObject));
 
             return groundLandLayer;
         }
@@ -78,7 +89,7 @@ namespace PokeU.Model.GroundObject
         }
 
         private void GetComputedLandType(
-            ALandLayerGenerator altitudeLandLayerGenerato,
+            ALandLayerGenerator altitudeLandLayerGenerator,
             IntRect area,
             int i, int j,
             out LandType landType,
@@ -94,7 +105,7 @@ namespace PokeU.Model.GroundObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    float power = altitudeLandLayerGenerato.GetComputedPowerAt(j + x, i + y);
+                    float power = altitudeLandLayerGenerator.GetComputedPowerAt(j + x, i + y);
 
                     int currentValue = (int)this.GetLandTypeFromPower(power);
 

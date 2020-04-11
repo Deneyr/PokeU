@@ -16,9 +16,13 @@ namespace PokeU.View
 
         protected static ZoomAnimationManager zoomAnimationManager;
 
+        protected static RectangleShape filter;
+
         private Sprite sprite;
 
         private List<IAnimation> animationsList;
+
+        private float ratioAltitude;
 
         public Sprite ObjectSprite
         {
@@ -46,11 +50,26 @@ namespace PokeU.View
             }
         }
 
+        public float RatioAltitude
+        {
+            get
+            {
+                return this.ratioAltitude;
+            }
+
+            set
+            {
+                this.ratioAltitude = value;
+            }
+        }
+
         static AObject2D()
         {
             AObject2D.animationManager = new AnimationManager();
 
             AObject2D.zoomAnimationManager = new ZoomAnimationManager();
+
+            AObject2D.filter = new RectangleShape(new Vector2f(MainWindow.MODEL_TO_VIEW, MainWindow.MODEL_TO_VIEW));
         }
 
         public AObject2D()
@@ -58,6 +77,8 @@ namespace PokeU.View
             this.sprite = new Sprite();
 
             this.animationsList = new List<IAnimation>();
+
+            this.ratioAltitude = 0;
         }
 
         protected IntRect GetTransitionTextureCoord(LandTransition landTransition)
@@ -132,6 +153,17 @@ namespace PokeU.View
         public virtual void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
             window.Draw(this.ObjectSprite);
+
+            if (this.RatioAltitude != 0)
+            {
+                byte colorAltitude = (byte)(128 + this.ratioAltitude * 127);
+                byte alpha = (byte)(Math.Abs(this.ratioAltitude) * 200);
+
+                AObject2D.filter.Position = this.ObjectSprite.Position;
+                AObject2D.filter.FillColor = new Color(colorAltitude, colorAltitude, colorAltitude, alpha);
+
+                window.Draw(AObject2D.filter);
+            }
         }
 
         // Part animations.

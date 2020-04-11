@@ -57,20 +57,24 @@ namespace PokeU.Model.GroundObject
 
                     this.GetComputedLandType(area, i, j, out LandTransition landTransition);
 
-                    if (landTransition != LandTransition.NONE && landTransition != LandTransition.WHOLE)
+                    if (landTransition != LandTransition.NONE)
                     {
-                        AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, 0, LandType.GRASS);
-                        altitudeLandLayer.AddLandObject(altitudeLandObject, i, j);
+                        AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, altitude, LandType.GRASS);
+
+                        altitudeLandLayer.InitializeLandCase(i, j, altitude);
+                        altitudeLandLayer.GetLandCase(i, j, altitude).LandWall = altitudeLandObject;
 
                         altitudeLandObject.SetLandTransition(landTransition);
                     }
                 }
             }
 
+            altitudeLandLayer.AddTypeInLayer(typeof(AltitudeLandObject));
+
             return altitudeLandLayer;
         }
 
-        protected int GetComputedLandType(
+        protected void GetComputedLandType(
             IntRect area,
             int i, int j,
             out LandTransition landtransition)
@@ -115,12 +119,6 @@ namespace PokeU.Model.GroundObject
 
                 landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
             }
-
-            if (landtransition == LandTransition.WHOLE)
-            {
-                return maxValue;
-            }
-            return subAreaInt[1, 1];
         }
     }
 }

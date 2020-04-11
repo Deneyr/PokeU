@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PokeU.Model.LandInterface;
 using SFML.System;
 
 namespace PokeU.Model.GroundObject
 {
-    public class GroundLandObject: ALandObject
+    public class GroundLandObject: ALandObject, ILandGround
     {
         private LandType landType;
 
-        private LandType secondLandType;
+        //private LandType secondLandType;
 
         public LandType Type
         {
@@ -21,25 +22,25 @@ namespace PokeU.Model.GroundObject
             }
         }
 
-        public LandType SecondType
-        {
-            get
-            {
-                return this.secondLandType;
-            }
-        }
+        //public LandType SecondType
+        //{
+        //    get
+        //    {
+        //        return this.secondLandType;
+        //    }
+        //}
 
         public GroundLandObject(int positionX, int positionY, int positionZ, LandType landType): 
             base(positionX, positionY, positionZ)
         {
             this.landType = landType;
 
-            this.secondLandType = this.landType;
+            // this.secondLandType = this.landType;
         }
 
-        public void SetSecondLandType(LandType secondLandType, LandTransition landTransition)
+        public void SetTransition(LandTransition landTransition)
         {
-            this.secondLandType = secondLandType;
+            // this.secondLandType = secondLandType;
 
             this.LandTransition = landTransition;
         }

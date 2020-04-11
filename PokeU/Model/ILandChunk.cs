@@ -9,6 +9,11 @@ namespace PokeU.Model
 {
     public interface ILandChunk: IObject
     { 
+        HashSet<Type> TypesInChunk
+        {
+            get;
+        }
+
         IntRect Area
         {
             get;
@@ -24,7 +29,7 @@ namespace PokeU.Model
             get;
         }
 
-        List<ILandObject>[,] GetLandObjectsAtAltitude(int altitude);
+        LandCase[,] GetLandObjectsAtAltitude(int altitude);
 
         ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax);
     }

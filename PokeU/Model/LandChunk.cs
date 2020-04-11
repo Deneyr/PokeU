@@ -9,7 +9,17 @@ namespace PokeU.Model
 {
     public class LandChunk : ILandChunk
     {
-        protected List<List<ILandObject>[,]> landObjectsArray;
+        protected List<LandCase[,]> landObjectsArray;
+
+        protected HashSet<Type> typesInChunk;
+
+        public HashSet<Type> TypesInChunk
+        {
+            get
+            {
+                return this.typesInChunk;
+            }
+        }
 
         public IntRect Area
         {
@@ -33,7 +43,9 @@ namespace PokeU.Model
         {
             this.Area = area;
 
-            this.landObjectsArray = new List<List<ILandObject>[,]>();
+            this.landObjectsArray = new List<LandCase[,]>();
+
+            this.typesInChunk = new HashSet<Type>();
 
             this.AltitudeMin = altitudeMin;
             this.AltitudeMax = altitudeMax;
@@ -41,42 +53,82 @@ namespace PokeU.Model
 
         public void ComputeObjectsArray(List<ILandLayer> landLayerLists)
         {
-            this.landObjectsArray = new List<List<ILandObject>[,]>();
+            this.landObjectsArray = new List<LandCase[,]>();
+
+            this.typesInChunk.Clear();
+            foreach (ILandLayer landLayer in landLayerLists)
+            {
+                this.typesInChunk.UnionWith(landLayer.TypesInLayer);
+            }
 
             for (int z = 0; z < this.AltitudeMax - this.AltitudeMin + 1; z++)
             {
-                List<ILandObject>[,] currentArray = new List<ILandObject>[this.Area.Height, this.Area.Width];
+                LandCase[,] currentArray = new LandCase[this.Area.Height, this.Area.Width];
                 for (int i = 0; i < Area.Height; i++)
                 {
                     for (int j = 0; j < Area.Width; j++)
                     {
-                        List<ILandObject> listLandObject = new List<ILandObject>();
+                        currentArray[i, j] = null;
 
                         foreach (ILandLayer landLayer in landLayerLists)
                         {
-                            ILandObject landObject = landLayer.GetLandObjectAtCoord(i, j, this.AltitudeMin + z);
-                            if (landObject != null)
+                            LandCase landLayerCase = landLayer.GetLandCase(i, j, this.AltitudeMin + z);
+
+                            if (landLayerCase != null)
                             {
-                                listLandObject.Add(landObject);
+                                if(currentArray[i, j] == null)
+                                {
+                                    currentArray[i, j] = new LandCase();
+                                }
+
+                                foreach (ILandObject landGroundOverWallObject in landLayerCase.LandGroundOverWallList)
+                                {
+                                    currentArray[i, j].AddLandGroundOverGround(landGroundOverWallObject);
+                                }
+
+                                if (landLayerCase.LandWater != null)
+                                {
+                                    currentArray[i, j].LandWater = landLayerCase.LandWater;
+                                }
+
+                                if (landLayerCase.LandOverGround != null)
+                                {
+                                    currentArray[i, j].LandOverGround = landLayerCase.LandOverGround;
+                                }
+
+                                if (landLayerCase.LandWall != null)
+                                {
+                                    currentArray[i, j].LandWall = landLayerCase.LandWall;
+                                }
+
+                                if (landLayerCase.LandOverWall != null)
+                                {
+                                    currentArray[i, j].LandOverWall = landLayerCase.LandOverWall;
+                                }
+
+                                foreach (ILandObject landGroundObject in landLayerCase.LandGroundList)
+                                {
+                                    currentArray[i, j].AddLandGround(landGroundObject);
+                                }
                             }
                         }
 
-                        currentArray[i, j] = null;
-                        if (listLandObject.Any())
-                        {
-                            List<ILandObject> copyListObject = listLandObject.ToList();
-                            copyListObject.Reverse();
-                            IEnumerator<ILandObject> copyListObjectEnumerable = copyListObject.GetEnumerator();
+                        //currentArray[i, j] = null;
+                        //if (listLandObject.Any())
+                        //{
+                        //    List<ILandObject> copyListObject = listLandObject.ToList();
+                        //    copyListObject.Reverse();
+                        //    IEnumerator<ILandObject> copyListObjectEnumerable = copyListObject.GetEnumerator();
 
-                            int counter = 0;
-                            while (copyListObjectEnumerable.MoveNext() && copyListObjectEnumerable.Current.LandTransition != LandTransition.NONE)
-                            {
-                                counter++;
-                            }
-                            listLandObject.RemoveRange(0, Math.Max(0, listLandObject.Count - counter - 1));
+                        //    int counter = 0;
+                        //    while (copyListObjectEnumerable.MoveNext() && copyListObjectEnumerable.Current.LandTransition != LandTransition.NONE)
+                        //    {
+                        //        counter++;
+                        //    }
+                        //    listLandObject.RemoveRange(0, Math.Max(0, listLandObject.Count - counter - 1));
 
-                            currentArray[i, j] = listLandObject;
-                        }
+                        //    currentArray[i, j] = listLandObject;
+                        //}
                     }
                 }
 
@@ -84,7 +136,7 @@ namespace PokeU.Model
             }
         }
 
-        public List<ILandObject>[,] GetLandObjectsAtAltitude(int altitude)
+        public LandCase[,] GetLandObjectsAtAltitude(int altitude)
         {
             return this.landObjectsArray[altitude - this.AltitudeMin];
         }
@@ -99,6 +151,8 @@ namespace PokeU.Model
 
                 landChunk.landObjectsArray.Add(this.landObjectsArray[thisIndex]);
             }
+
+            landChunk.typesInChunk = new HashSet<Type>(this.typesInChunk);
 
             return landChunk;
         }

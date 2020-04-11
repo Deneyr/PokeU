@@ -13,7 +13,7 @@ namespace PokeU.View
 {
     public class LandWorld2D
     {
-        public static readonly int LOADED_ALTITUDE_RANGE = 1;
+        public static readonly int LOADED_ALTITUDE_RANGE = 5;
 
         public static readonly Dictionary<Type, IObject2DFactory> MappingObjectModelView;
 
@@ -33,6 +33,7 @@ namespace PokeU.View
             MappingObjectModelView.Add(typeof(AltitudeLandObject), new AltitudeObject2DFactory());
 
             MappingObjectModelView.Add(typeof(LandChunk), new LandChunk2DFactory());
+            MappingObjectModelView.Add(typeof(LandCase), new LandCase2DFactory());
 
             foreach (IObject2DFactory factory in MappingObjectModelView.Values)
             {
@@ -61,6 +62,10 @@ namespace PokeU.View
 
         public void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
+            //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            //sw.Start();
+
             foreach (LandChunk2D landChunk2D in this.landChunksDictionary.Values)
             {
                 FloatRect bounds = new FloatRect(landChunk2D.Position, new SFML.System.Vector2f(landChunk2D.Width, landChunk2D.Height));
@@ -70,6 +75,10 @@ namespace PokeU.View
                     landChunk2D.DrawIn(window, ref boundsView);
                 }
             }
+
+            //sw.Stop();
+
+            //Console.WriteLine("time consume = " + sw.Elapsed);
         }
 
         private void OnChunkAdded(ILandChunk obj)

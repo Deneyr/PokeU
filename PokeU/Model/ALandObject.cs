@@ -40,7 +40,6 @@ namespace PokeU.Model
     public enum LandTransition
     {
         NONE,
-        WHOLE,
         RIGHT,
         LEFT,
         TOP,
@@ -53,5 +52,9 @@ namespace PokeU.Model
         BOT_INT_LEFT,
         TOP_INT_RIGHT,
         BOT_INT_RIGHT,
+
+        // To implement
+        DIAGONAL_RIGHT,
+        DIAGONAL_LEFT
     }
 }

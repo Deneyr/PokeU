@@ -20,6 +20,12 @@ namespace PokeU.View
             get;
         }
 
+        float RatioAltitude
+        {
+            get;
+            set;
+        }
+
         void DrawIn(RenderWindow window, ref FloatRect boundsView);
 
         // Part animations

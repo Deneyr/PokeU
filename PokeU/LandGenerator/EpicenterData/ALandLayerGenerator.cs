@@ -191,12 +191,12 @@ namespace PokeU.LandGenerator.EpicenterData
             {
                 for (int j = 0; j < area.Width + 2; j++)
                 {
-                    this.powerArea[i, j] = this.GetLandType(area, i - 1, j - 1);                 
+                    this.powerArea[i, j] = this.NeedToFillAt(area, i - 1, j - 1);                 
                 }
             }
         }
 
-        private int GetLandType(
+        private int NeedToFillAt(
             IntRect area,
             int i, int j)
         {
@@ -358,7 +358,7 @@ namespace PokeU.LandGenerator.EpicenterData
                 return LandTransition.TOP;
             }
 
-            return LandTransition.WHOLE;
+            return LandTransition.NONE;
             /*
             // Sides check
             if (array[1,0])

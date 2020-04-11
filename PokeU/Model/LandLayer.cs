@@ -11,7 +11,9 @@ namespace PokeU.Model
     {
         protected IntRect area;
 
-        protected List<ILandObject[,]> landObjectsArray;
+        protected List<LandCase[,]> landObjectsArray;
+
+        protected HashSet<Type> typesInLayer;
 
         public LandLayer(int altitudeMin, int altitudeMax, IntRect area)
         {
@@ -21,11 +23,13 @@ namespace PokeU.Model
 
             this.area = area;
 
-            this.landObjectsArray = new List<ILandObject[,]>();
+            this.landObjectsArray = new List<LandCase[,]>();
+
+            this.typesInLayer = new HashSet<Type>();
 
             for(int z = 0; z < altitudeMax - altitudeMin + 1; z++)
             {
-                ILandObject[,] landObjectsArray = new ILandObject[area.Height, area.Width];
+                LandCase[,] landObjectsArray = new LandCase[area.Height, area.Width];
 
                 for (int i = 0; i < landObjectsArray.GetLength(0); i++)
                 {
@@ -36,6 +40,14 @@ namespace PokeU.Model
                 }
 
                 this.landObjectsArray.Add(landObjectsArray);
+            }
+        }
+
+        public HashSet<Type> TypesInLayer
+        {
+            get
+            {
+                return this.typesInLayer;
             }
         }
 
@@ -51,28 +63,27 @@ namespace PokeU.Model
             protected set;
         }
 
-        public void AddLandObject(ILandObject landObject, int i, int j)
+        //public void AddLandObject(ILandObject landObject, int i, int j)
+        //{
+        //    this.landObjectsArray[landObject.Altitude - this.AltitudeMin][i, j] = landObject;
+        //}
+
+        public void InitializeLandCase(int i, int j, int z)
         {
-            this.landObjectsArray[landObject.Altitude - this.AltitudeMin][i, j] = landObject;
+            if (this.landObjectsArray[z - this.AltitudeMin][i, j] == null)
+            {
+                this.landObjectsArray[z - this.AltitudeMin][i, j] = new LandCase();
+            }
         }
 
-        public ILandObject GetLandObjectAtCoord(int i, int j, int z)
+        public LandCase GetLandCase(int i, int j, int z)
         {
             return this.landObjectsArray[z - this.AltitudeMin][i, j];
         }
 
-        /*public virtual ILandLayer GetSubLandLayer(int altitudeMin, int altitudeMax)
+        public void AddTypeInLayer(Type type)
         {
-            LandLayer landLayer = new LandLayer(altitudeMin, altitudeMax, this.area);
-
-            for (int i = 0; i < altitudeMax - altitudeMin; i++)
-            {
-                int thisIndex = i + altitudeMin - this.AltitudeMin;
-
-                landLayer.landObjectsArray.Add(this.landObjectsArray[thisIndex]);
-            }
-
-            return landLayer;
-        }*/
+            this.typesInLayer.Add(type);
+        }
     }
 }

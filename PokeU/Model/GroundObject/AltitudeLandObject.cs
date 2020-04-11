@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PokeU.Model.LandInterface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model.GroundObject
 {
-    public class AltitudeLandObject: ALandObject
+    public class AltitudeLandObject: ALandObject, ILandWall
     {
         private LandType landType;
 
