@@ -159,38 +159,38 @@ namespace PokeU.Model
             }
         }
 
-        public void AppendTypes(HashSet<Type> typeSet)
-        {
-            foreach (ILandObject landGroundOverWallObject in this.landGroundOverWallList)
-            {
-                typeSet.Add(landGroundOverWallObject.GetType());
-            }
+        //public void AppendTypes(HashSet<Type> typeSet)
+        //{
+        //    foreach (ILandObject landGroundOverWallObject in this.landGroundOverWallList)
+        //    {
+        //        typeSet.Add(landGroundOverWallObject.GetType());
+        //    }
 
-            if (this.LandWater != null)
-            {
-                typeSet.Add(this.LandWater.GetType());
-            }
+        //    if (this.LandWater != null)
+        //    {
+        //        typeSet.Add(this.LandWater.GetType());
+        //    }
 
-            if (this.LandOverGround != null)
-            {
-                typeSet.Add(this.LandOverGround.GetType());
-            }
+        //    if (this.LandOverGround != null)
+        //    {
+        //        typeSet.Add(this.LandOverGround.GetType());
+        //    }
 
-            if (this.LandWall != null)
-            {
-                typeSet.Add(this.LandWall.GetType());
-            }
+        //    if (this.LandWall != null)
+        //    {
+        //        typeSet.Add(this.LandWall.GetType());
+        //    }
 
-            if (this.LandOverWall != null)
-            {
-                typeSet.Add(this.LandOverWall.GetType());
-            }
+        //    if (this.LandOverWall != null)
+        //    {
+        //        typeSet.Add(this.LandOverWall.GetType());
+        //    }
 
-            foreach (ILandObject landGroundObject in this.landGroundList)
-            {
-                typeSet.Add(landGroundObject.GetType());
-            }
-        }
+        //    foreach (ILandObject landGroundObject in this.landGroundList)
+        //    {
+        //        typeSet.Add(landGroundObject.GetType());
+        //    }
+        //}
 
         public List<ILandObject> GetLandObjects()
         {

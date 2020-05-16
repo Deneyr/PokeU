@@ -113,22 +113,23 @@ namespace PokeU.Model
                             }
                         }
 
-                        //currentArray[i, j] = null;
-                        //if (listLandObject.Any())
-                        //{
-                        //    List<ILandObject> copyListObject = listLandObject.ToList();
-                        //    copyListObject.Reverse();
-                        //    IEnumerator<ILandObject> copyListObjectEnumerable = copyListObject.GetEnumerator();
+                        if(currentArray[i, j] != null)
+                        {
+                            if (currentArray[i, j].LandGroundOverWallList.Count == 0 
+                                && currentArray[i, j].LandWall != null
+                                && currentArray[i, j].LandGroundList.Count > 0)
+                            {
+                                foreach(ILandObject landObject in currentArray[i, j].LandGroundList)
+                                {
+                                    ILandObject landObjectOverWall = landObject.CreateLandObjectOverWall(currentArray[i, j].LandWall.LandTransition);
 
-                        //    int counter = 0;
-                        //    while (copyListObjectEnumerable.MoveNext() && copyListObjectEnumerable.Current.LandTransition != LandTransition.NONE)
-                        //    {
-                        //        counter++;
-                        //    }
-                        //    listLandObject.RemoveRange(0, Math.Max(0, listLandObject.Count - counter - 1));
-
-                        //    currentArray[i, j] = listLandObject;
-                        //}
+                                    if (landObjectOverWall != null)
+                                    {
+                                        currentArray[i, j].AddLandGroundOverGround(landObjectOverWall);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PokeU.Model;
 using PokeU.View.Animations;
+using PokeU.View.Helpers;
 using SFML.Graphics;
 using SFML.System;
 
@@ -18,7 +19,7 @@ namespace PokeU.View
 
         protected static RectangleShape filter;
 
-        private Sprite sprite;
+        protected Sprite sprite;
 
         private List<IAnimation> animationsList;
 
@@ -147,23 +148,41 @@ namespace PokeU.View
 
         public virtual void Dispose()
         {
-
+            
         }
 
         public virtual void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
+
+            if (this.RatioAltitude < 0)
+            {
+                byte colorAltitude = (byte)(127 + 128 + this.ratioAltitude * 128);
+
+                this.ObjectSprite.Color = new Color(colorAltitude, colorAltitude, colorAltitude, this.ObjectSprite.Color.A);
+            }
+            else if(this.RatioAltitude > 0)
+            {
+                byte colorAltitude = (byte)(127 + 128 - this.ratioAltitude * 128);
+
+                this.ObjectSprite.Color = new Color(colorAltitude, colorAltitude, colorAltitude, this.ObjectSprite.Color.A);
+            }
+            else
+            {
+                this.ObjectSprite.Color = new Color(255, 255, 255, this.ObjectSprite.Color.A);
+            }
+
             window.Draw(this.ObjectSprite);
 
-            if (this.RatioAltitude != 0)
-            {
-                byte colorAltitude = (byte)(128 + this.ratioAltitude * 127);
-                byte alpha = (byte)(Math.Abs(this.ratioAltitude) * 200);
+            //if (this.RatioAltitude != 0)
+            //{
+            //    byte colorAltitude = (byte)(128 + this.ratioAltitude * 127);
+            //    byte alpha = (byte)(Math.Abs(this.ratioAltitude) * 200);
 
-                AObject2D.filter.Position = this.ObjectSprite.Position;
-                AObject2D.filter.FillColor = new Color(colorAltitude, colorAltitude, colorAltitude, alpha);
+            //    AObject2D.filter.Position = this.ObjectSprite.Position;
+            //    AObject2D.filter.FillColor = new Color(colorAltitude, colorAltitude, colorAltitude, alpha);
 
-                window.Draw(AObject2D.filter);
-            }
+            //    window.Draw(AObject2D.filter);
+            //}
         }
 
         // Part animations.
@@ -203,7 +222,7 @@ namespace PokeU.View
             AObject2D.zoomAnimationManager.Run(deltaTime);
         }
 
-        public void SetCanevas(IntRect newCanevas)
+        public virtual void SetCanevas(IntRect newCanevas)
         {
             this.sprite.TextureRect = newCanevas;
         }

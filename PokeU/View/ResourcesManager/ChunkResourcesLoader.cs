@@ -10,58 +10,47 @@ namespace PokeU.View.ResourcesManager
 {
     public class ChunkResourcesLoader
     {
-        private static readonly int NB_MAX_CACHE_ALTITUDE = 0;
+        private static readonly int NB_MAX_CACHE_CHUNKS = 0;
 
-        private HashSet<IntRect> loadedAltitudes;
+        private HashSet<IntRect> loadedChunks;
 
-        private List<IntRect> altitudesInCache;
+        private List<IntRect> chunksInCache;
 
-        private Dictionary<string, HashSet<IntRect>> pathToAltitudesDictionary;
+        private Dictionary<string, HashSet<IntRect>> pathToChunksDictionary;
 
-        private Dictionary<IntRect, HashSet<string>> altitudesToPathsDictionary;
+        private Dictionary<IntRect, HashSet<string>> chunksToPathsDictionary;
 
 
         public ChunkResourcesLoader()
         {
-            this.pathToAltitudesDictionary = new Dictionary<string, HashSet<IntRect>>();
+            this.pathToChunksDictionary = new Dictionary<string, HashSet<IntRect>>();
 
-            this.altitudesToPathsDictionary = new Dictionary<IntRect, HashSet<string>>();
+            this.chunksToPathsDictionary = new Dictionary<IntRect, HashSet<string>>();
 
-            this.loadedAltitudes = new HashSet<IntRect>();
+            this.loadedChunks = new HashSet<IntRect>();
 
-            this.altitudesInCache = new List<IntRect>();
+            this.chunksInCache = new List<IntRect>();
 
 
         }
 
         public void LoadChunkResources(LandWorld2D world, ILandChunk landChunk)
         {
-            for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
+            /*for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
             {
                 this.LoadAltitudeResources(world, landChunk, i);
-            }
-        }
+            }*/
 
-        public void UnloadChunkResources(LandWorld2D world, ILandChunk landChunk)
-        {
-            for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
+            IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, 0, 0);
+
+            if (this.loadedChunks.Contains(altitudeRect))
             {
-                this.UnloadAltitudeResources(world, landChunk, i);
-            }
-        }
-
-        public void LoadAltitudeResources(LandWorld2D world, ILandChunk landChunk, int altitude)
-        {
-            IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, altitude, altitude);
-
-            if (this.loadedAltitudes.Contains(altitudeRect))
-            {
-                throw new Exception("Try to load an already loaded altitude");
+                throw new Exception("Try to load an already loaded chunk");
             }
 
-            if (altitudesInCache.Contains(altitudeRect))
+            if (chunksInCache.Contains(altitudeRect))
             {
-                altitudesInCache.Remove(altitudeRect);
+                chunksInCache.Remove(altitudeRect);
             }
             else
             {
@@ -71,46 +60,7 @@ namespace PokeU.View.ResourcesManager
 
                 HashSet<Type> landObjectTypes = landChunk.TypesInChunk;
 
-                //HashSet<Type> landObjectTypes = new HashSet<Type>();
-                //for (int i = 0; i < landChunk.Area.Height; i++)
-                //{
-                //    for (int j = 0; j < landChunk.Area.Width; j++)
-                //    {
-                //        //if (landObjects[i, j] != null)
-                //        //{
-                //        //    foreach (ILandObject landObject in landObjects[i, j])
-                //        //    {
-                //        //        if (objects.Contains(landObject) == false)
-                //        //        {
-                //        //            IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
-
-                //        //            foreach (string path in resources)
-                //        //            {
-                //        //                resourcesPath.Add(path);
-                //        //            }
-
-                //        //            objects.Add(landObject);
-                //        //        }
-                //        //    }
-                //        //}
-
-                //        if(landCases[i, j].IsValid)
-                //        {
-                //            //landCases[i, j].AppendTypes(landObjectTypes);
-
-                //            List<ILandObject> objectList = landCases[i, j].GetLandObjects();
-
-                //            foreach(ILandObject landObject in objectList)
-                //            {
-                //                IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[landObject.GetType()].Resources.Keys;
-
-                //                resourcesPath.UnionWith(resources);
-                //            }
-                //        }
-                //    }
-                //}
-
-                foreach(Type type in landObjectTypes)
+                foreach (Type type in landObjectTypes)
                 {
                     IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[type].Resources.Keys;
 
@@ -123,58 +73,63 @@ namespace PokeU.View.ResourcesManager
                 HashSet<string> realResourcesToLoad = new HashSet<string>();
                 foreach (string path in resourcesPath)
                 {
-                    if (this.pathToAltitudesDictionary.ContainsKey(path) == false)
+                    if (this.pathToChunksDictionary.ContainsKey(path) == false)
                     {
-                        this.pathToAltitudesDictionary.Add(path, new HashSet<IntRect>());
+                        this.pathToChunksDictionary.Add(path, new HashSet<IntRect>());
 
                         realResourcesToLoad.Add(path);
                     }
 
-                    this.pathToAltitudesDictionary[path].Add(altitudeRect);
+                    this.pathToChunksDictionary[path].Add(altitudeRect);
                 }
 
-                this.altitudesToPathsDictionary.Add(altitudeRect, resourcesPath);
+                this.chunksToPathsDictionary.Add(altitudeRect, resourcesPath);
 
                 if (realResourcesToLoad.Any())
                 {
                     LandWorld2D.TextureManager.LoadTextures(realResourcesToLoad);
                 }
             }
-            loadedAltitudes.Add(altitudeRect);
+            loadedChunks.Add(altitudeRect);
         }
 
-        public void UnloadAltitudeResources(LandWorld2D world, ILandChunk landChunk, int altitude)
+        public void UnloadChunkResources(LandWorld2D world, ILandChunk landChunk)
         {
-            IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, altitude, altitude);
-
-            if (this.loadedAltitudes.Contains(altitudeRect) == false)
+            /*for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
             {
-                throw new Exception("Try to unload a not loaded altitude");
+                this.UnloadAltitudeResources(world, landChunk, i);
+            }*/
+
+            IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, 0, 0);
+
+            if (this.loadedChunks.Contains(altitudeRect) == false)
+            {
+                throw new Exception("Try to unload a not loaded chunk");
             }
 
-            this.altitudesInCache.Add(altitudeRect);
+            this.chunksInCache.Add(altitudeRect);
 
-            if(this.altitudesInCache.Count > NB_MAX_CACHE_ALTITUDE)
+            if (this.chunksInCache.Count > NB_MAX_CACHE_CHUNKS)
             {
-                IntRect altitudeToRemove = this.altitudesInCache.First();
-                this.altitudesInCache.RemoveAt(0);
+                IntRect altitudeToRemove = this.chunksInCache.First();
+                this.chunksInCache.RemoveAt(0);
 
-                HashSet<string> pathsAltitudeToRemove = this.altitudesToPathsDictionary[altitudeToRemove];
+                HashSet<string> pathsAltitudeToRemove = this.chunksToPathsDictionary[altitudeToRemove];
                 HashSet<string> pathsToRemove = new HashSet<string>();
 
-                foreach(string path in pathsAltitudeToRemove)
+                foreach (string path in pathsAltitudeToRemove)
                 {
-                    HashSet<IntRect> altitudes = this.pathToAltitudesDictionary[path];
+                    HashSet<IntRect> altitudes = this.pathToChunksDictionary[path];
                     altitudes.Remove(altitudeRect);
 
                     if (altitudes.Any() == false)
                     {
                         pathsToRemove.Add(path);
-                        this.pathToAltitudesDictionary.Remove(path);
+                        this.pathToChunksDictionary.Remove(path);
                     }
                 }
 
-                this.altitudesToPathsDictionary.Remove(altitudeToRemove);
+                this.chunksToPathsDictionary.Remove(altitudeToRemove);
 
                 if (pathsToRemove.Any())
                 {
@@ -182,7 +137,7 @@ namespace PokeU.View.ResourcesManager
                 }
             }
 
-            this.loadedAltitudes.Remove(altitudeRect);
+            this.loadedChunks.Remove(altitudeRect);
         }
     }
 }

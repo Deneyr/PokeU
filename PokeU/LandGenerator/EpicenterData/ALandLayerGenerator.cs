@@ -249,7 +249,7 @@ namespace PokeU.LandGenerator.EpicenterData
 
         public abstract ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude);
 
-        protected virtual float GetPowerAt(Vector2f position)
+        public virtual float GetPowerAt(Vector2f position)
         {
             float powerResult = 0;
 

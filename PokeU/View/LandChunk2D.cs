@@ -73,21 +73,18 @@ namespace PokeU.View
                 {
                     for (int j = 0; j < landChunk.Area.Width; j++)
                     {
-                        //if (landCases[i, j].IsValid)
-                        //{
-                        //    //foreach (ILandObject landObject in landCases[i, j])
-                        //    //{
-                        //    //    ILandObject2D landObject2D = LandWorld2D.MappingObjectModelView[landObject.GetType()].CreateObject2D(landWorld2D, landObject) as ILandObject2D;
-
-                        //    //    listLandObject2Ds.Add(landObject2D);
-                        //    //}
-
-                        //    landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase2D)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
-                        //}
-
                         if (landCases[i, j] != null)
                         {
                             landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
+
+                            if (z + this.altitudeMin < this.altitudeMax)
+                            {
+                                landObject2Ds[i, j].UpdateOverLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z + 1)[i, j]);
+                            }
+                            if (z > 0)
+                            {
+                                landObject2Ds[i, j].UpdateUnderLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z - 1)[i, j]);
+                            }
 
                             landObject2Ds[i, j].SetLandCaseRatio(this.altitudeMin + z, LandWorld2D.LOADED_ALTITUDE_RANGE);
                         }
@@ -134,8 +131,6 @@ namespace PokeU.View
 
                             if (landObjectsList != null)
                             {
-                                landObjectsList.DrawOnlyWall = firstCaseDrawn;
-
                                 landObjectsList.DrawIn(window, ref boundsView);
 
                                 firstCaseDrawn = landObjectsList.IsValid;

@@ -32,7 +32,7 @@ namespace PokeU.Model.GroundObject
             this.AddEpicenterLayer(16, DigressionMethod.LINEAR, 50, 5, 3);
         }
 
-        protected override float GetPowerAt(Vector2f position)
+        public override float GetPowerAt(Vector2f position)
         {
             float powerResult = base.GetPowerAt(position);
 
@@ -53,18 +53,30 @@ namespace PokeU.Model.GroundObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    int altitude = this.GetComputedPowerAt(j, i);
+                    //int altitude = this.GetComputedPowerAt(j, i);
 
-                    this.GetComputedLandType(area, i, j, out LandTransition landTransition);
+                    int[,] subAreaInt = new int[3, 3];
+                    int maxLocalAltitude = int.MinValue;
 
-                    if (landTransition != LandTransition.NONE)
+                    maxLocalAltitude = this.GetComputedMatrix(i, j, ref subAreaInt);
+
+                    int diffAltitude = maxLocalAltitude - subAreaInt[1, 1];
+
+                    for (int offset = 0; offset < diffAltitude; offset++)
                     {
-                        AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, altitude, LandType.GRASS);
+                        this.GetComputedLandType(area, ref subAreaInt, maxLocalAltitude, out LandTransition landTransition);
 
-                        altitudeLandLayer.InitializeLandCase(i, j, altitude);
-                        altitudeLandLayer.GetLandCase(i, j, altitude).LandWall = altitudeLandObject;
+                        if (landTransition != LandTransition.NONE)
+                        {
+                            AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, subAreaInt[1, 1], LandType.GRASS);
 
-                        altitudeLandObject.SetLandTransition(landTransition);
+                            altitudeLandLayer.InitializeLandCase(i, j, subAreaInt[1, 1]);
+                            altitudeLandLayer.GetLandCase(i, j, subAreaInt[1, 1]).LandWall = altitudeLandObject;
+
+                            altitudeLandObject.SetLandTransition(landTransition);
+                        }
+
+                        subAreaInt[1, 1]++;
                     }
                 }
             }
@@ -74,16 +86,11 @@ namespace PokeU.Model.GroundObject
             return altitudeLandLayer;
         }
 
-        protected void GetComputedLandType(
-            IntRect area,
-            int i, int j,
-            out LandTransition landtransition)
+        protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)
         {
-            bool[,] subAreaBool = new bool[3, 3];
-            int[,] subAreaInt = new int[3, 3];
-
             int maxValue = int.MinValue;
             int minValue = int.MaxValue;
+
             for (int y = -1; y < 2; y++)
             {
                 for (int x = -1; x < 2; x++)
@@ -98,9 +105,20 @@ namespace PokeU.Model.GroundObject
                 }
             }
 
+            return maxValue;
+        }
+
+        protected void GetComputedLandType(
+            IntRect area,
+            ref int[,] subAreaInt,
+            int maxValue,
+            out LandTransition landtransition)
+        {
+            bool[,] subAreaBool = new bool[3, 3];
+
             landtransition = LandTransition.NONE;
 
-            if (subAreaInt[1, 1] != maxValue)
+            if (subAreaInt[1, 1] < maxValue)
             {
                 for (int y = 0; y < 3; y++)
                 {

@@ -22,11 +22,8 @@ namespace PokeU.View
 
         private List<ILandObject2D> landGroundList;
 
-        public bool DrawOnlyWall
-        {
-            get;
-            set;
-        }
+        private LandCaseData underLandCaseData;
+        private LandCaseData overLandCaseData;
 
         public LandCase2D(LandWorld2D landWorld2D, LandCase landCase)
         {
@@ -42,8 +39,8 @@ namespace PokeU.View
 
             this.landGroundList = new List<ILandObject2D>();
 
-            this.DrawOnlyWall = false;
-
+            this.underLandCaseData = new LandCaseData(false, false);
+            this.overLandCaseData = new LandCaseData(false, false);
 
             foreach (ILandObject landGroundObject in landCase.LandGroundList)
             {
@@ -91,6 +88,22 @@ namespace PokeU.View
 
                     this.landOverWall = landObject2D;
                 }
+            }
+        }
+
+        public void UpdateUnderLandCase(LandCase underLandCase)
+        {
+            if (underLandCase != null)
+            {
+                this.underLandCaseData = new LandCaseData(underLandCase.LandWall != null, underLandCase.LandWater != null);
+            }
+        }
+
+        public void UpdateOverLandCase(LandCase overLandeCase)
+        {
+            if (overLandeCase != null)
+            {
+                this.overLandCaseData = new LandCaseData(overLandeCase.LandWall != null, overLandeCase.LandWater != null);
             }
         }
 
@@ -152,7 +165,7 @@ namespace PokeU.View
         {
             if (this.IsValid)
             {
-                if (this.DrawOnlyWall == false)
+                if (this.underLandCaseData.IsThereWall == false)
                 {
                     foreach (ILandObject2D landGroundObject in this.landGroundList)
                     {
@@ -167,15 +180,30 @@ namespace PokeU.View
                     this.landOverGround.DrawIn(window, ref boundsView);
                 }
 
-                foreach (ILandObject2D landGroundOverWallObject in this.landGroundOverWallList)
+                if (this.overLandCaseData.IsThereWater == false || this.RatioAltitude == 0)
                 {
-                    landGroundOverWallObject.DrawIn(window, ref boundsView);
+                    if (this.landWater != null)
+                    {
+                        this.landWater.DrawIn(window, ref boundsView);
+                    }
                 }
 
-                if (this.landWater != null)
+                if (this.landWall != null
+                    && this.overLandCaseData.IsThereWall == false)
                 {
-                    this.landWater.DrawIn(window, ref boundsView);
+                    foreach (ILandObject2D landGroundOverWallObject in this.landGroundOverWallList)
+                    {
+                        landGroundOverWallObject.DrawIn(window, ref boundsView);
+                    }
                 }
+
+                //if (this.overLandCaseData.IsThereWater == false || this.RatioAltitude == 0)
+                //{
+                //    if (this.landWater != null)
+                //    {
+                //        this.landWater.DrawIn(window, ref boundsView);
+                //    }
+                //}
 
                 if (this.landWall != null)
                 {
@@ -222,6 +250,29 @@ namespace PokeU.View
             }
 
             base.Dispose();
+        }
+
+
+        public struct LandCaseData
+        {
+            public LandCaseData(bool isThereWall, bool isThereWater)
+            {
+                this.IsThereWall = isThereWall;
+
+                this.IsThereWater = isThereWater;
+            }
+
+            public bool IsThereWall
+            {
+                get;
+                private set;
+            }
+
+            public bool IsThereWater
+            {
+                get;
+                private set;
+            }
         }
     }
 }

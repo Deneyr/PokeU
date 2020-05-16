@@ -30,5 +30,19 @@ namespace PokeU.Model.GroundObject
         {
             this.LandTransition = landTransition;
         }
+
+        public override ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition)
+        {
+            LandTransition landTransitionOverWall = this.GetLandTransitionOverWall(wallLandTransition);
+
+            if (landTransitionOverWall != LandTransition.NONE)
+            {
+                AltitudeLandObject altitudeLandObject = new AltitudeLandObject(this.Position.X, this.Position.Y, this.Altitude, this.landType);
+                altitudeLandObject.SetLandTransition(landTransitionOverWall);
+
+                return altitudeLandObject;
+            }
+            return null;
+        }
     }
 }

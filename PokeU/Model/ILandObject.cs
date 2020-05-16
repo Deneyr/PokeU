@@ -24,5 +24,6 @@ namespace PokeU.Model
             get;
         }
 
+        ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition);
     }
 }

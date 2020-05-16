@@ -12,8 +12,6 @@ namespace PokeU.Model.GroundObject
     {
         private LandType landType;
 
-        //private LandType secondLandType;
-
         public LandType Type
         {
             get
@@ -21,28 +19,29 @@ namespace PokeU.Model.GroundObject
                 return this.landType;
             }
         }
-
-        //public LandType SecondType
-        //{
-        //    get
-        //    {
-        //        return this.secondLandType;
-        //    }
-        //}
-
         public GroundLandObject(int positionX, int positionY, int positionZ, LandType landType): 
             base(positionX, positionY, positionZ)
         {
             this.landType = landType;
-
-            // this.secondLandType = this.landType;
         }
 
         public void SetTransition(LandTransition landTransition)
         {
-            // this.secondLandType = secondLandType;
-
             this.LandTransition = landTransition;
+        }
+
+        public override ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition)
+        {
+            LandTransition landTransitionOverWall = this.GetLandTransitionOverWall(wallLandTransition);
+
+            if (landTransitionOverWall != LandTransition.NONE)
+            {
+                GroundLandObject groundLandObject = new GroundLandObject(this.Position.X, this.Position.Y, this.Altitude, this.landType);
+                groundLandObject.SetTransition(landTransitionOverWall);
+
+                return groundLandObject;
+            }
+            return null;
         }
     }
 
