@@ -25,6 +25,8 @@ namespace PokeU.View
 
         private ChunkResourcesLoader chunkResourcesLoader;
 
+        private int currentAltitude;
+
         static LandWorld2D()
         {
             TextureManager = new TextureManager();
@@ -51,7 +53,7 @@ namespace PokeU.View
 
             this.chunkResourcesLoader = new ChunkResourcesLoader();
 
-            this.CurrentAltitude = 0;
+            this.currentAltitude = 0;
 
             landWorld.ChunkAdded += OnChunkAdded;
             landWorld.ChunkRemoved += OnChunkRemoved;
@@ -59,8 +61,21 @@ namespace PokeU.View
 
         public int CurrentAltitude
         {
-            get;
-            protected set;
+            get
+            {
+                return this.currentAltitude;
+            }
+            set
+            {
+                int trueCurrentAltitude = 0;
+
+                foreach(KeyValuePair<ILandChunk, LandChunk2D> landChunkPair in this.landChunksDictionary)
+                {
+                    trueCurrentAltitude = landChunkPair.Value.UpdateCurrentAltitude(this, landChunkPair.Key, value);
+                }
+
+                this.currentAltitude = trueCurrentAltitude;
+            }
         }
 
         public void DrawIn(RenderWindow window, ref FloatRect boundsView)

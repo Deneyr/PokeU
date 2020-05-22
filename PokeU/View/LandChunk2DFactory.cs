@@ -13,7 +13,7 @@ namespace PokeU.View
         {
             ILandChunk landChunk = obj as ILandChunk;
 
-            return new LandChunk2D(landWorld2D, landChunk, landWorld2D.CurrentAltitude - LandWorld2D.LOADED_ALTITUDE_RANGE, landWorld2D.CurrentAltitude + LandWorld2D.LOADED_ALTITUDE_RANGE);
+            return new LandChunk2D(landWorld2D, landChunk);
         }
     }
 }

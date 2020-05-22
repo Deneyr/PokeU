@@ -49,11 +49,11 @@ namespace PokeU.View
             }
         }
 
-        public LandChunk2D(LandWorld2D landWorld2D, ILandChunk landChunk, int altitudeMin, int altitudeMax)
+        public LandChunk2D(LandWorld2D landWorld2D, ILandChunk landChunk)
         {
-            this.altitudeMin = Math.Max(landChunk.AltitudeMin, altitudeMin);
+            this.altitudeMin = int.MaxValue;
 
-            this.altitudeMax = Math.Min(landChunk.AltitudeMax, altitudeMax);
+            this.altitudeMax = int.MinValue;
 
             this.Width = landChunk.Area.Width;
 
@@ -61,44 +61,124 @@ namespace PokeU.View
 
             this.landObjects2DLayers = new List<LandCase2D[,]>();
 
-            for(int z = 0; z < this.altitudeMax - this.altitudeMin + 1; z++)
-            {
-                List<IObject2D> listobject2Ds = new List<IObject2D>();
+            this.UpdateCurrentAltitude(landWorld2D, landChunk, landWorld2D.CurrentAltitude);
 
-                LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z);
+            //for(int z = 0; z < this.altitudeMax - this.altitudeMin + 1; z++)
+            //{
+            //    List<IObject2D> listobject2Ds = new List<IObject2D>();
+
+            //    LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z);
+            //    LandCase2D[,] landObject2Ds = new LandCase2D[landChunk.Area.Height, landChunk.Area.Width];
+
+
+            //    for (int i = 0; i < landChunk.Area.Height; i++)
+            //    {
+            //        for (int j = 0; j < landChunk.Area.Width; j++)
+            //        {
+            //            if (landCases[i, j] != null)
+            //            {
+            //                landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
+
+            //                if (z + this.altitudeMin < this.altitudeMax)
+            //                {
+            //                    landObject2Ds[i, j].UpdateOverLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z + 1)[i, j]);
+            //                }
+            //                if (z > 0)
+            //                {
+            //                    landObject2Ds[i, j].UpdateUnderLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z - 1)[i, j]);
+            //                }
+
+            //                landObject2Ds[i, j].SetLandCaseRatio(this.altitudeMin + z, LandWorld2D.LOADED_ALTITUDE_RANGE);
+            //            }
+            //            else
+            //            {
+            //                landObject2Ds[i, j] = null;
+            //            }
+            //        }
+            //    }
+
+            //    this.landObjects2DLayers.Add(landObject2Ds);
+            //}
+
+            this.Position = new Vector2f(landChunk.Area.Left, landChunk.Area.Top);
+        }
+
+        public int UpdateCurrentAltitude(LandWorld2D landWorld2D, ILandChunk landChunk, int newAltitude)
+        {
+            int trueCurrentAltitude = Math.Max(Math.Min(newAltitude, landChunk.AltitudeMax), landChunk.AltitudeMin);
+
+            int altitudeMin = Math.Max(landChunk.AltitudeMin, trueCurrentAltitude - LandWorld2D.LOADED_ALTITUDE_RANGE);
+
+            int altitudeMax = Math.Min(landChunk.AltitudeMax, trueCurrentAltitude + LandWorld2D.LOADED_ALTITUDE_RANGE);
+
+            int AltitudesMinToRemove = Math.Min(this.altitudeMax + 1, altitudeMin) - this.altitudeMin;
+
+            if (this.landObjects2DLayers.Count > 0)
+            {
+                for (int i = 0; i < AltitudesMinToRemove; i++)
+                {
+                    this.landObjects2DLayers.RemoveAt(0);
+
+                    //Console.WriteLine("Remove altitude : " + (this.altitudeMin + i));
+                }
+
+                int AltitudesMaxToRemove = this.altitudeMax - Math.Max(this.altitudeMin - 1, altitudeMax);
+                for (int i = 0; i < AltitudesMaxToRemove; i++)
+                {
+                    this.landObjects2DLayers.RemoveAt(this.landObjects2DLayers.Count - 1);
+
+                    //Console.WriteLine("Remove altitude : " + (this.altitudeMax - i));
+                }
+
+
+                int supLimit = Math.Min(this.altitudeMin, altitudeMax + 1);
+                int AltitudesMinToAdd = supLimit - altitudeMin;
+                for (int i = 0; i < AltitudesMinToAdd; i++)
+                {
+                    LandCase2D[,] landObject2Ds = new LandCase2D[landChunk.Area.Height, landChunk.Area.Width];
+
+                    this.CreateAltitude2D(landWorld2D, landChunk, supLimit - i - 1, ref landObject2Ds);
+
+                    this.landObjects2DLayers.Insert(0, landObject2Ds);
+
+                    //Console.WriteLine("Add altitude : " + (supLimit - i - 1));
+                }
+            }
+
+            int infLimit = Math.Max(this.altitudeMax, altitudeMin - 1);
+            int AltitudesMaxToAdd = altitudeMax - infLimit;
+            for (int i = 0; i < AltitudesMaxToAdd; i++)
+            {
                 LandCase2D[,] landObject2Ds = new LandCase2D[landChunk.Area.Height, landChunk.Area.Width];
 
+                this.CreateAltitude2D(landWorld2D, landChunk, infLimit + i + 1, ref landObject2Ds);
 
+                this.landObjects2DLayers.Add(landObject2Ds);
+
+                //Console.WriteLine("Add altitude : " + (infLimit + i + 1));
+            }
+
+            this.altitudeMin = altitudeMin;
+
+            this.altitudeMax = altitudeMax;
+
+            int z = 0;
+            foreach (LandCase2D[,] landCases in this.landObjects2DLayers)
+            {
                 for (int i = 0; i < landChunk.Area.Height; i++)
                 {
                     for (int j = 0; j < landChunk.Area.Width; j++)
                     {
                         if (landCases[i, j] != null)
                         {
-                            landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
-
-                            if (z + this.altitudeMin < this.altitudeMax)
-                            {
-                                landObject2Ds[i, j].UpdateOverLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z + 1)[i, j]);
-                            }
-                            if (z > 0)
-                            {
-                                landObject2Ds[i, j].UpdateUnderLandCase(landChunk.GetLandObjectsAtAltitude(this.altitudeMin + z - 1)[i, j]);
-                            }
-
-                            landObject2Ds[i, j].SetLandCaseRatio(this.altitudeMin + z, LandWorld2D.LOADED_ALTITUDE_RANGE);
-                        }
-                        else
-                        {
-                            landObject2Ds[i, j] = null;
+                            landCases[i, j].SetLandCaseRatio((this.altitudeMin + z) - trueCurrentAltitude, LandWorld2D.LOADED_ALTITUDE_RANGE);
                         }
                     }
                 }
-
-                this.landObjects2DLayers.Add(landObject2Ds);
+                z++;
             }
 
-            this.Position = new Vector2f(landChunk.Area.Left, landChunk.Area.Top);
+            return trueCurrentAltitude;
         }
 
         public override void DrawIn(RenderWindow window, ref FloatRect boundsView)
@@ -167,6 +247,38 @@ namespace PokeU.View
             }
 
             this.landObjects2DLayers.Clear();
+        }
+
+        private void CreateAltitude2D(LandWorld2D landWorld2D, ILandChunk landChunk, int altitude, ref LandCase2D[,] landObject2Ds)
+        {
+            List<IObject2D> listobject2Ds = new List<IObject2D>();
+
+            LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(altitude);
+
+
+            for (int i = 0; i < landChunk.Area.Height; i++)
+            {
+                for (int j = 0; j < landChunk.Area.Width; j++)
+                {
+                    if (landCases[i, j] != null)
+                    {
+                        landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
+
+                        if (altitude < landChunk.AltitudeMax)
+                        {
+                            landObject2Ds[i, j].UpdateOverLandCase(landChunk.GetLandObjectsAtAltitude(altitude + 1)[i, j]);
+                        }
+                        if (altitude > landChunk.AltitudeMin)
+                        {
+                            landObject2Ds[i, j].UpdateUnderLandCase(landChunk.GetLandObjectsAtAltitude(altitude - 1)[i, j]);
+                        }
+                    }
+                    else
+                    {
+                        landObject2Ds[i, j] = null;
+                    }
+                }
+            }
         }
     }
 }

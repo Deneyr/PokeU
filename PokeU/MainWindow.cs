@@ -140,6 +140,14 @@ namespace PokeU
             {
                 window.Close();
             }
+            else if(e.Code == SFML.Window.Keyboard.Key.Up)
+            {
+                this.landWorld2D.CurrentAltitude++;
+            }
+            else if(e.Code == SFML.Window.Keyboard.Key.Down)
+            {
+                this.landWorld2D.CurrentAltitude--;
+            }
         }
     }
 }

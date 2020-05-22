@@ -40,6 +40,8 @@ namespace PokeU.Model.WaterObject
                         //double preAltitude = altitudeLandLayerGenerator.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
 
                         altitude = this.NeedToFillSandAt(worldGenerator, area, i, j);
+
+                        altitude = Math.Max(0, altitude);
                     }
 
                     this.altitudeArea[j + 1, i + 1] = altitude;
