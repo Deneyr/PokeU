@@ -40,6 +40,20 @@ namespace PokeU.Model
             }
         }
 
+        public bool IsOnlyWater
+        {
+            get
+            {
+                if(this.landWall != null
+                    || this.landGroundList.Count > 0)
+                {
+                    return false;
+                }
+
+                return this.landWater != null;
+            }
+        }
+
         public List<ILandObject> LandGroundOverWallList
         {
             get
@@ -133,13 +147,13 @@ namespace PokeU.Model
             this.landGroundList = new List<ILandObject>();
         }
 
-        public void AddLandGroundOverGround(ILandObject landGround)
+        public void AddLandGroundOverWall(ILandObject landGround)
         {
             if (landGround != null && landGround is ILandGround)
             {
                 if (landGround.LandTransition == LandTransition.NONE)
                 {
-                    this.landGroundList.Clear();
+                    this.landGroundOverWallList.Clear();
                 }
 
                 this.landGroundOverWallList.Add(landGround);

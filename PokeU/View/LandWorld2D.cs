@@ -1,6 +1,8 @@
 ﻿using PokeU.Model;
+using PokeU.Model.GrassObject;
 using PokeU.Model.GroundObject;
 using PokeU.Model.WaterObject;
+using PokeU.View.GrassObject;
 using PokeU.View.GroundObject;
 using PokeU.View.ResourcesManager;
 using PokeU.View.WaterObject;
@@ -35,6 +37,7 @@ namespace PokeU.View
 
             MappingObjectModelView.Add(typeof(GroundLandObject), new GroundObject2DFactory());
             MappingObjectModelView.Add(typeof(AltitudeLandObject), new AltitudeObject2DFactory());
+            MappingObjectModelView.Add(typeof(GrassLandObject), new GrassObject2DFactory());
             MappingObjectModelView.Add(typeof(WaterLandObject), new WaterObject2DFactory());
 
             MappingObjectModelView.Add(typeof(LandChunk), new LandChunk2DFactory());

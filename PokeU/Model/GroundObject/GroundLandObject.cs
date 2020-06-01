@@ -19,6 +19,7 @@ namespace PokeU.Model.GroundObject
                 return this.landType;
             }
         }
+
         public GroundLandObject(int positionX, int positionY, int positionZ, LandType landType): 
             base(positionX, positionY, positionZ)
         {

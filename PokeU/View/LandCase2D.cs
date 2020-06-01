@@ -180,7 +180,7 @@ namespace PokeU.View
                     this.landOverGround.DrawIn(window, ref boundsView);
                 }
 
-                if (this.overLandCaseData.IsThereWater == false || this.RatioAltitude == 0)
+                if (this.overLandCaseData.IsThereWater == false)
                 {
                     if (this.landWater != null)
                     {

@@ -22,26 +22,26 @@ namespace PokeU.Model
 
         private static int[,] RIGHT_MATRIX = new int[,]
         {
-            {0, 1},
-            {0, 1}
-        };
-
-        private static int[,] LEFT_MATRIX = new int[,]
-        {
             {1, 0},
             {1, 0}
         };
 
+        private static int[,] LEFT_MATRIX = new int[,]
+        {
+            {0, 1},
+            {0, 1}
+        };
+
         private static int[,] TOP_MATRIX = new int[,]
         {
-            {1, 1},
-            {0, 0}
+            {0, 0},
+            {1, 1}
         };
 
         private static int[,] BOT_MATRIX = new int[,]
         {
-            {0, 0},
-            {1, 1}
+            {1, 1},
+            {0, 0}
         };
 
 
@@ -139,34 +139,34 @@ namespace PokeU.Model
                 return LandTransition.NONE;
             }
 
-            if (matrix[0, 0] == 0
-                && matrix[0, 1] == 1
-                && matrix[1, 0] == 0
-                && matrix[1, 1] == 1)
+            if (matrix[0, 0] == 1
+                && matrix[0, 1] == 0
+                && matrix[1, 0] == 1
+                && matrix[1, 1] == 0)
             {
                 return LandTransition.RIGHT;
             }
 
-            if (matrix[0, 0] == 1
-                && matrix[0, 1] == 0
-                && matrix[1, 0] == 1
-                && matrix[1, 1] == 0)
-            {
-                return LandTransition.LEFT;
-            }
-
-            if (matrix[0, 0] == 1
+            if (matrix[0, 0] == 0
                 && matrix[0, 1] == 1
                 && matrix[1, 0] == 0
-                && matrix[1, 1] == 0)
+                && matrix[1, 1] == 1)
             {
-                return LandTransition.TOP;
+                return LandTransition.LEFT;
             }
 
             if (matrix[0, 0] == 0
                 && matrix[0, 1] == 0
                 && matrix[1, 0] == 1
                 && matrix[1, 1] == 1)
+            {
+                return LandTransition.TOP;
+            }
+
+            if (matrix[0, 0] == 1
+                && matrix[0, 1] == 1
+                && matrix[1, 0] == 0
+                && matrix[1, 1] == 0)
             {
                 return LandTransition.BOT;
             }
@@ -272,8 +272,8 @@ namespace PokeU.Model
 
             int[,] intersectionMatrix = new int[,]
             {
-                { matrix1[0, 0] == 1 && matrix1[0, 0] == matrix2[0, 0] ? 1 : 0, matrix1[0, 1] == 1 && matrix1[0, 1] == matrix2[0, 1] ? 1 : 0 },
-                { matrix1[1, 0] == 1 && matrix1[1, 0] == matrix2[1, 0] ? 1 : 0, matrix1[1, 1] == 1 && matrix1[1, 1] == matrix2[1, 1] ? 1 : 0 }
+                { (matrix1[0, 0] == 1 && matrix1[0, 0] == matrix2[0, 0]) ? 1 : 0, (matrix1[0, 1] == 1 && matrix1[0, 1] == matrix2[0, 1]) ? 1 : 0 },
+                { (matrix1[1, 0] == 1 && matrix1[1, 0] == matrix2[1, 0]) ? 1 : 0, (matrix1[1, 1] == 1 && matrix1[1, 1] == matrix2[1, 1]) ? 1 : 0 }
             };
 
             return LandTransitionHelper.GetLandTransitionFromMatrix(intersectionMatrix);

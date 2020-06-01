@@ -49,14 +49,14 @@ namespace PokeU
             view.Size = new Vector2f(400, 300);
 
             this.resolutionScreen = new Vector2f(view.Size.X, view.Size.Y);
-            view.Center = new Vector2f(0, 0);
+            view.Center = new Vector2f(4894, -3564);
             this.SetView(window, view);
 
             window.SetVerticalSyncEnabled(true);
 
             Clock clock = new Clock();
 
-            this.landWorld.OnFocusAreaChanged(view.Center, this.resolutionScreen / MODEL_TO_VIEW, 0);
+            this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
             // Start the game loop
             while (window.IsOpen)
@@ -76,6 +76,7 @@ namespace PokeU
                 // Process events
                 window.DispatchEvents();
 
+
                 // To remove after.
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Z))
                 {
@@ -94,6 +95,7 @@ namespace PokeU
                 {
                     view.Center += new Vector2f(-2f, 0);
                 }
+                //Console.WriteLine(view.Center.X + " : " + view.Center.Y);
 
                 this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 

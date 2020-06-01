@@ -83,7 +83,7 @@ namespace PokeU.Model
 
                                 foreach (ILandObject landGroundOverWallObject in landLayerCase.LandGroundOverWallList)
                                 {
-                                    currentArray[i, j].AddLandGroundOverGround(landGroundOverWallObject);
+                                    currentArray[i, j].AddLandGroundOverWall(landGroundOverWallObject);
                                 }
 
                                 if (landLayerCase.LandWater != null)
@@ -125,7 +125,7 @@ namespace PokeU.Model
 
                                     if (landObjectOverWall != null)
                                     {
-                                        currentArray[i, j].AddLandGroundOverGround(landObjectOverWall);
+                                        currentArray[i, j].AddLandGroundOverWall(landObjectOverWall);
                                     }
                                 }
                             }

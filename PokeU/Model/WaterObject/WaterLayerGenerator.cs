@@ -11,7 +11,7 @@ namespace PokeU.Model.WaterObject
 {
     public class WaterLayerGenerator : ALandLayerGenerator
     {
-        private int[,] altitudeArea;
+        //private int[,] altitudeArea;
 
         public WaterLayerGenerator() :
             base("water")
@@ -28,7 +28,7 @@ namespace PokeU.Model.WaterObject
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
-            this.altitudeArea = new int[area.Height + 2, area.Width + 2];
+            //this.powerArea = new int[area.Height + 2, area.Width + 2];
             for (int i = -1; i < area.Height + 1; i++)
             {
                 for (int j = -1; j < area.Width + 1; j++)
@@ -44,7 +44,7 @@ namespace PokeU.Model.WaterObject
                         altitude = Math.Max(0, altitude);
                     }
 
-                    this.altitudeArea[j + 1, i + 1] = altitude;
+                    this.powerArea[i + 1, j + 1] = altitude;
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace PokeU.Model.WaterObject
                     //    altitude = (int) Math.Ceiling(preAltitude);
                     //}
 
-                    int altitude = this.altitudeArea[j + 1, i + 1];
+                    int altitude = this.powerArea[i + 1, j + 1];
 
                     int[,] subAreaInt = new int[3, 3];
                     int maxLocalAltitude = int.MinValue;
@@ -170,7 +170,7 @@ namespace PokeU.Model.WaterObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    int altitude = this.altitudeArea[j + x + 1, i + y + 1];
+                    int altitude = this.powerArea[i + y + 1, j + x + 1];
 
                     maxValue = Math.Max(maxValue, altitude);
 

@@ -183,15 +183,15 @@ namespace PokeU.LandGenerator.EpicenterData
                 i++;
             }
 
-            this.powerArea = new int[area.Height + 2, area.Width + 2];
+            this.powerArea = new int[area.Height + 4, area.Width + 4];
 
             bool[,] subArea = new bool[3, 3];
 
-            for (i = 0; i < area.Height + 2; i++)
+            for (i = 0; i < area.Height + 4; i++)
             {
-                for (int j = 0; j < area.Width + 2; j++)
+                for (int j = 0; j < area.Width + 4; j++)
                 {
-                    this.powerArea[i, j] = this.NeedToFillAt(area, i - 1, j - 1);                 
+                    this.powerArea[i, j] = this.NeedToFillAt(area, i - 2, j - 2);                 
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace PokeU.LandGenerator.EpicenterData
 
         public virtual int GetComputedPowerAt(int j, int i)
         {
-            return this.powerArea[i + 1, j + 1];
+            return this.powerArea[i + 2, j + 2];
         }
 
         private static bool MatchMatrix(ref bool[,] array, ref int[,] matrix)

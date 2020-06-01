@@ -72,8 +72,8 @@ namespace PokeU.Model
                 newArea.Height / CHUNK_SIZE + 4);
 
             // Remove out bounds chunks
-            int minNbRemove = newChunksArea.Top - this.currentChunksArea.Top;
-            int maxNbRemove = (this.currentChunksArea.Top + this.currentChunksArea.Height) - (newChunksArea.Top + newChunksArea.Height);
+            int minNbRemove = Math.Min(newChunksArea.Top - this.currentChunksArea.Top, this.currentChunksArea.Height);
+            int maxNbRemove = Math.Min((this.currentChunksArea.Top + this.currentChunksArea.Height) - (newChunksArea.Top + newChunksArea.Height), this.currentChunksArea.Height);
 
             if (minNbRemove > 0)
             {
@@ -99,8 +99,8 @@ namespace PokeU.Model
                 landChunkArea.RemoveRange(landChunkArea.Count - maxNbRemove, maxNbRemove);
             }
 
-            minNbRemove = newChunksArea.Left - this.currentChunksArea.Left;
-            maxNbRemove = (this.currentChunksArea.Left + this.currentChunksArea.Width) - (newChunksArea.Left + newChunksArea.Width);
+            minNbRemove = Math.Min(newChunksArea.Left - this.currentChunksArea.Left, this.currentChunksArea.Width);
+            maxNbRemove = Math.Min((this.currentChunksArea.Left + this.currentChunksArea.Width) - (newChunksArea.Left + newChunksArea.Width), this.currentChunksArea.Width);
 
             foreach (List<LandChunkContainer> row in this.landChunkArea)
             {
@@ -122,8 +122,8 @@ namespace PokeU.Model
             }
 
             // Add new chunks
-            int minNbAdd = this.currentChunksArea.Left - newChunksArea.Left;
-            int maxNbAdd = (newChunksArea.Left + newChunksArea.Width) - (this.currentChunksArea.Left + this.currentChunksArea.Width);
+            int minNbAdd = Math.Min(this.currentChunksArea.Left - newChunksArea.Left, newChunksArea.Width);
+            int maxNbAdd = Math.Min((newChunksArea.Left + newChunksArea.Width) - (this.currentChunksArea.Left + this.currentChunksArea.Width), newChunksArea.Width);
 
             int i = 0;
             if (minNbAdd > 0)
@@ -174,8 +174,8 @@ namespace PokeU.Model
                 }
             }
 
-            minNbAdd = currentChunksArea.Top - newChunksArea.Top;
-            maxNbAdd = (newChunksArea.Top + newChunksArea.Height) - (currentChunksArea.Top + currentChunksArea.Height);
+            minNbAdd = Math.Min(currentChunksArea.Top - newChunksArea.Top, newChunksArea.Height);
+            maxNbAdd = Math.Min((newChunksArea.Top + newChunksArea.Height) - (currentChunksArea.Top + currentChunksArea.Height), newChunksArea.Height);
 
             if (minNbAdd > 0)
             {

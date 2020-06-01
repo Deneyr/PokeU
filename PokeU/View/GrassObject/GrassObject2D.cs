@@ -1,24 +1,23 @@
-﻿using System;
+﻿using PokeU.Model;
+using PokeU.Model.GrassObject;
+using PokeU.Model.GroundObject;
+using PokeU.View.GroundObject;
+using SFML.Graphics;
+using SFML.System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PokeU.Model;
-using PokeU.Model.GroundObject;
-using SFML.Graphics;
-using SFML.System;
 
-namespace PokeU.View.GroundObject
+namespace PokeU.View.GrassObject
 {
-    public class GroundObject2D : AObject2D, ILandObject2D
+    public class GrassObject2D : GroundObject2D
     {
-        public GroundObject2D()
+        public GrassObject2D(IObject2DFactory factory, GrassLandObject landObject): 
+            base()
         {
-        }
-
-        public GroundObject2D(IObject2DFactory factory, GroundLandObject landObject)
-        {
-            Texture texture = factory.GetTextureByIndex((int)landObject.Type);
+            Texture texture = factory.GetTextureByIndex((int)landObject.LandGrassType);
 
             if (landObject.LandTransition == LandTransition.NONE)
             {

@@ -12,7 +12,7 @@ namespace PokeU.Model.GroundObject
     public class DefaultGroundLayerGenerator : ALandLayerGenerator
     {
         public DefaultGroundLayerGenerator() :
-            base("ground")
+            base("defaultGround")
         {
             this.InitializeGenerator();
         }
@@ -50,7 +50,7 @@ namespace PokeU.Model.GroundObject
                         GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, secondType);
                         secondGroundLandObject.SetTransition(landTransition);
 
-                        landCase.AddLandGroundOverGround(secondGroundLandObject);
+                        landCase.AddLandGroundOverWall(secondGroundLandObject);
                     }
                 }
             }
@@ -72,10 +72,10 @@ namespace PokeU.Model.GroundObject
             {
                 landType = LandType.SAND;
             }
-            else if (power < 10)
+            /*else if (power < 10)
             {
                 landType = LandType.GRASS;
-            }
+            }*/
             else if (power < 20)
             {
                 landType = LandType.STONE;

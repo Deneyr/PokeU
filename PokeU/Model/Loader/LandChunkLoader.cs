@@ -1,4 +1,5 @@
 ﻿using PokeU.LandGenerator.EpicenterData;
+using PokeU.Model.GrassObject;
 using PokeU.Model.GroundObject;
 using PokeU.Model.WaterObject;
 using SFML.Graphics;
@@ -38,7 +39,11 @@ namespace PokeU.Model.Loader
 
             this.worldGenerator.AddGenerator(1, new AltitudeLayerGenerator(ALTITUDE_RANGE));
 
-            this.worldGenerator.AddGenerator(2, new WaterLayerGenerator());
+            this.worldGenerator.AddGenerator(2, new GroundLayerGenerator());
+
+            this.worldGenerator.AddGenerator(3, new WaterLayerGenerator());
+
+            this.worldGenerator.AddGenerator(4, new GrassLayerGenerator());
 
             this.pendingLandChunks = new Dictionary<IntRect, LandChunkContainer>();
 

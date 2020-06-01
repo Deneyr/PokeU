@@ -255,22 +255,34 @@ namespace PokeU.View
 
             LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(altitude);
 
+            LandCase[,] landCasesUp = null;
+            LandCase[,] landCasesDown = null;
+            if (altitude < landChunk.AltitudeMax)
+            {
+                landCasesUp = landChunk.GetLandObjectsAtAltitude(altitude + 1);
+            }
+            if (altitude > landChunk.AltitudeMin)
+            {
+                landCasesDown = landChunk.GetLandObjectsAtAltitude(altitude - 1);
+            }
+
 
             for (int i = 0; i < landChunk.Area.Height; i++)
             {
                 for (int j = 0; j < landChunk.Area.Width; j++)
                 {
-                    if (landCases[i, j] != null)
+                    if (landCases[i, j] != null
+                        && (landCases[i, j].IsOnlyWater == false || landCasesUp == null || landCasesUp[i, j] == null || landCasesUp[i, j].LandWater == null))
                     {
                         landObject2Ds[i, j] = LandWorld2D.MappingObjectModelView[typeof(LandCase)].CreateObject2D(landWorld2D, landCases[i, j]) as LandCase2D;
 
-                        if (altitude < landChunk.AltitudeMax)
+                        if (landCasesUp != null)
                         {
-                            landObject2Ds[i, j].UpdateOverLandCase(landChunk.GetLandObjectsAtAltitude(altitude + 1)[i, j]);
+                            landObject2Ds[i, j].UpdateOverLandCase(landCasesUp[i, j]);
                         }
-                        if (altitude > landChunk.AltitudeMin)
+                        if (landCasesDown != null)
                         {
-                            landObject2Ds[i, j].UpdateUnderLandCase(landChunk.GetLandObjectsAtAltitude(altitude - 1)[i, j]);
+                            landObject2Ds[i, j].UpdateUnderLandCase(landCasesDown[i, j]);
                         }
                     }
                     else
