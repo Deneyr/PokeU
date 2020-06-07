@@ -123,14 +123,14 @@ namespace PokeU.LandGenerator.EpicenterData
         //
         private static int[,] BOT_INT_RIGHT_MATRIX = new int[,]
         {
-            {1, 1, 2},
+            {2, 1, 2},
             {1, 0, 0},
             {2, 0, 0}
         };
 
         private static int[,] BOT_INT_LEFT_MATRIX = new int[,]
         {
-            {2, 1, 1},
+            {2, 1, 2},
             {0, 0, 1},
             {0, 0, 2}
         };
@@ -139,14 +139,14 @@ namespace PokeU.LandGenerator.EpicenterData
         {
             {0, 0, 2},
             {0, 0, 1},
-            {2, 1, 1}
+            {2, 1, 2}
         };
 
         private static int[,] TOP_INT_RIGHT_MATRIX = new int[,]
         {
             {2, 0, 0},
             {1, 0, 0},
-            {1, 1, 2}
+            {2, 1, 2}
         };
 
 
@@ -331,22 +331,36 @@ namespace PokeU.LandGenerator.EpicenterData
                             landCase.AddLandGround(cloneMainObject);
                         }
 
+                        if (secondLandObject != null)
+                        {
+                            ILandObject cloneSecondObject = secondLandObject.Clone();
+                            cloneSecondObject.Altitude = altitude + z;
+
+                            landCase.AddLandGround(cloneSecondObject);
+                        }
+
                         if (onlyGround == false && landCase.LandWall != null)
                         {
-                            ILandObject cloneSecondObject = null;
-                            if (secondLandObject != null)
+                            if (mainLandObject != null)
                             {
-                                cloneSecondObject = secondLandObject.Clone(landCase.LandWall.LandTransition);
-                            }
-                            else if (mainLandObject != null)
-                            {
-                                cloneSecondObject = mainLandObject.Clone(landCase.LandWall.LandTransition);
+                                ILandObject cloneMainObject = mainLandObject.Clone(landCase.LandWall.LandTransition);
+                                if (cloneMainObject != null)
+                                {
+                                    cloneMainObject.Altitude = altitude + z;
+
+                                    landCase.AddLandGroundOverWall(cloneMainObject);
+                                }
                             }
 
-                            if (cloneSecondObject != null)
+                            if (secondLandObject != null)
                             {
-                                cloneSecondObject.Altitude = altitude + z;
-                                landCase.AddLandGroundOverWall(cloneSecondObject);
+                                ILandObject cloneSecondObject = secondLandObject.Clone(landCase.LandWall.LandTransition);
+                                if (cloneSecondObject != null)
+                                {
+                                    cloneSecondObject.Altitude = altitude + z;
+
+                                    landCase.AddLandGroundOverWall(cloneSecondObject);
+                                }
                             }
                         }
                     }
