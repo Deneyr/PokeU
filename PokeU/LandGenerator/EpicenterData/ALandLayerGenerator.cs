@@ -247,7 +247,7 @@ namespace PokeU.LandGenerator.EpicenterData
             return subAreaInt[1, 1];
         }
 
-        public abstract ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude);
+        public abstract void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude);
 
         public virtual float GetPowerAt(Vector2f position)
         {
@@ -287,6 +287,89 @@ namespace PokeU.LandGenerator.EpicenterData
 
             return result;
         }
+
+        protected static void AssignGround(
+            ILandChunk landChunk,
+            int i, int j,
+            int altitude, int altitudeOffset, 
+            ILandObject mainLandObject, ILandObject secondLandObject,
+            bool onlyGround = false)
+        {
+            if (mainLandObject != null || secondLandObject != null)
+            {
+                if (altitudeOffset == 0)
+                {
+                    landChunk.InitializeLandCase(i, j, altitude);
+                    LandCase landCase = landChunk.GetLandCase(i, j, altitude);
+
+                    if (mainLandObject != null)
+                    {
+                        landCase.AddLandGround(mainLandObject);
+                    }
+
+                    if (secondLandObject != null)
+                    {
+                        landCase.AddLandGround(secondLandObject);
+                    }
+                }
+                else
+                {
+                    for (int z = 0; z < altitudeOffset; z++)
+                    {
+                        landChunk.InitializeLandCase(i, j, altitude + z);
+                        LandCase landCase = landChunk.GetLandCase(i, j, altitude + z);
+                        //if (landCase == null)
+                        //{
+                        //    throw new Exception("if offset > 0, case must be already initialized thanks to CliffLayerGenerator !");
+                        //}
+
+                        if (mainLandObject != null)
+                        {
+                            ILandObject cloneMainObject = mainLandObject.Clone();
+                            cloneMainObject.Altitude = altitude + z;
+
+                            landCase.AddLandGround(cloneMainObject);
+                        }
+
+                        if (onlyGround == false && landCase.LandWall != null)
+                        {
+                            ILandObject cloneSecondObject = null;
+                            if (secondLandObject != null)
+                            {
+                                cloneSecondObject = secondLandObject.Clone(landCase.LandWall.LandTransition);
+                            }
+                            else if (mainLandObject != null)
+                            {
+                                cloneSecondObject = mainLandObject.Clone(landCase.LandWall.LandTransition);
+                            }
+
+                            if (cloneSecondObject != null)
+                            {
+                                cloneSecondObject.Altitude = altitude + z;
+                                landCase.AddLandGroundOverWall(cloneSecondObject);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //protected static void GenerateGroundOverCliff(LandCase mainLandCase, ILandObject mainLandObject)
+        //{
+        //    if (mainLandCase.LandWall != null)
+        //    {
+        //        ILandObject landObjectOverWall = mainLandObject.Clone(mainLandCase.LandWall.LandTransition);
+
+        //        if (landObjectOverWall != null)
+        //        {
+        //            mainLandCase.AddLandGroundOverWall(landObjectOverWall);
+        //        }
+        //        else
+        //        {
+        //            throw new Exception("Ground clone creation failed !");
+        //        }
+        //    }
+        //}
 
         protected static bool NeedToFill(ref bool[,] array)
         {

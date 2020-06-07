@@ -10,20 +10,16 @@ namespace PokeU.Model.GroundObject
 {
     public class GroundLandObject: ALandObject, ILandGround
     {
-        private LandType landType;
-
         public LandType Type
         {
-            get
-            {
-                return this.landType;
-            }
+            get;
+            protected set;
         }
 
         public GroundLandObject(int positionX, int positionY, int positionZ, LandType landType): 
             base(positionX, positionY, positionZ)
         {
-            this.landType = landType;
+            this.Type = landType;
         }
 
         public void SetTransition(LandTransition landTransition)
@@ -31,18 +27,26 @@ namespace PokeU.Model.GroundObject
             this.LandTransition = landTransition;
         }
 
-        public override ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition)
+        public override ILandObject Clone(LandTransition wallLandTransition)
         {
             LandTransition landTransitionOverWall = this.GetLandTransitionOverWall(wallLandTransition);
 
             if (landTransitionOverWall != LandTransition.NONE)
             {
-                GroundLandObject groundLandObject = new GroundLandObject(this.Position.X, this.Position.Y, this.Altitude, this.landType);
+                GroundLandObject groundLandObject = new GroundLandObject(this.Position.X, this.Position.Y, this.Altitude, this.Type);
                 groundLandObject.SetTransition(landTransitionOverWall);
 
                 return groundLandObject;
             }
             return null;
+        }
+
+        public override ILandObject Clone()
+        {
+            GroundLandObject groundLandObject = new GroundLandObject(this.Position.X, this.Position.Y, this.Altitude, this.Type);
+            groundLandObject.SetTransition(this.LandTransition);
+
+            return groundLandObject;
         }
     }
 

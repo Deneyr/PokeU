@@ -188,8 +188,7 @@ namespace PokeU.View
                     }
                 }
 
-                if (this.landWall != null
-                    && this.overLandCaseData.IsThereWall == false)
+                if (this.landWall != null)
                 {
                     foreach (ILandObject2D landGroundOverWallObject in this.landGroundOverWallList)
                     {

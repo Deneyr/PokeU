@@ -99,7 +99,7 @@ namespace PokeU.Model
             switch (landTransition)
             {
                 case LandTransition.NONE:
-                    return NONE_MATRIX;
+                    return FULL_MATRIX;
                 case LandTransition.RIGHT:
                     return RIGHT_MATRIX;
                 case LandTransition.LEFT:
@@ -260,15 +260,15 @@ namespace PokeU.Model
         {
             int[,] matrix1 = LandTransitionHelper.GetMatrixFromLandTransition(mainLandTransition);
 
-            int[,] matrix2;
-            if (secondLandTransition != LandTransition.NONE)
-            {
-                matrix2 = LandTransitionHelper.GetMatrixFromLandTransition(secondLandTransition);
-            }
-            else
-            {
-                matrix2 = FULL_MATRIX;
-            }
+            int[,] matrix2 = LandTransitionHelper.GetMatrixFromLandTransition(secondLandTransition);
+            //if (secondLandTransition != LandTransition.NONE)
+            //{
+            //    matrix2 = LandTransitionHelper.GetMatrixFromLandTransition(secondLandTransition);
+            //}
+            //else
+            //{
+            //    matrix2 = FULL_MATRIX;
+            //}
 
             int[,] intersectionMatrix = new int[,]
             {

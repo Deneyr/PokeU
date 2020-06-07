@@ -61,8 +61,9 @@
     <Compile Include="Model\GrassObject\GrassLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\AltitudeLandObject.cs" />
     <Compile Include="Model\GroundObject\AltitudeLayerGenerator.cs" />
+    <Compile Include="Model\GroundObject\CliffLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\DefaultGroundLayerGenerator.cs" />
-    <Compile Include="Model\GroundObject\GroundLayerGenerator2.cs" />
+    <Compile Include="Model\GroundObject\GroundLayerGenerator.cs" />
     <Compile Include="Model\IObject.cs" />
     <Compile Include="LandGenerator\EpicenterData\ALandLayerGenerator.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterLayer.cs" />
@@ -75,12 +76,9 @@
     <Compile Include="Model\LandInterface\ILandOverWall.cs" />
     <Compile Include="Model\LandInterface\ILandWall.cs" />
     <Compile Include="Model\LandInterface\ILandWater.cs" />
-    <Compile Include="Model\LandLayer.cs" />
     <Compile Include="Model\ALandObject.cs" />
-    <Compile Include="Model\GroundObject\GroundLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\GroundLandObject.cs" />
     <Compile Include="Model\ILandChunk.cs" />
-    <Compile Include="Model\ILandLayer.cs" />
     <Compile Include="Model\ILandObject.cs" />
     <Compile Include="Model\LandTransitionHelper.cs" />
     <Compile Include="Model\LandWorld.cs" />

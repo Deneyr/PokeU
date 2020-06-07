@@ -17,6 +17,7 @@ namespace PokeU.Model
         int Altitude
         {
             get;
+            set;
         }
 
         LandTransition LandTransition
@@ -24,6 +25,8 @@ namespace PokeU.Model
             get;
         }
 
-        ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition);
+        ILandObject Clone(LandTransition wallLandTransition);
+
+        ILandObject Clone();
     }
 }

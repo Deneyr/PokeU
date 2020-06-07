@@ -22,11 +22,11 @@ namespace PokeU.Model.GroundObject
 
         }
 
-        public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
+        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
-            LandLayer groundLandLayer = new LandLayer(minAltitude, maxAltitude, area);
+            ALandLayerGenerator cliffLandLayerGenerator = worldGenerator.Generators["cliff"];
 
             bool[,] subArea = new bool[3, 3];
 
@@ -38,26 +38,46 @@ namespace PokeU.Model.GroundObject
 
                     int altitude = altitudeLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    groundLandLayer.InitializeLandCase(i, j, altitude);
-                    LandCase landCase = groundLandLayer.GetLandCase(i, j, altitude);
+                    int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
                     GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
 
-                    landCase.AddLandGround(groundLandObject);
+                    GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, secondType);
+                    secondGroundLandObject.SetTransition(landTransition);
 
-                    if (secondType != landType)
-                    {
-                        GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, secondType);
-                        secondGroundLandObject.SetTransition(landTransition);
 
-                        landCase.AddLandGroundOverWall(secondGroundLandObject);
-                    }
+                    AssignGround(landChunk, i, j, altitude, altitudeOffset, groundLandObject, secondGroundLandObject);
+                    //for (int z = 0; z < altitudeOffset - 1; z++)
+                    //{
+                    //    LandCase landCase = landChunk.GetLandCase(i, j, altitude + z);
+
+                    //    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
+
+                    //    GenerateGroundOverCliff(landCase, groundLandObject);
+                    //}
+
+                    //if (secondType != landType)
+                    //{
+                    //    //landChunk.InitializeLandCase(i, j, altitude + z);
+                    //    LandCase secondLandCase = landChunk.GetLandCase(i, j, altitude + altitudeOffset - 1);
+
+                    //    GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude + altitudeOffset - 1, secondType);
+                    //    secondGroundLandObject.SetTransition(landTransition);
+
+                    //    secondLandCase.AddLandGroundOverWall(secondGroundLandObject);
+                    //}
+                    //else
+                    //{
+                    //    LandCase landCase = landChunk.GetLandCase(i, j, altitude + altitudeOffset - 1);
+
+                    //    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude + altitudeOffset - 1, landType);
+
+                    //    GenerateGroundOverCliff(landCase, groundLandObject);
+                    //}
                 }
             }
 
-            groundLandLayer.AddTypeInLayer(typeof(GroundLandObject));
-
-            return groundLandLayer;
+            landChunk.AddTypeInChunk(typeof(GroundLandObject));
         }
 
         protected virtual LandType GetLandTypeFromPower(float power)

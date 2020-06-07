@@ -41,49 +41,43 @@ namespace PokeU.Model.GroundObject
             return powerResult;
         }
 
-        public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
+        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
         {
-            ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["ground"];
+            //bool[,] subArea = new bool[3, 3];
 
-            LandLayer altitudeLandLayer = new LandLayer(minAltitude, maxAltitude, area);
+            //for (int i = 0; i < area.Height; i++)
+            //{
+            //    for (int j = 0; j < area.Width; j++)
+            //    {
+            //        //int altitude = this.GetComputedPowerAt(j, i);
 
-            bool[,] subArea = new bool[3, 3];
+            //        int[,] subAreaInt = new int[3, 3];
+            //        int maxLocalAltitude = int.MinValue;
 
-            for (int i = 0; i < area.Height; i++)
-            {
-                for (int j = 0; j < area.Width; j++)
-                {
-                    //int altitude = this.GetComputedPowerAt(j, i);
+            //        maxLocalAltitude = this.GetComputedMatrix(i, j, ref subAreaInt);
 
-                    int[,] subAreaInt = new int[3, 3];
-                    int maxLocalAltitude = int.MinValue;
+            //        int diffAltitude = maxLocalAltitude - subAreaInt[1, 1];
 
-                    maxLocalAltitude = this.GetComputedMatrix(i, j, ref subAreaInt);
+            //        for (int offset = 0; offset < diffAltitude; offset++)
+            //        {
+            //            this.GetComputedLandType(area, ref subAreaInt, maxLocalAltitude, out LandTransition landTransition);
 
-                    int diffAltitude = maxLocalAltitude - subAreaInt[1, 1];
+            //            if (landTransition != LandTransition.NONE)
+            //            {
+            //                AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, subAreaInt[1, 1], LandType.GRASS);
 
-                    for (int offset = 0; offset < diffAltitude; offset++)
-                    {
-                        this.GetComputedLandType(area, ref subAreaInt, maxLocalAltitude, out LandTransition landTransition);
+            //                landChunk.InitializeLandCase(i, j, subAreaInt[1, 1]);
+            //                landChunk.GetLandCase(i, j, subAreaInt[1, 1]).LandWall = altitudeLandObject;
 
-                        if (landTransition != LandTransition.NONE)
-                        {
-                            AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, subAreaInt[1, 1], LandType.GRASS);
+            //                altitudeLandObject.SetLandTransition(landTransition);
+            //            }
 
-                            altitudeLandLayer.InitializeLandCase(i, j, subAreaInt[1, 1]);
-                            altitudeLandLayer.GetLandCase(i, j, subAreaInt[1, 1]).LandWall = altitudeLandObject;
+            //            subAreaInt[1, 1]++;
+            //        }
+            //    }
+            //}
 
-                            altitudeLandObject.SetLandTransition(landTransition);
-                        }
-
-                        subAreaInt[1, 1]++;
-                    }
-                }
-            }
-
-            altitudeLandLayer.AddTypeInLayer(typeof(AltitudeLandObject));
-
-            return altitudeLandLayer;
+            //landChunk.AddTypeInChunk(typeof(AltitudeLandObject));
         }
 
         protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)

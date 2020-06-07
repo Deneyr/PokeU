@@ -78,18 +78,18 @@ namespace PokeU.LandGenerator.EpicenterData
         {
             LandChunk landChunk = new LandChunk(minAltitude, maxAltitude, area);
 
-            List<ILandLayer> landLayers = new List<ILandLayer>();
+            //List<ILandLayer> landLayers = new List<ILandLayer>();
             foreach (ALandLayerGenerator generator in this.generatorsSortedList.Values)
             {
-                ILandLayer landLayer = generator.GenerateLandLayer(this, area, minAltitude, maxAltitude);
+                generator.GenerateLandLayer(this, landChunk, area, minAltitude, maxAltitude);
 
-                if (landLayer != null)
-                {
-                    landLayers.Add(landLayer);
-                }
+                //if (landLayer != null)
+                //{
+                //    landLayers.Add(landLayer);
+                //}
             }
 
-            landChunk.ComputeObjectsArray(landLayers);
+            //landChunk.ComputeObjectsArray(landLayers);
 
             return landChunk;
         }

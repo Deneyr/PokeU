@@ -24,11 +24,11 @@ namespace PokeU.Model.GrassObject
 
         }
 
-        public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
+        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
-            LandLayer groundLandLayer = new LandLayer(minAltitude, maxAltitude, area);
+            ALandLayerGenerator cliffLandLayerGenerator = worldGenerator.Generators["cliff"];
 
             bool[,] subArea = new bool[3, 3];
 
@@ -42,45 +42,51 @@ namespace PokeU.Model.GrassObject
                 {
                     int altitude = altitudeLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if (altitude > -2 && altitude < 6)
+                    int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
+
+                    if (altitude > -2 && altitude < 7)
                     {
                         this.GetComputedLandType(area, i, j, out GrassType grassType, out GrassType secondType, out LandTransition landTransition);
 
-                        LandCase landCase = null;
+                        GroundLandObject groundLandObject = null;
+                        GroundLandObject secondGroundLandObject = null;
+
+                        //LandCase landCase = null;
                         if (grassType != GrassType.NONE)
                         {
-                            GroundLandObject groundLandObject = new GrassLandObject(area.Left + j, area.Top + i, altitude, grassType);
+                            groundLandObject = new GrassLandObject(area.Left + j, area.Top + i, altitude, grassType);
 
-                            groundLandLayer.InitializeLandCase(i, j, altitude);
-                            landCase = groundLandLayer.GetLandCase(i, j, altitude);
+                            //groundLandLayer.InitializeLandCase(i, j, altitude);
+                            //landCase = groundLandLayer.GetLandCase(i, j, altitude);
 
-                            landCase.AddLandGround(groundLandObject);
+                            //landCase.AddLandGround(groundLandObject);
 
                             isThereGrass = true;
                         }
 
                         if (secondType != grassType && secondType != GrassType.NONE)
                         {
-                            GroundLandObject secondGroundLandObject = new GrassLandObject(area.Left + j, area.Top + i, 0, secondType);
+                            secondGroundLandObject = new GrassLandObject(area.Left + j, area.Top + i, 0, secondType);
                             secondGroundLandObject.SetTransition(landTransition);
 
-                            groundLandLayer.InitializeLandCase(i, j, altitude);
-                            landCase = groundLandLayer.GetLandCase(i, j, altitude);
+                            //groundLandLayer.InitializeLandCase(i, j, altitude);
+                            //landCase = groundLandLayer.GetLandCase(i, j, altitude);
 
-                            landCase.AddLandGround(secondGroundLandObject);
+                            //landCase.AddLandGround(secondGroundLandObject);
 
                             isThereGrass = true;
                         }
+
+                        bool onlyGround = altitude == 6 && altitudeOffset > 0;
+                        AssignGround(landChunk, i, j, altitude, altitudeOffset, groundLandObject, secondGroundLandObject, onlyGround);
                     }
                 }
             }
 
             if (isThereGrass)
             {
-                groundLandLayer.AddTypeInLayer(typeof(GrassLandObject));
+                landChunk.AddTypeInChunk(typeof(GrassLandObject));
             }
-
-            return groundLandLayer;
         }
 
         private void ConstructGrassArea(WorldGenerator worldGenerator, IntRect area)
@@ -100,36 +106,38 @@ namespace PokeU.Model.GrassObject
 
                     int currentValue = -1;
                     int grassType = (int)this.GetGrassTypeFromPower(power);
-                    if (altitude > -2 && altitude < 6)
+
+                    if (altitude > 6)
                     {
-                        if (altitude > 4)
+                        currentValue = -1;
+                    }
+                    else if (altitude > 4)
+                    {
+                        if (grassType == 2 || grassType == 3)
                         {
-                            if (grassType == 2 || grassType == 3)
-                            {
-                                currentValue = grassType;
-                            }
+                            currentValue = grassType;
                         }
-                        else if (altitude > 1)
+                    }
+                    else if (altitude > 1)
+                    {
+                        if (altitude > 2 && grassType == 0)
                         {
-                            if (altitude > 2 && grassType == 0)
-                            {
-                                currentValue = 1;
-                            }
-                            else
-                            {
-                                currentValue = grassType;
-                            }
+                            currentValue = 1;
                         }
-                        else if (altitude < 2)
+                        else
                         {
-                            if (grassType == 0)
-                            {
-                                currentValue = 0;
-                            }
-                            else
-                            {
-                                currentValue = -1;
-                            }
+                            currentValue = grassType;
+                        }
+                    }
+                    else if (altitude < 2)
+                    {
+                        if (grassType == 0)
+                        {
+                            currentValue = 0;
+                        }
+                        else
+                        {
+                            currentValue = -1;
                         }
                     }
 

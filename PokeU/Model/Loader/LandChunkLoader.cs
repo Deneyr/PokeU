@@ -35,15 +35,17 @@ namespace PokeU.Model.Loader
         {
             this.worldGenerator = new WorldGenerator(12, new Vector2f(0, 1f / 128), new SFML.System.Vector2f(0, 0));
 
-            this.worldGenerator.AddGenerator(0, new DefaultGroundLayerGenerator());
+            this.worldGenerator.AddGenerator(0, new AltitudeLayerGenerator(ALTITUDE_RANGE));
 
-            this.worldGenerator.AddGenerator(1, new AltitudeLayerGenerator(ALTITUDE_RANGE));
+            this.worldGenerator.AddGenerator(1, new CliffLayerGenerator());
 
-            this.worldGenerator.AddGenerator(2, new GroundLayerGenerator());
+            this.worldGenerator.AddGenerator(2, new DefaultGroundLayerGenerator());
 
-            this.worldGenerator.AddGenerator(3, new WaterLayerGenerator());
+            this.worldGenerator.AddGenerator(3, new GroundLayerGenerator());
 
-            this.worldGenerator.AddGenerator(4, new GrassLayerGenerator());
+            this.worldGenerator.AddGenerator(4, new WaterLayerGenerator());
+
+            this.worldGenerator.AddGenerator(5, new GrassLayerGenerator());
 
             this.pendingLandChunks = new Dictionary<IntRect, LandChunkContainer>();
 

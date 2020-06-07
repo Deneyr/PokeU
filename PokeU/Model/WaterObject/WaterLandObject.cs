@@ -18,9 +18,17 @@ namespace PokeU.Model.WaterObject
             this.LandTransition = landTransition;
         }
 
-        public override ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition)
+        public override ILandObject Clone(LandTransition wallLandTransition)
         {
             return null;
+        }
+
+        public override ILandObject Clone()
+        {
+            WaterLandObject waterLandObject = new WaterLandObject(this.Position.X, this.Position.Y, this.Altitude);
+            waterLandObject.SetLandTransition(this.LandTransition);
+
+            return waterLandObject;
         }
     }
 }

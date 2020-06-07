@@ -21,7 +21,7 @@ namespace PokeU.Model.GrassObject
             this.LandGrassType = grassType;
         }
 
-        public override ILandObject CreateLandObjectOverWall(LandTransition wallLandTransition)
+        public override ILandObject Clone(LandTransition wallLandTransition)
         {
             LandTransition landTransitionOverWall = this.GetLandTransitionOverWall(wallLandTransition);
 
@@ -33,6 +33,14 @@ namespace PokeU.Model.GrassObject
                 return grassLandObject;
             }
             return null;
+        }
+
+        public override ILandObject Clone()
+        {
+            GrassLandObject grassLandObject = new GrassLandObject(this.Position.X, this.Position.Y, this.Altitude, this.LandGrassType);
+            grassLandObject.SetTransition(this.LandTransition);
+
+            return grassLandObject;
         }
     }
 

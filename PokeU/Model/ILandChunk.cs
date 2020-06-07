@@ -31,6 +31,12 @@ namespace PokeU.Model
 
         LandCase[,] GetLandObjectsAtAltitude(int altitude);
 
+        void InitializeLandCase(int i, int j, int z);
+
+        LandCase GetLandCase(int i, int j, int z);
+
+        void AddTypeInChunk(Type type);
+
         ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax);
     }
 }

@@ -105,11 +105,9 @@ namespace PokeU.Model.WaterObject
             return subAreaInt[1, 1];
         }
 
-        public override ILandLayer GenerateLandLayer(WorldGenerator worldGenerator, IntRect area, int minAltitude, int maxAltitude)
+        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
-
-            LandLayer waterLandLayer = new LandLayer(minAltitude, maxAltitude, area);
 
             bool isThereWater = false;
 
@@ -119,15 +117,6 @@ namespace PokeU.Model.WaterObject
             {
                 for (int j = 0; j < area.Width; j++)
                 {
-                    //int altitude = altitudeLandLayerGenerator.GetComputedPowerAt(j, i);
-
-                    //if(altitude == 0)
-                    //{
-                    //    double preAltitude = altitudeLandLayerGenerator.GetPowerAt(new Vector2f(area.Left + j, area.Top + i));
-
-                    //    altitude = (int) Math.Ceiling(preAltitude);
-                    //}
-
                     int altitude = this.powerArea[i + 1, j + 1];
 
                     int[,] subAreaInt = new int[3, 3];
@@ -139,13 +128,11 @@ namespace PokeU.Model.WaterObject
                     {
                         this.GetComputedLandType(area, ref subAreaInt, maxLocalAltitude, out LandTransition landTransition);
 
-                        //landTransition = ALandObject.InverseLandTransition(landTransition);
-
                         WaterLandObject waterLandObject = new WaterLandObject(area.Left + j, area.Top + i, z);
                         waterLandObject.SetLandTransition(landTransition);
 
-                        waterLandLayer.InitializeLandCase(i, j, z);
-                        waterLandLayer.GetLandCase(i, j, z).LandWater = waterLandObject;
+                        landChunk.InitializeLandCase(i, j, z);
+                        landChunk.GetLandCase(i, j, z).LandWater = waterLandObject;
                         isThereWater = true;
 
                         subAreaInt[1, 1]++;
@@ -155,10 +142,8 @@ namespace PokeU.Model.WaterObject
 
             if (isThereWater)
             {
-                waterLandLayer.AddTypeInLayer(typeof(WaterLandObject));
+                landChunk.AddTypeInChunk(typeof(WaterLandObject));
             }
-
-            return waterLandLayer;
         }
 
         protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)
