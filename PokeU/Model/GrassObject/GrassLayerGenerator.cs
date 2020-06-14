@@ -44,9 +44,10 @@ namespace PokeU.Model.GrassObject
 
                     int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if (altitude > -2 && altitude < 7)
+                    if ((altitude > -2 || (altitude == -2 && altitudeOffset > 0))
+                        && altitude < 7)
                     {
-                        this.GetComputedLandType(area, i, j, out GrassType grassType, out GrassType secondType, out LandTransition landTransition);
+                        this.GetComputedLandType(area, i, j, out GrassType grassType, out GrassType secondType, out LandTransition landTransition, out LandTransition secondLandTransition);
 
                         GroundLandObject groundLandObject = null;
                         GroundLandObject secondGroundLandObject = null;
@@ -55,6 +56,7 @@ namespace PokeU.Model.GrassObject
                         if (grassType != GrassType.NONE)
                         {
                             groundLandObject = new GrassLandObject(area.Left + j, area.Top + i, altitude, grassType);
+                            groundLandObject.SetTransition(landTransition);
 
                             //groundLandLayer.InitializeLandCase(i, j, altitude);
                             //landCase = groundLandLayer.GetLandCase(i, j, altitude);
@@ -67,7 +69,7 @@ namespace PokeU.Model.GrassObject
                         if (secondType != grassType && secondType != GrassType.NONE)
                         {
                             secondGroundLandObject = new GrassLandObject(area.Left + j, area.Top + i, 0, secondType);
-                            secondGroundLandObject.SetTransition(landTransition);
+                            secondGroundLandObject.SetTransition(secondLandTransition);
 
                             //groundLandLayer.InitializeLandCase(i, j, altitude);
                             //landCase = groundLandLayer.GetLandCase(i, j, altitude);
@@ -129,7 +131,7 @@ namespace PokeU.Model.GrassObject
                             currentValue = grassType;
                         }
                     }
-                    else if (altitude < 2)
+                    else if (altitude > -2)
                     {
                         if (grassType == 0)
                         {
@@ -139,6 +141,10 @@ namespace PokeU.Model.GrassObject
                         {
                             currentValue = -1;
                         }
+                    }
+                    else
+                    {
+                        currentValue = -1;
                     }
 
                     grassArea[i + 2, j + 2] = currentValue;
@@ -215,7 +221,8 @@ namespace PokeU.Model.GrassObject
             int i, int j,
             out GrassType grassType,
             out GrassType secondType,
-            out LandTransition landtransition)
+            out LandTransition landtransition,
+            out LandTransition secondLandtransition)
         {
             bool[,] subAreaBool = new bool[3, 3];
             int[,] subAreaInt = new int[3, 3];
@@ -238,10 +245,13 @@ namespace PokeU.Model.GrassObject
 
             grassType = (GrassType)subAreaInt[1, 1];
             landtransition = LandTransition.NONE;
+            secondLandtransition = LandTransition.NONE;
             secondType = grassType;
 
             if (subAreaInt[1, 1] != maxValue)
             {
+
+                int primaryType = -1;
                 for (int y = 0; y < 3; y++)
                 {
                     for (int x = 0; x < 3; x++)
@@ -249,6 +259,11 @@ namespace PokeU.Model.GrassObject
                         if (subAreaInt[y, x] != maxValue)
                         {
                             subAreaBool[y, x] = false;
+
+                            if(subAreaInt[y, x] != -1)
+                            {
+                                primaryType = subAreaInt[y, x];
+                            }
                         }
                         else
                         {
@@ -257,11 +272,33 @@ namespace PokeU.Model.GrassObject
                     }
                 }
 
-                landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
+                secondLandtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
 
-                if (landtransition != LandTransition.NONE)
+                if (secondLandtransition != LandTransition.NONE)
                 {
                     secondType = (GrassType)maxValue;
+                }
+
+                if(subAreaInt[1, 1] == -1 && primaryType != -1)
+                {
+                    grassType = (GrassType)primaryType;
+
+                    for (int y = 0; y < 3; y++)
+                    {
+                        for (int x = 0; x < 3; x++)
+                        {
+                            if (subAreaInt[y, x] != primaryType)
+                            {
+                                subAreaBool[y, x] = false;
+                            }
+                            else
+                            {
+                                subAreaBool[y, x] = true;
+                            }
+                        }
+                    }
+
+                    landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
                 }
             }
         }
