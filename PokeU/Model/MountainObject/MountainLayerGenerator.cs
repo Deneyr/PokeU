@@ -1,5 +1,4 @@
 ﻿using PokeU.LandGenerator.EpicenterData;
-using PokeU.Model.GroundObject;
 using SFML.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokeU.Model.GrassObject
+namespace PokeU.Model.MountainObject
 {
-    public class GrassLayerGenerator: ALandLayerGenerator
+    public class MountainLayerGenerator : ALandLayerGenerator
     {
-        private int[,] grassArea;
+        private int[,] mountainArea;
 
-        public GrassLayerGenerator() :
-            base("grass")
+        public MountainLayerGenerator() :
+            base("mountain")
         {
             this.InitializeGenerator();
         }
@@ -32,9 +31,9 @@ namespace PokeU.Model.GrassObject
 
             bool[,] subArea = new bool[3, 3];
 
-            bool isThereGrass = false;
+            bool isThereMountain = false;
 
-            this.ConstructGrassArea(worldGenerator, area);
+            this.ConstructMountainArea(worldGenerator, area);
 
             for (int i = 0; i < area.Height; i++)
             {
@@ -44,53 +43,54 @@ namespace PokeU.Model.GrassObject
 
                     int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if ((altitude > -2 || (altitude == -2 && altitudeOffset > 0))
-                        && altitude < 7)
+                    if ((altitude > 6 || (altitude == 6 && altitudeOffset > 0))
+                        && altitude < 23)
                     {
-                        LandCreationHelper.GetComputedLandType(this, area, i, j, out int grassTypeInt, out int secondTypeInt, out LandTransition landTransition, out LandTransition secondLandTransition);
-                        //this.GetComputedLandType(area, i, j, out GrassType grassType, out GrassType secondType, out LandTransition landTransition, out LandTransition secondLandTransition);
 
-                        GrassType grassType = (GrassType)grassTypeInt;
-                        GrassType secondType = (GrassType)secondTypeInt;
+                        LandCreationHelper.GetComputedLandType(this, area, i, j, out int mountainTypeInt, out int secondTypeInt, out LandTransition landTransition, out LandTransition secondLandTransition);
+                        //this.GetComputedLandType(area, i, j, out MountainType mountainType, out MountainType secondType, out LandTransition landTransition, out LandTransition secondLandTransition);
 
-                        GroundLandObject groundLandObject = null;
-                        GroundLandObject secondGroundLandObject = null;
+                        MountainType mountainType = (MountainType)mountainTypeInt;
+                        MountainType secondType = (MountainType)secondTypeInt;
 
-                        if (grassType != GrassType.NONE)
+                        MountainLandObject groundLandObject = null;
+                        MountainLandObject secondGroundLandObject = null;
+
+                        if (mountainType != MountainType.NONE)
                         {
-                            groundLandObject = new GrassLandObject(area.Left + j, area.Top + i, altitude, grassType);
+                            groundLandObject = new MountainLandObject(area.Left + j, area.Top + i, altitude, mountainType);
                             groundLandObject.SetTransition(landTransition);
 
-                            isThereGrass = true;
+                            isThereMountain = true;
                         }
 
-                        if (secondType != grassType && secondType != GrassType.NONE)
+                        if (secondType != mountainType && secondType != MountainType.NONE)
                         {
-                            secondGroundLandObject = new GrassLandObject(area.Left + j, area.Top + i, 0, secondType);
+                            secondGroundLandObject = new MountainLandObject(area.Left + j, area.Top + i, 0, secondType);
                             secondGroundLandObject.SetTransition(secondLandTransition);
 
-                            isThereGrass = true;
+                            isThereMountain = true;
                         }
 
-                        bool onlyGround = altitude == 6 && altitudeOffset > 0;
+                        bool onlyGround = altitude == 22 && altitudeOffset > 0;
                         AssignGround(landChunk, i, j, altitude, altitudeOffset, groundLandObject, secondGroundLandObject, onlyGround);
                     }
                 }
             }
 
-            if (isThereGrass)
+            if (isThereMountain)
             {
-                landChunk.AddTypeInChunk(typeof(GrassLandObject));
+                landChunk.AddTypeInChunk(typeof(MountainLandObject));
             }
         }
 
-        private void ConstructGrassArea(WorldGenerator worldGenerator, IntRect area)
+        private void ConstructMountainArea(WorldGenerator worldGenerator, IntRect area)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
             ALandLayerGenerator groundLandLayerGenerator = worldGenerator.Generators["ground"];
 
-            this.grassArea = new int[area.Height + 4, area.Width + 4];
+            this.mountainArea = new int[area.Height + 4, area.Width + 4];
 
             for (int i = -2; i < area.Height + 2; i++)
             {
@@ -100,39 +100,36 @@ namespace PokeU.Model.GrassObject
                     int power = groundLandLayerGenerator.GetComputedPowerAt(j, i);
 
                     int currentValue = -1;
-                    int grassType = (int)this.GetGrassTypeFromPower(power);
+                    int mountainType = (int)this.GetMountainTypeFromPower(power);
 
-                    if (altitude > 6)
+                    if(altitude > 22)
                     {
                         currentValue = -1;
                     }
-                    else if (altitude > 4)
+                    if (altitude > 18)
                     {
-                        if (grassType == 2 || grassType == 3)
-                        {
-                            currentValue = grassType;
-                        }
-                    }
-                    else if (altitude > 1)
-                    {
-                        if (altitude > 2 && grassType == 0)
+                        if(mountainType == 0)
                         {
                             currentValue = 1;
                         }
                         else
                         {
-                            currentValue = grassType;
+                            currentValue = mountainType;
                         }
                     }
-                    else if (altitude > -2)
+                    else if (altitude > 8)
                     {
-                        if (grassType == 0)
+                        currentValue = mountainType;
+                    }
+                    else if (altitude > 6)
+                    {
+                        if (mountainType == 1)
                         {
-                            currentValue = 0;
+                            currentValue = -1;
                         }
                         else
                         {
-                            currentValue = -1;
+                            currentValue = mountainType;
                         }
                     }
                     else
@@ -140,7 +137,7 @@ namespace PokeU.Model.GrassObject
                         currentValue = -1;
                     }
 
-                    this.grassArea[i + 2, j + 2] = currentValue;
+                    this.mountainArea[i + 2, j + 2] = currentValue;
                 }
             }
 
@@ -148,13 +145,13 @@ namespace PokeU.Model.GrassObject
             {
                 for (int j = 0; j < area.Width + 2; j++)
                 {
-                    this.powerArea[i + 1, j + 1] = LandCreationHelper.NeedToFillLandAt(this.grassArea, area, i - 1, j - 1);
-                    //this.powerArea[i + 1, j + 1] = this.NeedToFillGrassAt(area, i - 1, j - 1);
+                    this.powerArea[i + 1, j + 1] = LandCreationHelper.NeedToFillLandAt(this.mountainArea, area, i - 1, j - 1);
+                    //this.powerArea[i + 1, j + 1] = this.NeedToFillMountainAt(area, i - 1, j - 1);
                 }
             }
         }
 
-        //protected int NeedToFillGrassAt(
+        //protected int NeedToFillMountainAt(
         //    IntRect area,
         //    int i, int j)
         //{
@@ -167,7 +164,7 @@ namespace PokeU.Model.GrassObject
         //    {
         //        for (int x = -1; x < 2; x++)
         //        {
-        //            int altitude = this.grassArea[i + y + 2, j + x + 2];
+        //            int altitude = this.mountainArea[i + y + 2, j + x + 2];
 
         //            maxValue = Math.Max(maxValue, altitude);
 
@@ -205,16 +202,16 @@ namespace PokeU.Model.GrassObject
         //    return subAreaInt[1, 1];
         //}
 
-        protected virtual GrassType GetGrassTypeFromPower(float power)
+        protected virtual MountainType GetMountainTypeFromPower(float power)
         {
-            return (GrassType)Math.Max(Math.Min(3, power), 0);
+            return (MountainType)Math.Max(Math.Min(1, (power % 4) - 2), -1);
         }
 
         //private void GetComputedLandType(
         //    IntRect area,
         //    int i, int j,
-        //    out GrassType grassType,
-        //    out GrassType secondType,
+        //    out MountainType mountainType,
+        //    out MountainType secondType,
         //    out LandTransition landtransition,
         //    out LandTransition secondLandtransition)
         //{
@@ -237,10 +234,10 @@ namespace PokeU.Model.GrassObject
         //        }
         //    }
 
-        //    grassType = (GrassType)subAreaInt[1, 1];
+        //    mountainType = (MountainType)subAreaInt[1, 1];
         //    landtransition = LandTransition.NONE;
         //    secondLandtransition = LandTransition.NONE;
-        //    secondType = grassType;
+        //    secondType = mountainType;
 
         //    if (subAreaInt[1, 1] != maxValue)
         //    {
@@ -254,7 +251,7 @@ namespace PokeU.Model.GrassObject
         //                {
         //                    subAreaBool[y, x] = false;
 
-        //                    if(subAreaInt[y, x] != -1)
+        //                    if (subAreaInt[y, x] != -1)
         //                    {
         //                        primaryType = subAreaInt[y, x];
         //                    }
@@ -270,12 +267,12 @@ namespace PokeU.Model.GrassObject
 
         //        if (secondLandtransition != LandTransition.NONE)
         //        {
-        //            secondType = (GrassType)maxValue;
+        //            secondType = (MountainType)maxValue;
         //        }
 
-        //        if(subAreaInt[1, 1] == -1 && primaryType != -1)
+        //        if (subAreaInt[1, 1] == -1 && primaryType != -1)
         //        {
-        //            grassType = (GrassType)primaryType;
+        //            mountainType = (MountainType)primaryType;
 
         //            for (int y = 0; y < 3; y++)
         //            {

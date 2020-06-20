@@ -385,7 +385,7 @@ namespace PokeU.LandGenerator.EpicenterData
         //    }
         //}
 
-        protected static bool NeedToFill(ref bool[,] array)
+        public static bool NeedToFill(ref bool[,] array)
         {
             if (MatchMatrix(ref array, ref HORIZONTAL_MATRIX)
                 || MatchMatrix(ref array, ref VERTICAL_MATRIX)
@@ -401,7 +401,7 @@ namespace PokeU.LandGenerator.EpicenterData
             return false;
         }
 
-        protected static LandTransition GetLandTransitionFrom(ref bool[,] array)
+        public static LandTransition GetLandTransitionFrom(ref bool[,] array)
         {
 
             if (MatchMatrix(ref array, ref BOT_RIGHT_MATRIX))
