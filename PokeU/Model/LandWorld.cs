@@ -19,7 +19,7 @@ namespace PokeU.Model
         private static readonly int NB_MAX_CACHE_CHUNK = 8;
 
         private LandChunkLoader landChunkLoader;
-        private Mutex mainMutex;
+        private Mutex mainMutex = new Mutex();
 
         private Dictionary<IntRect, Tuple<LandChunkContainer, ILandChunk>> pendingLandChunksImported;
 
@@ -47,7 +47,7 @@ namespace PokeU.Model
             this.landChunksCache = new List<ILandChunk>();
             this.landChunksToRemove = new HashSet<IntRect>();
 
-            this.mainMutex = new Mutex();
+            //this.mainMutex = new Mutex();
 
             this.landChunkArea = new List<List<LandChunkContainer>>();
 

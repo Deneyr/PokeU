@@ -49,6 +49,7 @@ namespace PokeU.Model.Loader
             this.worldGenerator.AddGenerator(5, new MountainLayerGenerator());
 
             this.worldGenerator.AddGenerator(6, new GrassLayerGenerator());
+            this.worldGenerator.AddGenerator(7, new GrassElementLayerGenerator());
 
             this.pendingLandChunks = new Dictionary<IntRect, LandChunkContainer>();
 

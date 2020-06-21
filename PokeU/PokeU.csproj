@@ -56,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LandGenerator\EpicenterData\EpicenterDensityLayer.cs" />
+    <Compile Include="Model\GrassObject\GrassElementLandObject.cs" />
+    <Compile Include="Model\GrassObject\GrassElementLayerGenerator.cs" />
     <Compile Include="Model\LandCreationHelper.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterAreaLayer.cs" />
     <Compile Include="Model\GrassObject\GrassLandObject.cs" />
@@ -97,6 +100,8 @@
     <Compile Include="View\Animations\ZoomAnimationManager.cs" />
     <Compile Include="View\AObject2D.cs" />
     <Compile Include="View\AObject2DFactory.cs" />
+    <Compile Include="View\GrassObject\GrassElementObject2D.cs" />
+    <Compile Include="View\GrassObject\GrassElementObject2DFactory.cs" />
     <Compile Include="View\GrassObject\GrassObject2D.cs" />
     <Compile Include="View\GrassObject\GrassObject2DFactory.cs" />
     <Compile Include="View\GroundObject\AltitudeObject2D.cs" />

@@ -46,7 +46,7 @@ namespace PokeU
 
             SFML.Graphics.View view = window.GetView();
 
-            view.Size = new Vector2f(400, 300);
+            view.Size = new Vector2f(800, 600);
 
             this.resolutionScreen = new Vector2f(view.Size.X, view.Size.Y);
             view.Center = new Vector2f(9492, -12595);

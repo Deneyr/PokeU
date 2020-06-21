@@ -113,7 +113,7 @@ namespace PokeU.Model
         {
             get
             {
-                return this.landWall;
+                return this.landOverGround;
             }
             set
             {

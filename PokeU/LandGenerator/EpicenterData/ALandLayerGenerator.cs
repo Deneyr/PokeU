@@ -174,6 +174,11 @@ namespace PokeU.LandGenerator.EpicenterData
             this.epicenterLayersList.Add(new EpicenterLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPowerMin, pointPowerMax));
         }
 
+        protected virtual void AddEpicenterDensityLayer(int influenceRadius, DigressionMethod digressionMethod, int nbMaxPoints, float pointPowerMin, float pointPowerMax)
+        {
+            this.epicenterLayersList.Add(new EpicenterDensityLayer(influenceRadius, digressionMethod, nbMaxPoints, pointPowerMin, pointPowerMax));
+        }
+
         public virtual void GenerateEpicenterLayer(int seed, IntRect area)
         {
             int i = 0;

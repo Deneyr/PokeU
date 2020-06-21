@@ -161,49 +161,49 @@ namespace PokeU.Model.GrassObject
         //    bool[,] subAreaBool = new bool[3, 3];
         //    int[,] subAreaInt = new int[3, 3];
 
-        //    int maxValue = int.MinValue;
-        //    int minValue = int.MaxValue;
-        //    for (int y = -1; y < 2; y++)
-        //    {
-        //        for (int x = -1; x < 2; x++)
-        //        {
-        //            int altitude = this.grassArea[i + y + 2, j + x + 2];
+            //    int maxValue = int.MinValue;
+            //    int minValue = int.MaxValue;
+            //    for (int y = -1; y < 2; y++)
+            //    {
+            //        for (int x = -1; x < 2; x++)
+            //        {
+            //            int altitude = this.grassArea[i + y + 2, j + x + 2];
 
-        //            maxValue = Math.Max(maxValue, altitude);
+            //            maxValue = Math.Max(maxValue, altitude);
 
-        //            minValue = Math.Min(minValue, altitude);
+            //            minValue = Math.Min(minValue, altitude);
 
-        //            subAreaInt[y + 1, x + 1] = altitude;
-        //        }
-        //    }
+            //            subAreaInt[y + 1, x + 1] = altitude;
+            //        }
+            //    }
 
-        //    bool needToFill = false;
-        //    if (subAreaInt[1, 1] != maxValue)
-        //    {
-        //        for (int y = 0; y < 3; y++)
-        //        {
-        //            for (int x = 0; x < 3; x++)
-        //            {
-        //                if (subAreaInt[y, x] != maxValue)
-        //                {
-        //                    subAreaBool[y, x] = false;
-        //                }
-        //                else
-        //                {
-        //                    subAreaBool[y, x] = true;
-        //                }
-        //            }
-        //        }
+            //    bool needToFill = false;
+            //    if (subAreaInt[1, 1] != maxValue)
+            //    {
+            //        for (int y = 0; y < 3; y++)
+            //        {
+            //            for (int x = 0; x < 3; x++)
+            //            {
+            //                if (subAreaInt[y, x] != maxValue)
+            //                {
+            //                    subAreaBool[y, x] = false;
+            //                }
+            //                else
+            //                {
+            //                    subAreaBool[y, x] = true;
+            //                }
+            //            }
+            //        }
 
-        //        needToFill = ALandLayerGenerator.NeedToFill(ref subAreaBool);
-        //    }
+            //        needToFill = ALandLayerGenerator.NeedToFill(ref subAreaBool);
+            //    }
 
-        //    if (needToFill)
-        //    {
-        //        return maxValue;
-        //    }
-        //    return subAreaInt[1, 1];
-        //}
+            //    if (needToFill)
+            //    {
+            //        return maxValue;
+            //    }
+            //    return subAreaInt[1, 1];
+            //}
 
         protected virtual GrassType GetGrassTypeFromPower(float power)
         {

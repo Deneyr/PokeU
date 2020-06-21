@@ -111,6 +111,11 @@ namespace PokeU.LandGenerator.EpicenterData
                     return (1 - distanceRatio * distanceRatio) * pointPower;
                 case DigressionMethod.SMOOTH:
                     return (((1 - distanceRatio * distanceRatio) * pointPower) + ((1 - distanceRatio) * (1 - distanceRatio) * pointPower)) / 2;
+                case DigressionMethod.CIRCLE:
+
+                    distanceRatio = 1 - Math.Abs(distanceRatio * 2 - 1);
+
+                    return (((1 - distanceRatio * distanceRatio) * pointPower) + ((1 - distanceRatio) * (1 - distanceRatio) * pointPower)) / 2;
             }
 
             return 0f;
@@ -124,6 +129,7 @@ namespace PokeU.LandGenerator.EpicenterData
         LINEAR,
         SQUARE_ACC,
         SQUARE_DEC,
-        SMOOTH
+        SMOOTH,
+        CIRCLE
     }
 }
