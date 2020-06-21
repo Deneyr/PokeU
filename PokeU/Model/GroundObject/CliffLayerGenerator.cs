@@ -104,7 +104,7 @@ namespace PokeU.Model.GroundObject
                 {
                     for (int x = 0; x < 3; x++)
                     {
-                        if (subAreaInt[y, x] != maxValue)
+                        if (subAreaInt[y, x] <= subAreaInt[1, 1])
                         {
                             subAreaBool[y, x] = false;
                         }

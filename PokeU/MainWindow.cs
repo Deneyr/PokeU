@@ -49,7 +49,7 @@ namespace PokeU
             view.Size = new Vector2f(400, 300);
 
             this.resolutionScreen = new Vector2f(view.Size.X, view.Size.Y);
-            view.Center = new Vector2f(4894, -3564);
+            view.Center = new Vector2f(9492, -12595);
             this.SetView(window, view);
 
             window.SetVerticalSyncEnabled(true);
@@ -95,7 +95,7 @@ namespace PokeU
                 {
                     view.Center += new Vector2f(-2f, 0);
                 }
-                //Console.WriteLine(view.Center.X + " : " + view.Center.Y);
+                // Console.WriteLine(view.Center.X + " : " + view.Center.Y);
 
                 this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
