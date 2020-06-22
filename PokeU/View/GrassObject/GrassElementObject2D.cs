@@ -17,12 +17,12 @@ namespace PokeU.View.GrassObject
         {
             Texture texture = factory.GetTextureByIndex((int)landObject.LandGrassType);
 
-            Random random = new Random(landObject.Position.X - landObject.Position.Y * landObject.Position.Y);
+            // Random random = new Random(landObject.Position.X - landObject.Position.Y * landObject.Position.Y);
 
-            int elementIndex = Math.Abs((landObject.ElementIndex * random.Next()) % 12);
+            int elementIndex = landObject.ElementIndex;
             if(landObject.LandGrassType == GrassType.DRY)
             {
-                elementIndex %= 3; 
+                elementIndex %= 2; 
             }
 
             this.ObjectSprite = new Sprite(texture, new IntRect(elementIndex * 2 * MainWindow.MODEL_TO_VIEW, 0 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW));

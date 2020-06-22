@@ -18,14 +18,14 @@ namespace PokeU.Model.GrassObject
 
         protected override void InitializeGenerator()
         {
-            this.AddEpicenterLayer(30, DigressionMethod.CIRCLE, 95, 0, 15);
+            this.AddEpicenterLayer(30, DigressionMethod.CIRCLE, 80, 2, 15);
 
-            this.AddEpicenterLayer(20, DigressionMethod.CIRCLE, 80, 5, 20);
+            this.AddEpicenterLayer(20, DigressionMethod.CIRCLE, 70, 5, 20);
 
-            this.AddEpicenterLayer(32, DigressionMethod.CIRCLE, 80, 5, 40);
+            this.AddEpicenterLayer(32, DigressionMethod.CIRCLE, 70, 5, 40);
         }
 
-        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
+        public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator grassLandLayerGenerator = worldGenerator.Generators["grass"];
 
@@ -35,6 +35,8 @@ namespace PokeU.Model.GrassObject
 
             bool isThereGrassElement = false;
 
+            Random random = new Random(seed);
+
             for (int i = 0; i < area.Height; i++)
             {
                 for (int j = 0; j < area.Width; j++)
@@ -43,11 +45,13 @@ namespace PokeU.Model.GrassObject
 
                     int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    int elementIndex = this.GetElementIndexFromPower(this.GetComputedPowerAt(j, i));
+                    int elementIndex = random.Next(0, 12);// 
+
+                    int power = this.GetElementIndexFromPower(this.GetComputedPowerAt(j, i));
 
                     GrassType grassType = (GrassType)grassLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if (elementIndex >= 0 && altitudeOffset == 0 && grassType != GrassType.NONE)
+                    if (power >= 2 && random.Next(0, 3) > 0 && altitudeOffset == 0 && grassType != GrassType.NONE)
                     {
                         GrassElementLandObject grassElement = new GrassElementLandObject(area.Left + j, area.Top + i, altitude, grassType, elementIndex);
 
@@ -64,6 +68,8 @@ namespace PokeU.Model.GrassObject
             {
                 landChunk.AddTypeInChunk(typeof(GrassElementLandObject));
             }
+
+            return random.Next();
         }
 
         protected virtual int GetElementIndexFromPower(float power)

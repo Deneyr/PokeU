@@ -105,7 +105,7 @@ namespace PokeU.Model.WaterObject
             return subAreaInt[1, 1];
         }
 
-        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
+        public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
@@ -144,6 +144,8 @@ namespace PokeU.Model.WaterObject
             {
                 landChunk.AddTypeInChunk(typeof(WaterLandObject));
             }
+
+            return seed;
         }
 
         protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)

@@ -41,43 +41,9 @@ namespace PokeU.Model.GroundObject
             return powerResult;
         }
 
-        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
+        public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
-            //bool[,] subArea = new bool[3, 3];
-
-            //for (int i = 0; i < area.Height; i++)
-            //{
-            //    for (int j = 0; j < area.Width; j++)
-            //    {
-            //        //int altitude = this.GetComputedPowerAt(j, i);
-
-            //        int[,] subAreaInt = new int[3, 3];
-            //        int maxLocalAltitude = int.MinValue;
-
-            //        maxLocalAltitude = this.GetComputedMatrix(i, j, ref subAreaInt);
-
-            //        int diffAltitude = maxLocalAltitude - subAreaInt[1, 1];
-
-            //        for (int offset = 0; offset < diffAltitude; offset++)
-            //        {
-            //            this.GetComputedLandType(area, ref subAreaInt, maxLocalAltitude, out LandTransition landTransition);
-
-            //            if (landTransition != LandTransition.NONE)
-            //            {
-            //                AltitudeLandObject altitudeLandObject = new AltitudeLandObject(area.Left + j, area.Top + i, subAreaInt[1, 1], LandType.GRASS);
-
-            //                landChunk.InitializeLandCase(i, j, subAreaInt[1, 1]);
-            //                landChunk.GetLandCase(i, j, subAreaInt[1, 1]).LandWall = altitudeLandObject;
-
-            //                altitudeLandObject.SetLandTransition(landTransition);
-            //            }
-
-            //            subAreaInt[1, 1]++;
-            //        }
-            //    }
-            //}
-
-            //landChunk.AddTypeInChunk(typeof(AltitudeLandObject));
+            return seed;
         }
 
         protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)

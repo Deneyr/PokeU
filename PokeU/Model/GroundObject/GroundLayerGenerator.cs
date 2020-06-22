@@ -31,9 +31,9 @@ namespace PokeU.Model.GroundObject
             this.AddEpicenterLayer(64, DigressionMethod.SQUARE_ACC, 80, 0, 1);
         }
 
-        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
+        public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
-            
+            return seed;
         }
     }
 }

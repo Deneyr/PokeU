@@ -23,7 +23,7 @@ namespace PokeU.Model.MountainObject
 
         }
 
-        public override void GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int minAltitude, int maxAltitude)
+        public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
@@ -82,6 +82,8 @@ namespace PokeU.Model.MountainObject
             {
                 landChunk.AddTypeInChunk(typeof(MountainLandObject));
             }
+
+            return seed;
         }
 
         private void ConstructMountainArea(WorldGenerator worldGenerator, IntRect area)
