@@ -108,7 +108,7 @@ namespace PokeU.Model.MountainObject
                     {
                         currentValue = -1;
                     }
-                    if (altitude > 18)
+                    else if (altitude > 18)
                     {
                         if(mountainType == 0)
                         {

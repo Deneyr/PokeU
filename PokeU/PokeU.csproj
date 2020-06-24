@@ -59,6 +59,7 @@
     <Compile Include="LandGenerator\EpicenterData\EpicenterDensityLayer.cs" />
     <Compile Include="Model\GrassObject\GrassElementLandObject.cs" />
     <Compile Include="Model\GrassObject\GrassElementLayerGenerator.cs" />
+    <Compile Include="Model\GroundObject\ElementLayerGenerator.cs" />
     <Compile Include="Model\LandCreationHelper.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterAreaLayer.cs" />
     <Compile Include="Model\GrassObject\GrassLandObject.cs" />
@@ -87,6 +88,8 @@
     <Compile Include="Model\LandTransitionHelper.cs" />
     <Compile Include="Model\LandWorld.cs" />
     <Compile Include="Model\Loader\LandChunkLoader.cs" />
+    <Compile Include="Model\MountainObject\MountainElementLandObject.cs" />
+    <Compile Include="Model\MountainObject\MountainElementLayerGenerator.cs" />
     <Compile Include="Model\MountainObject\MountainLandObject.cs" />
     <Compile Include="Model\MountainObject\MountainLayerGenerator.cs" />
     <Compile Include="Model\WaterObject\WaterLandObject.cs" />
@@ -117,6 +120,8 @@
     <Compile Include="View\LandChunk2D.cs" />
     <Compile Include="View\LandChunk2DFactory.cs" />
     <Compile Include="View\LandWorld2D.cs" />
+    <Compile Include="View\MountainObject\MountainElementObject2D.cs" />
+    <Compile Include="View\MountainObject\MountainElementObject2DFactory.cs" />
     <Compile Include="View\MountainObject\MountainObject2D.cs" />
     <Compile Include="View\MountainObject\MountainObject2DFactory.cs" />
     <Compile Include="View\ResourcesManager\ChunkResourcesLoader.cs" />

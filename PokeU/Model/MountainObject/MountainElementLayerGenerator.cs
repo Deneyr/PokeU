@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokeU.Model.GrassObject
+namespace PokeU.Model.MountainObject
 {
-    public class GrassElementLayerGenerator : ALandLayerGenerator
+    public class MountainElementLayerGenerator : ALandLayerGenerator
     {
-        public GrassElementLayerGenerator() :
-            base("elementGrass")
+        public MountainElementLayerGenerator() :
+            base("elementMountain")
         {
             this.InitializeGenerator();
         }
@@ -27,7 +27,7 @@ namespace PokeU.Model.GrassObject
 
         public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
-            ALandLayerGenerator grassLandLayerGenerator = worldGenerator.Generators["grass"];
+            ALandLayerGenerator mountainLandLayerGenerator = worldGenerator.Generators["mountain"];
 
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
@@ -35,7 +35,7 @@ namespace PokeU.Model.GrassObject
 
             ALandLayerGenerator elementLandLayerGenerator = worldGenerator.Generators["element"];
 
-            bool isThereGrassElement = false;
+            bool isThereMountainElement = false;
 
             Random random = new Random(seed);
 
@@ -47,28 +47,43 @@ namespace PokeU.Model.GrassObject
 
                     int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    int elementIndex = random.Next(0, 12);
+                    int elementIndex = random.Next(0, 5);
 
                     int power = this.GetElementIndexFromPower(elementLandLayerGenerator.GetComputedPowerAt(j, i));
 
-                    GrassType grassType = (GrassType)grassLandLayerGenerator.GetComputedPowerAt(j, i);
+                    MountainType mountainType = (MountainType)mountainLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if (power >= 2 && random.Next(0, 3) > 0 && altitudeOffset == 0 && grassType != GrassType.NONE)
+                    if(mountainType == MountainType.PROJECTING)
                     {
-                        GrassElementLandObject grassElement = new GrassElementLandObject(area.Left + j, area.Top + i, altitude, grassType, elementIndex);
+                        if(elementIndex == 3 && random.Next(0, 3) > 0)
+                        {
+                            elementIndex = random.Next(0, 3);
+                        }
+                    }
+                    else if(mountainType == MountainType.ROUGH)
+                    {
+                        if (elementIndex < 3 && random.Next(0, 3) > 0)
+                        {
+                            elementIndex = 3;
+                        }
+                    }
+
+                    if (power >= 2 && random.Next(0, 3) > 0 && altitudeOffset == 0 && mountainType != MountainType.NONE)
+                    {
+                        MountainElementLandObject mountainElement = new MountainElementLandObject(area.Left + j, area.Top + i, altitude, mountainType, elementIndex);
 
                         LandCase landCase = landChunk.GetLandCase(i, j, altitude);
 
-                        landCase.LandOverGround = grassElement;
+                        landCase.LandOverGround = mountainElement;
 
-                        isThereGrassElement = true;
+                        isThereMountainElement = true;
                     }
                 }
             }
 
-            if (isThereGrassElement)
+            if (isThereMountainElement)
             {
-                landChunk.AddTypeInChunk(typeof(GrassElementLandObject));
+                landChunk.AddTypeInChunk(typeof(MountainElementLandObject));
             }
 
             return random.Next();
@@ -76,9 +91,9 @@ namespace PokeU.Model.GrassObject
 
         protected virtual int GetElementIndexFromPower(float power)
         {
-            int index = (int) Math.Max(Math.Min(21, power % 22), 0);
+            int index = 13 - (int)Math.Max(Math.Min(13, power % 14), 0);
 
-            if(index < 10)
+            if (index < 10)
             {
                 index = -1;
             }

@@ -41,6 +41,7 @@ namespace PokeU.View
             MappingObjectModelView.Add(typeof(AltitudeLandObject), new AltitudeObject2DFactory());
             MappingObjectModelView.Add(typeof(WaterLandObject), new WaterObject2DFactory());
             MappingObjectModelView.Add(typeof(MountainLandObject), new MountainObject2DFactory());
+            MappingObjectModelView.Add(typeof(MountainElementLandObject), new MountainElementObject2DFactory());
             MappingObjectModelView.Add(typeof(GrassLandObject), new GrassObject2DFactory());
             MappingObjectModelView.Add(typeof(GrassElementLandObject), new GrassElementObject2DFactory());
 

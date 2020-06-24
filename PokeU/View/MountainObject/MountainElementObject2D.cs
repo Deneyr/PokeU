@@ -1,5 +1,4 @@
-﻿using PokeU.Model.GrassObject;
-using PokeU.View.GroundObject;
+﻿using PokeU.Model.MountainObject;
 using SFML.Graphics;
 using SFML.System;
 using System;
@@ -8,22 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokeU.View.GrassObject
+namespace PokeU.View.MountainObject
 {
-    public class GrassElementObject2D : AObject2D, ILandObject2D
+    public class MountainElementObject2D : AObject2D, ILandObject2D
     {
-        public GrassElementObject2D(IObject2DFactory factory, GrassElementLandObject landObject) :
+        public MountainElementObject2D(IObject2DFactory factory, MountainElementLandObject landObject) :
             base()
         {
-            Texture texture = factory.GetTextureByIndex((int)landObject.LandGrassType);
+            Texture texture = factory.GetTextureByIndex(0);
 
             // Random random = new Random(landObject.Position.X - landObject.Position.Y * landObject.Position.Y);
 
             int elementIndex = landObject.ElementIndex;
-            if(landObject.LandGrassType == GrassType.DRY)
-            {
-                elementIndex = 0; 
-            }
+            //if (landObject.LandMountainType == MountainType.DRY)
+            //{
+            //    elementIndex = 0;
+            //}
 
             this.ObjectSprite = new Sprite(texture, new IntRect(elementIndex * 2 * MainWindow.MODEL_TO_VIEW, 0 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW, 2 * MainWindow.MODEL_TO_VIEW));
 
