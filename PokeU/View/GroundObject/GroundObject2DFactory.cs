@@ -16,10 +16,9 @@ namespace PokeU.View.GroundObject
         {
             this.texturesPath.Add(@"Autotiles\Red cave floor2.png");
             this.texturesPath.Add(@"Autotiles\sandBeach.png");
-            this.texturesPath.Add(@"Autotiles\Snow cave highlight2.png");
+            this.texturesPath.Add(@"Autotiles\grass.png");
             this.texturesPath.Add(@"Autotiles\mountain.png");
             this.texturesPath.Add(@"Autotiles\snow.png");
-            this.texturesPath.Add(@"Autotiles\water.png");
 
             base.InitializeFactory();
         }

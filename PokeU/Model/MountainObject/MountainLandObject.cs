@@ -16,7 +16,7 @@ namespace PokeU.Model.MountainObject
         }
 
         public MountainLandObject(int positionX, int positionY, int positionZ, MountainType grassType) :
-            base(positionX, positionY, positionZ, LandType.GRASS)
+            base(positionX, positionY, positionZ, LandType.STONE)
         {
             this.LandMountainType = grassType;
         }

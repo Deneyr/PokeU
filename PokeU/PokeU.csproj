@@ -60,6 +60,8 @@
     <Compile Include="Model\GrassObject\GrassElementLandObject.cs" />
     <Compile Include="Model\GrassObject\GrassElementLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\ElementLayerGenerator.cs" />
+    <Compile Include="Model\GroundObject\GroundElementLayerGenerator.cs" />
+    <Compile Include="Model\GroundObject\GroundElementLandObject.cs" />
     <Compile Include="Model\LandCreationHelper.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterAreaLayer.cs" />
     <Compile Include="Model\GrassObject\GrassLandObject.cs" />
@@ -109,6 +111,8 @@
     <Compile Include="View\GrassObject\GrassObject2DFactory.cs" />
     <Compile Include="View\GroundObject\AltitudeObject2D.cs" />
     <Compile Include="View\GroundObject\AltitudeObject2DFactory.cs" />
+    <Compile Include="View\GroundObject\GroundElementObject2D.cs" />
+    <Compile Include="View\GroundObject\GroundElementObject2DFactory.cs" />
     <Compile Include="View\GroundObject\GroundObject2D.cs" />
     <Compile Include="View\GroundObject\GroundObject2DFactory.cs" />
     <Compile Include="View\Helpers\HSLColor.cs" />

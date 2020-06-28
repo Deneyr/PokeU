@@ -45,35 +45,9 @@ namespace PokeU.Model.GroundObject
                     GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, secondType);
                     secondGroundLandObject.SetTransition(landTransition);
 
-
                     AssignGround(landChunk, i, j, altitude, altitudeOffset, groundLandObject, secondGroundLandObject);
-                    //for (int z = 0; z < altitudeOffset - 1; z++)
-                    //{
-                    //    LandCase landCase = landChunk.GetLandCase(i, j, altitude + z);
 
-                    //    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude, landType);
-
-                    //    GenerateGroundOverCliff(landCase, groundLandObject);
-                    //}
-
-                    //if (secondType != landType)
-                    //{
-                    //    //landChunk.InitializeLandCase(i, j, altitude + z);
-                    //    LandCase secondLandCase = landChunk.GetLandCase(i, j, altitude + altitudeOffset - 1);
-
-                    //    GroundLandObject secondGroundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude + altitudeOffset - 1, secondType);
-                    //    secondGroundLandObject.SetTransition(landTransition);
-
-                    //    secondLandCase.AddLandGroundOverWall(secondGroundLandObject);
-                    //}
-                    //else
-                    //{
-                    //    LandCase landCase = landChunk.GetLandCase(i, j, altitude + altitudeOffset - 1);
-
-                    //    GroundLandObject groundLandObject = new GroundLandObject(area.Left + j, area.Top + i, altitude + altitudeOffset - 1, landType);
-
-                    //    GenerateGroundOverCliff(landCase, groundLandObject);
-                    //}
+                    this.powerArea[i + 2, j + 2] = (int) this.GetLandTypeFromPower(altitude);
                 }
             }
 
@@ -82,7 +56,7 @@ namespace PokeU.Model.GroundObject
             return seed;
         }
 
-        protected virtual LandType GetLandTypeFromPower(float power)
+        protected virtual LandType GetLandTypeFromPower(int power)
         {
             LandType landType = LandType.GROUND;
 
@@ -94,10 +68,6 @@ namespace PokeU.Model.GroundObject
             {
                 landType = LandType.SAND;
             }
-            /*else if (power < 10)
-            {
-                landType = LandType.GRASS;
-            }*/
             else if (power < 20)
             {
                 landType = LandType.STONE;
@@ -127,7 +97,7 @@ namespace PokeU.Model.GroundObject
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    float power = altitudeLandLayerGenerator.GetComputedPowerAt(j + x, i + y);
+                    int power = altitudeLandLayerGenerator.GetComputedPowerAt(j + x, i + y);
 
                     int currentValue = (int)this.GetLandTypeFromPower(power);
 

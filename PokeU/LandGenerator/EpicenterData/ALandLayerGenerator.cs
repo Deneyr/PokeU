@@ -190,13 +190,16 @@ namespace PokeU.LandGenerator.EpicenterData
 
             this.powerArea = new int[area.Height + 4, area.Width + 4];
 
-            bool[,] subArea = new bool[3, 3];
-
-            for (i = 0; i < area.Height + 4; i++)
+            if (this.epicenterLayersList.Count > 0)
             {
-                for (int j = 0; j < area.Width + 4; j++)
+                bool[,] subArea = new bool[3, 3];
+
+                for (i = 0; i < area.Height + 4; i++)
                 {
-                    this.powerArea[i, j] = this.NeedToFillAt(area, i - 2, j - 2);                 
+                    for (int j = 0; j < area.Width + 4; j++)
+                    {
+                        this.powerArea[i, j] = this.NeedToFillAt(area, i - 2, j - 2);
+                    }
                 }
             }
         }

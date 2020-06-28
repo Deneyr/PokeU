@@ -49,7 +49,7 @@ namespace PokeU.Model.GrassObject
 
                     int elementIndex = random.Next(0, 12);
 
-                    int power = this.GetElementIndexFromPower(elementLandLayerGenerator.GetComputedPowerAt(j, i));
+                    int power = this.GetElementPower(elementLandLayerGenerator.GetComputedPowerAt(j, i));
 
                     GrassType grassType = (GrassType)grassLandLayerGenerator.GetComputedPowerAt(j, i);
 
@@ -74,7 +74,7 @@ namespace PokeU.Model.GrassObject
             return random.Next();
         }
 
-        protected virtual int GetElementIndexFromPower(float power)
+        protected virtual int GetElementPower(float power)
         {
             int index = (int) Math.Max(Math.Min(21, power % 22), 0);
 

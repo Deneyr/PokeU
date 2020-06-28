@@ -1,17 +1,13 @@
 ﻿using PokeU.LandGenerator.EpicenterData;
 using SFML.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PokeU.Model.MountainObject
+namespace PokeU.Model.GroundObject
 {
-    public class MountainElementLayerGenerator : ALandLayerGenerator
+    public class GroundElementLayerGenerator : ALandLayerGenerator
     {
-        public MountainElementLayerGenerator() :
-            base("elementMountain")
+        public GroundElementLayerGenerator() :
+            base("elementGround")
         {
             this.InitializeGenerator();
         }
@@ -27,7 +23,7 @@ namespace PokeU.Model.MountainObject
 
         public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
-            ALandLayerGenerator mountainLandLayerGenerator = worldGenerator.Generators["mountain"];
+            ALandLayerGenerator groundLandLayerGenerator = worldGenerator.Generators["defaultGround"];
 
             ALandLayerGenerator altitudeLandLayerGenerator = worldGenerator.Generators["altitude"];
 
@@ -35,7 +31,7 @@ namespace PokeU.Model.MountainObject
 
             ALandLayerGenerator elementLandLayerGenerator = worldGenerator.Generators["element"];
 
-            bool isThereMountainElement = false;
+            bool isThereSandElement = false;
 
             Random random = new Random(seed);
 
@@ -47,43 +43,39 @@ namespace PokeU.Model.MountainObject
 
                     int altitudeOffset = cliffLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    int elementIndex = random.Next(0, 5);
+                    int elementIndex = random.Next(0, 8);
 
                     int power = this.GetElementPower(elementLandLayerGenerator.GetComputedPowerAt(j, i));
 
-                    MountainType mountainType = (MountainType)mountainLandLayerGenerator.GetComputedPowerAt(j, i);
+                    LandType landType = (LandType)groundLandLayerGenerator.GetComputedPowerAt(j, i);
 
-                    if(mountainType == MountainType.PROJECTING)
+                    if (landType == LandType.SAND)
                     {
-                        if(elementIndex == 3 && random.Next(0, 3) > 0)
+                        if (power >= 8 && random.Next(0, 3) > 0 && altitudeOffset == 0)
                         {
-                            elementIndex = random.Next(0, 3);
+                            float trueAltitude = altitudeLandLayerGenerator.GetPowerAt(new SFML.System.Vector2f(area.Left + j, area.Top + i));
+
+                            if((elementIndex == 1 || elementIndex == 3) 
+                                && trueAltitude > 0.6 && random.Next(0, 4) > 0)
+                            {
+                                elementIndex -= 1; 
+                            }
+
+                            GroundElementLandObject groundElement = new GroundElementLandObject(area.Left + j, area.Top + i, altitude, landType, elementIndex);
+
+                            LandCase landCase = landChunk.GetLandCase(i, j, altitude);
+
+                            landCase.LandOverGround = groundElement;
+
+                            isThereSandElement = true;
                         }
-                    }
-                    else if(mountainType == MountainType.ROUGH)
-                    {
-                        if (elementIndex < 3 && random.Next(0, 3) > 0)
-                        {
-                            elementIndex = 3;
-                        }
-                    }
-
-                    if (power >= 2 && random.Next(0, 3) > 0 && altitudeOffset == 0 && mountainType != MountainType.NONE)
-                    {
-                        MountainElementLandObject mountainElement = new MountainElementLandObject(area.Left + j, area.Top + i, altitude, mountainType, elementIndex);
-
-                        LandCase landCase = landChunk.GetLandCase(i, j, altitude);
-
-                        landCase.LandOverGround = mountainElement;
-
-                        isThereMountainElement = true;
                     }
                 }
             }
 
-            if (isThereMountainElement)
+            if (isThereSandElement)
             {
-                landChunk.AddTypeInChunk(typeof(MountainElementLandObject));
+                landChunk.AddTypeInChunk(typeof(GroundElementLandObject));
             }
 
             return random.Next();
@@ -91,7 +83,7 @@ namespace PokeU.Model.MountainObject
 
         protected virtual int GetElementPower(float power)
         {
-            int index = 13 - (int)Math.Max(Math.Min(13, power % 14), 0);
+            int index = (int)Math.Max(Math.Min(20, power % 21), 0);
 
             if (index < 10)
             {
