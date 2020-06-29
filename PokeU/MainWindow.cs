@@ -64,7 +64,7 @@ namespace PokeU
                 Time deltaTime = clock.Restart();
 
                 // Game logic update
-                this.landWorld.Update(deltaTime);
+                this.landWorld.UpdateLogic(null, deltaTime);
 
                 // Draw window
                 AObject2D.UpdateZoomAnimationManager(deltaTime);

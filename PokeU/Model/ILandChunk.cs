@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using PokeU.Model.Entity;
+using SFML.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace PokeU.Model
     public interface ILandChunk: IObject
     { 
         HashSet<Type> TypesInChunk
+        {
+            get;
+        }
+
+        HashSet<IEntity> EntitiesInChunk
         {
             get;
         }

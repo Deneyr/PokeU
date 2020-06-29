@@ -56,12 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LandGenerator\EpicenterData\AStructureLayerGenerator.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterDensityLayer.cs" />
+    <Compile Include="Model\Entity\ABuildingEntity.cs" />
+    <Compile Include="Model\Entity\ACharacterEntity.cs" />
+    <Compile Include="Model\Entity\AEntity.cs" />
+    <Compile Include="Model\Entity\ARockEntity.cs" />
+    <Compile Include="Model\Entity\ATreeEntity.cs" />
+    <Compile Include="Model\Entity\EntityManager.cs" />
+    <Compile Include="Model\Entity\IEntity.cs" />
     <Compile Include="Model\GrassObject\GrassElementLandObject.cs" />
     <Compile Include="Model\GrassObject\GrassElementLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\ElementLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\GroundElementLayerGenerator.cs" />
     <Compile Include="Model\GroundObject\GroundElementLandObject.cs" />
+    <Compile Include="Model\IUpdatable.cs" />
     <Compile Include="Model\LandCreationHelper.cs" />
     <Compile Include="LandGenerator\EpicenterData\EpicenterAreaLayer.cs" />
     <Compile Include="Model\GrassObject\GrassLandObject.cs" />

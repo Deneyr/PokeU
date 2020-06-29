@@ -1,4 +1,5 @@
 ﻿using PokeU.LandGenerator.EpicenterData;
+using PokeU.Model.Entity;
 using PokeU.Model.GroundObject;
 using PokeU.Model.Loader;
 using SFML.Graphics;
@@ -12,13 +13,16 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model
 {
-    public class LandWorld: IDisposable
+    public class LandWorld: IDisposable, IUpdatable
     {
         private static readonly int CHUNK_SIZE = 64;
 
         private static readonly int NB_MAX_CACHE_CHUNK = 8;
 
+        private EntityManager entityManager;
+
         private LandChunkLoader landChunkLoader;
+
         private Mutex mainMutex = new Mutex();
 
         private Dictionary<IntRect, Tuple<LandChunkContainer, ILandChunk>> pendingLandChunksImported;
@@ -38,6 +42,10 @@ namespace PokeU.Model
 
         public LandWorld()
         {
+            this.entityManager = new EntityManager();
+            this.ChunkAdded += this.entityManager.OnChunkAdded;
+            this.ChunkRemoved += this.entityManager.OnChunkRemoved;
+
             this.landChunkLoader = new LandChunkLoader();
             this.landChunkLoader.LandChunksImported += this.OnLandChunkImported;
 
@@ -283,6 +291,55 @@ namespace PokeU.Model
             this.landChunkLoader.RequestChunk(subChunksAddedList);
         }
 
+        public LandCase GetLandCaseAt(int x, int y, int z)
+        {
+            LandCase result = null;
+
+            ILandChunk landChunk = this.GetLandChunkAt(x, y);
+            if(landChunk != null)
+            {
+                result = landChunk.GetLandCase(y, x, z);
+            }
+
+            return result;
+        }
+
+        public ILandChunk GetLandChunkAt(int x, int y)
+        {
+            ILandChunk result = null;
+
+            int offsetX = x - this.currentChunksArea.Left;
+            int offsetY = y - this.currentChunksArea.Top;
+
+            if (offsetX >= 0 && offsetY >= 0)
+            {
+                int chunkX = offsetX / CHUNK_SIZE;
+                int chunkY = offsetY / CHUNK_SIZE;
+
+                if (chunkY < this.landChunkArea.Count
+                    && chunkX < this.landChunkArea[0].Count)
+                {
+
+                    offsetX %= CHUNK_SIZE;
+                    offsetY %= CHUNK_SIZE;
+
+                    LandChunkContainer container = this.landChunkArea[chunkY][chunkX];
+
+                    if (container.LandChunk != null)
+                    {
+                        result = container.LandChunk;
+                    }
+                }
+
+            }
+            return result;
+        }
+
+        public bool IsChunkActive(IntRect areaChunk)
+        {
+            return this.currentLoadedLandChunks.ContainsKey(areaChunk);
+        }
+
         private void OnLandChunkImported(List<Tuple<LandChunkContainer, ILandChunk>> containersImported)
         {
             this.mainMutex.WaitOne();
@@ -295,11 +352,13 @@ namespace PokeU.Model
             this.mainMutex.ReleaseMutex();
         }
 
-        public void Update(Time deltaTime)
+        public void UpdateLogic(LandWorld world, Time deltaTime)
         {
+            // Chunks adding. 
             this.UpdateLandChunks();
 
-            // Next update.
+            // Entities update.
+            this.entityManager.UpdateLogic(this, deltaTime);
         }
 
         private void UpdateLandChunks()
@@ -415,6 +474,9 @@ namespace PokeU.Model
             this.landChunkLoader.StopThread();
 
             this.landChunkLoader.LandChunksImported -= this.OnLandChunkImported;
+
+            this.ChunkAdded -= this.entityManager.OnChunkAdded;
+            this.ChunkRemoved -= this.entityManager.OnChunkRemoved;
         }
     }
 }

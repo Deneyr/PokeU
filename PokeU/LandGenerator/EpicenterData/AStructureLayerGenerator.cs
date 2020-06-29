@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokeU.Model
+namespace PokeU.LandGenerator.EpicenterData
 {
-    public interface IObject
+    public class AStructureLayerGenerator
     {
-
     }
 }
