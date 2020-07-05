@@ -1,4 +1,5 @@
-﻿using SFML.System;
+﻿using QuadTrees.QTreeRect;
+using SFML.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,25 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model.Entity
 {
-    public interface IEntity: IObject, IUpdatable
+    public interface IEntity: IObject, IUpdatable, IRectQuadStorable
     {
         bool Persistent
         {
             get;
         }
 
-        Vector2f Position
+        Vector2f TruePosition
+        {
+            get;
+        }
+
+        Vector2i Position
+        {
+            get;
+            set;
+        }
+
+        Vector2f Offset
         {
             get;
             set;
@@ -26,10 +38,10 @@ namespace PokeU.Model.Entity
             set;
         }
 
-        Vector2i HitBase
-        {
-            get;
-        }
+        //Vector2i HitBase
+        //{
+        //    get;
+        //}
 
         int HitHigh
         {

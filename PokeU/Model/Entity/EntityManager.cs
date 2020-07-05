@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PokeU.Model.Entity.Data;
+using QuadTrees;
 using SFML.Graphics;
 using SFML.System;
 
@@ -10,93 +12,144 @@ namespace PokeU.Model.Entity
 {
     public class EntityManager: IUpdatable
     {
-        private Dictionary<IntRect, List<IEntity>> entities;
+        // private Dictionary<IntRect, List<IEntity>> entities;
+
+        private QuadTreeRect<IEntity> area;
+
+        private Dictionary<IEntity, ILandChunk> entitiesToChunks;
+
+        private Dictionary<IEntity, BookingEntity> entitiesToBooking;
+
 
         public EntityManager()
         {
-            this.entities = new Dictionary<IntRect, List<IEntity>>();
-        }
+            this.area = new QuadTreeRect<IEntity>();
 
+            this.entitiesToChunks = new Dictionary<IEntity, ILandChunk>();
 
-        public void AddEntity(IntRect area, IEntity entity)
-        {
-            List<IEntity> entitiesInChunk;
-            if (this.entities.ContainsKey(area) == false)
-            {
-                entitiesInChunk = new List<IEntity>();
-                this.entities.Add(area, entitiesInChunk);
-            }
-            else
-            {
-                entitiesInChunk = this.entities[area];
-            }
-
-            if (entity != null)
-            {
-                entitiesInChunk.Add(entity);
-            }
-        }
-
-        public void RemoveChunk(IntRect area)
-        {
-            if (this.entities.ContainsKey(area))
-            {
-                this.entities.Remove(area);
-            }
+            this.entitiesToBooking = new Dictionary<IEntity, BookingEntity>();
         }
 
         public void UpdateLogic(LandWorld world, Time deltaTime)
         {
-            foreach (KeyValuePair<IntRect, List<IEntity>> entries in this.entities)
+            foreach (KeyValuePair<IEntity, ILandChunk> entries in this.entitiesToChunks)
             {
-                if (world.IsChunkActive(entries.Key))
+                if (world.IsChunkActive(entries.Value.Area))
                 {
-                    foreach (IEntity entity in entries.Value)
-                    {
-                        entity.UpdateLogic(world, deltaTime);
-                    }
+                    entries.Key.UpdateLogic(world, deltaTime);
                 }
             }
         }
 
-        public void MoveEntity(LandWorld world, IEntity entity, float x, float y, int z)
+        public bool BookPositionForEntity(LandWorld world, IEntity entity, int x, int y, int z)
         {
-            ILandChunk landChunkFrom = world.GetLandChunkAt((int)entity.Position.X, (int)entity.Position.Y);
-            ILandChunk landChunkTo = world.GetLandChunkAt((int) x, (int) y);
-
-            if (landChunkTo != null)
+            if(this.entitiesToBooking.ContainsKey(entity) == false)
             {
-                if (landChunkFrom != landChunkTo)
-                {
+                ILandChunk landChunk = world.GetLandChunkAt(x, y);
 
+                if(landChunk != null)
+                {
+                    BookingEntity bookingEntity = new BookingEntity(entity, x, y, z);
+
+                    this.entitiesToBooking.Add(entity, bookingEntity);
+
+                    this.AddEntity(entity, landChunk);
+
+                    return true;
                 }
             }
+
+            return false;
+        }
+
+        public bool MoveEntity(LandWorld world, IEntity entity, int x, int y)
+        {
+            if (this.entitiesToBooking.ContainsKey(entity))
+            {
+                BookingEntity bookingEntity = this.entitiesToBooking[entity];
+                this.RemoveEntity(bookingEntity);
+
+                ILandChunk landChunkFrom = world.GetLandChunkAt(entity.Position.X, entity.Position.Y);
+                ILandChunk landChunkTo = world.GetLandChunkAt(x, y);
+
+                if (landChunkTo != null)
+                {
+                    if (landChunkFrom != landChunkTo)
+                    {
+                        landChunkFrom.EntitiesInChunk.Remove(entity);
+                        landChunkTo.EntitiesInChunk.Add(entity);
+
+                        this.entitiesToChunks.Remove(entity);
+                        this.entitiesToChunks.Add(entity, landChunkTo);
+                    }
+
+                    entity.Position = new Vector2i(x, y);
+
+                    this.area.Move(entity);
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void OnChunkAdded(ILandChunk chunk)
         {
-            if (this.entities.ContainsKey(chunk.Area))
+            foreach(IEntity entity in chunk.EntitiesInChunk)
             {
-                throw new Exception("Add an existing chunk in Entity Manager");
-            }
-
-            List<IEntity> entitiesInChunk = new List<IEntity>();
-            this.entities.Add(chunk.Area, entitiesInChunk);
-
-            foreach (IEntity entity in chunk.EntitiesInChunk)
-            {
-                entitiesInChunk.Add(entity);
+                this.AddEntity(entity, chunk);
             }
         }
 
         public void OnChunkRemoved(ILandChunk chunk)
         {
-            if (this.entities.ContainsKey(chunk.Area) == false)
+            foreach (IEntity entity in chunk.EntitiesInChunk)
             {
-                throw new Exception("Remove a non-existing chunk in Entity Manager");
+                //this.area.Remove(entity);
+
+                //this.entitiesToChunks.Remove(entity);
+
+                //if (this.entitiesToBooking.ContainsKey(entity))
+                //{
+                //    this.RemoveEntity(entity);
+                //}
+
+                this.RemoveEntity(entity);
+            }
+        }
+
+        public void AddEntity(IEntity entity, ILandChunk landChunk)
+        {
+            this.area.Add(entity);
+            this.entitiesToChunks.Add(entity, landChunk);
+        }
+
+        public void RemoveEntity(IEntity entity)
+        {
+            this.area.Remove(entity);
+
+            if (this.entitiesToChunks.ContainsKey(entity))
+            {
+                this.entitiesToChunks[entity].EntitiesInChunk.Remove(entity);
+                this.entitiesToChunks.Remove(entity);
             }
 
-            this.entities.Remove(chunk.Area);
+            if (this.entitiesToBooking.ContainsKey(entity))
+            {
+                this.RemoveEntity(this.entitiesToBooking[entity]);
+            }
+
+            if(entity is BookingEntity)
+            {
+                BookingEntity bookingEntity = entity as BookingEntity;
+                this.entitiesToBooking.Remove(bookingEntity.Owner);
+            }
+        }
+
+        public void OnAllChunksUpdated(LandWorld world)
+        {
+            
         }
     }
 }

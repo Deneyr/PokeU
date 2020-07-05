@@ -19,8 +19,6 @@ namespace PokeU.Model
 
         private static readonly int NB_MAX_CACHE_CHUNK = 8;
 
-        private EntityManager entityManager;
-
         private LandChunkLoader landChunkLoader;
 
         private Mutex mainMutex = new Mutex();
@@ -34,17 +32,26 @@ namespace PokeU.Model
         private List<List<LandChunkContainer>> landChunkArea;
         private IntRect currentChunksArea;
 
+        // Events
+
         public event Action<ILandChunk> ChunkAdded;
 
         public event Action<ILandChunk> ChunkRemoved;
 
-        public event Action<int> AltitudeChanged;
+        public event Action<LandWorld> AllChunksUpdated;
+
+        public EntityManager EntityManager
+        {
+            get;
+            private set;
+        }
 
         public LandWorld()
         {
-            this.entityManager = new EntityManager();
-            this.ChunkAdded += this.entityManager.OnChunkAdded;
-            this.ChunkRemoved += this.entityManager.OnChunkRemoved;
+            this.EntityManager = new EntityManager();
+            this.ChunkAdded += this.EntityManager.OnChunkAdded;
+            this.ChunkRemoved += this.EntityManager.OnChunkRemoved;
+            this.AllChunksUpdated += this.EntityManager.OnAllChunksUpdated;
 
             this.landChunkLoader = new LandChunkLoader();
             this.landChunkLoader.LandChunksImported += this.OnLandChunkImported;
@@ -358,7 +365,7 @@ namespace PokeU.Model
             this.UpdateLandChunks();
 
             // Entities update.
-            this.entityManager.UpdateLogic(this, deltaTime);
+            this.EntityManager.UpdateLogic(this, deltaTime);
         }
 
         private void UpdateLandChunks()
@@ -437,6 +444,11 @@ namespace PokeU.Model
             {
                 this.NotifyChunkAdded(landChunkImported);
             }
+
+            if(realLandChunksToImport.Count > 0 || realLandChunksToRemove.Count > 0)
+            {
+                this.NotifyAllChunksUpdated();
+            }
         }
 
         protected List<ILandChunk> remainingChunks = new List<ILandChunk>();
@@ -461,13 +473,14 @@ namespace PokeU.Model
             }
         }
 
-        private void NotifyAltitudeChanged(int newAltitude)
+        private void NotifyAllChunksUpdated()
         {
-            if (this.AltitudeChanged != null)
+            if(this.AllChunksUpdated != null)
             {
-                this.AltitudeChanged(newAltitude);
+                this.AllChunksUpdated(this);
             }
         }
+
 
         public void Dispose()
         {
@@ -475,8 +488,9 @@ namespace PokeU.Model
 
             this.landChunkLoader.LandChunksImported -= this.OnLandChunkImported;
 
-            this.ChunkAdded -= this.entityManager.OnChunkAdded;
-            this.ChunkRemoved -= this.entityManager.OnChunkRemoved;
+            this.ChunkAdded -= this.EntityManager.OnChunkAdded;
+            this.ChunkRemoved -= this.EntityManager.OnChunkRemoved;
+            this.AllChunksUpdated -= this.EntityManager.OnAllChunksUpdated;
         }
     }
 }

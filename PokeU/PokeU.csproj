@@ -34,6 +34,9 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="QuadTrees, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuadTrees.1.0.2\lib\QuadTrees.dll</HintPath>
+    </Reference>
     <Reference Include="sfmlnet-audio-2, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Graphnode.SFML.Net.2.4\lib\sfmlnet-audio-2.dll</HintPath>
     </Reference>
@@ -48,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,6 +67,8 @@
     <Compile Include="Model\Entity\AEntity.cs" />
     <Compile Include="Model\Entity\ARockEntity.cs" />
     <Compile Include="Model\Entity\ATreeEntity.cs" />
+    <Compile Include="Model\Entity\BookingEntity.cs" />
+    <Compile Include="Model\Entity\Data\QuadTree.cs" />
     <Compile Include="Model\Entity\EntityManager.cs" />
     <Compile Include="Model\Entity\IEntity.cs" />
     <Compile Include="Model\GrassObject\GrassElementLandObject.cs" />
