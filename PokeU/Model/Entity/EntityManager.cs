@@ -14,7 +14,9 @@ namespace PokeU.Model.Entity
     {
         // private Dictionary<IntRect, List<IEntity>> entities;
 
-        private QuadTreeRect<IEntity> area;
+        private IntRect area;
+
+        private QuadTreeRect<IEntity> entitiesArea;
 
         private Dictionary<IEntity, ILandChunk> entitiesToChunks;
 
@@ -23,11 +25,13 @@ namespace PokeU.Model.Entity
 
         public EntityManager()
         {
-            this.area = new QuadTreeRect<IEntity>();
+            this.entitiesArea = new QuadTreeRect<IEntity>();
 
             this.entitiesToChunks = new Dictionary<IEntity, ILandChunk>();
 
             this.entitiesToBooking = new Dictionary<IEntity, BookingEntity>();
+
+            this.area = new IntRect();
         }
 
         public void UpdateLogic(LandWorld world, Time deltaTime)
@@ -62,82 +66,123 @@ namespace PokeU.Model.Entity
             return false;
         }
 
-        public bool MoveEntity(LandWorld world, IEntity entity, int x, int y)
+        public bool IsBookingStillValid(IEntity entity)
+        {
+            return this.entitiesToBooking.ContainsKey(entity);
+        }
+
+        public IEnumerable<IEntity> GetEntitiesInCase(int x, int y, int z)
+        {
+            return this.GetEntitiesInArea(x, y, z, 1, 1, 1);
+        }
+
+        public IEnumerable<IEntity> GetEntitiesInArea(int x, int y, int z,
+            int hitX, int hitY, int hitZ)
+        {
+            IntRect areaBounding = new IntRect(x, y, hitX, hitY);
+
+            List<IEntity> result = new List<IEntity>();
+            if(this.area.Contains(x, y))
+            {
+                List<IEntity> listEntities = this.entitiesArea.GetObjects(new System.Drawing.RectangleF(x, y, hitX, hitY));
+
+                foreach(IEntity entity in listEntities)
+                {
+                    if((entity.Altitude + entity.HitHigh <= z || entity.Altitude >= z + hitZ) == false)
+                    {
+                        IntRect entityBounding = new IntRect(entity.Position.X, entity.Position.Y, entity.HitBase.X, entity.HitBase.Y);
+
+                        if (areaBounding.Intersects(entityBounding))
+                        {
+                            result.Add(entity);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public bool MoveEntity(IEntity entity, int x, int y)
         {
             if (this.entitiesToBooking.ContainsKey(entity))
             {
                 BookingEntity bookingEntity = this.entitiesToBooking[entity];
-                this.RemoveEntity(bookingEntity);
 
-                ILandChunk landChunkFrom = world.GetLandChunkAt(entity.Position.X, entity.Position.Y);
-                ILandChunk landChunkTo = world.GetLandChunkAt(x, y);
+                ILandChunk landChunkFrom = this.entitiesToChunks[entity];
+                ILandChunk landChunkTo = this.entitiesToChunks[bookingEntity];
 
-                if (landChunkTo != null)
+                if(landChunkFrom == null || landChunkTo == null)
                 {
-                    if (landChunkFrom != landChunkTo)
-                    {
-                        landChunkFrom.EntitiesInChunk.Remove(entity);
-                        landChunkTo.EntitiesInChunk.Add(entity);
-
-                        this.entitiesToChunks.Remove(entity);
-                        this.entitiesToChunks.Add(entity, landChunkTo);
-                    }
-
-                    entity.Position = new Vector2i(x, y);
-
-                    this.area.Move(entity);
-
-                    return true;
+                    throw new Exception("Error during entity moving, chunk from or to is null");
                 }
+
+                this.RemoveEntity(bookingEntity);
+                if (landChunkFrom != landChunkTo)
+                {
+                    landChunkFrom.EntitiesInChunk.Remove(entity);
+                    landChunkTo.EntitiesInChunk.Add(entity);
+
+                    this.entitiesToChunks.Remove(entity);
+                    this.entitiesToChunks.Add(entity, landChunkTo);
+                }
+
+                entity.Position = new Vector2i(x, y);
+                this.entitiesArea.Move(entity);
+
+                return true;
             }
 
             return false;
         }
 
-        public void OnChunkAdded(ILandChunk chunk)
+        public void OnChunkAdded(ILandChunk landChunk)
         {
-            foreach(IEntity entity in chunk.EntitiesInChunk)
+            foreach(IEntity entity in landChunk.EntitiesInChunk)
             {
-                this.AddEntity(entity, chunk);
+                this.entitiesArea.Add(entity);
+                this.entitiesToChunks.Add(entity, landChunk);
             }
         }
 
-        public void OnChunkRemoved(ILandChunk chunk)
+        public void OnChunkRemoved(ILandChunk landChunk)
         {
-            foreach (IEntity entity in chunk.EntitiesInChunk)
+            foreach (IEntity entity in landChunk.EntitiesInChunk)
             {
-                //this.area.Remove(entity);
+                this.entitiesArea.Remove(entity);
 
-                //this.entitiesToChunks.Remove(entity);
+                this.entitiesToChunks.Remove(entity);
 
-                //if (this.entitiesToBooking.ContainsKey(entity))
-                //{
-                //    this.RemoveEntity(entity);
-                //}
-
-                this.RemoveEntity(entity);
+                if (this.entitiesToBooking.ContainsKey(entity))
+                {
+                    this.RemoveEntity(entity);
+                }
             }
         }
 
         public void AddEntity(IEntity entity, ILandChunk landChunk)
         {
-            this.area.Add(entity);
+            this.entitiesArea.Add(entity);
             this.entitiesToChunks.Add(entity, landChunk);
+
+            landChunk.EntitiesInChunk.Add(entity);
         }
 
         public void RemoveEntity(IEntity entity)
         {
-            this.area.Remove(entity);
+            this.entitiesArea.Remove(entity);
 
-            if (this.entitiesToChunks.ContainsKey(entity))
-            {
-                this.entitiesToChunks[entity].EntitiesInChunk.Remove(entity);
-                this.entitiesToChunks.Remove(entity);
-            }
+            ILandChunk lEntityChunk = this.entitiesToChunks[entity];
+            lEntityChunk.EntitiesInChunk.Remove(entity);
+            this.entitiesToChunks.Remove(entity);
 
             if (this.entitiesToBooking.ContainsKey(entity))
             {
-                this.RemoveEntity(this.entitiesToBooking[entity]);
+                BookingEntity bookingEntity = this.entitiesToBooking[entity];
+                if (this.entitiesToChunks[bookingEntity] != lEntityChunk)
+                {
+                    this.RemoveEntity(this.entitiesToBooking[entity]);
+                }
             }
 
             if(entity is BookingEntity)
@@ -149,7 +194,7 @@ namespace PokeU.Model.Entity
 
         public void OnAllChunksUpdated(LandWorld world)
         {
-            
+            this.area = world.CurrentChunksArea;
         }
     }
 }

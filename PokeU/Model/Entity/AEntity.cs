@@ -10,6 +10,10 @@ namespace PokeU.Model.Entity
 {
     public abstract class AEntity: IEntity
     {
+        private Vector2i position;
+
+        private Vector2i hitBase;
+
         public virtual bool Persistent
         {
             get
@@ -22,11 +26,13 @@ namespace PokeU.Model.Entity
         {
             get
             {
-                return new Vector2i((int) this.Rect.Left, (int) this.Rect.Top);
+                return this.position;
             }
             set
             {
-                this.Rect = new RectangleF(value.X, value.Y, this.Rect.Width, this.Rect.Height);
+                this.position = value;
+
+                this.UpdateRect();
             }
         }
 
@@ -50,11 +56,20 @@ namespace PokeU.Model.Entity
             set;
         }
 
-        //public Vector2i HitBase
-        //{
-        //    get;
-        //    protected set;
-        //}
+        public Vector2i HitBase
+        {
+            get
+            {
+                return this.hitBase;
+            }
+
+            protected set
+            {
+                this.hitBase = value;
+
+                this.UpdateRect();
+            }
+        }
 
         public int HitHigh
         {
@@ -79,6 +94,11 @@ namespace PokeU.Model.Entity
             this.HitHigh = hitHigh;
 
             this.Offset = new Vector2f(0, 0);
+        }
+
+        private void UpdateRect()
+        {
+            this.Rect = new RectangleF(this.position.X, this.position.Y, this.hitBase.X, this.hitBase.Y);
         }
 
         public void UpdateLogic(LandWorld world, Time deltaTime)

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model
 {
-    public class LandWorld: IDisposable, IUpdatable
+    public class LandWorld : IDisposable, IUpdatable
     {
         private static readonly int CHUNK_SIZE = 64;
 
@@ -44,6 +44,18 @@ namespace PokeU.Model
         {
             get;
             private set;
+        }
+
+        public IntRect CurrentChunksArea
+        {
+            get
+            {
+                return this.currentChunksArea;
+            }
+            set
+            {
+                this.currentChunksArea = value;
+            }
         }
 
         public LandWorld()

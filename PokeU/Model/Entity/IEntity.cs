@@ -38,10 +38,10 @@ namespace PokeU.Model.Entity
             set;
         }
 
-        //Vector2i HitBase
-        //{
-        //    get;
-        //}
+        Vector2i HitBase
+        {
+            get;
+        }
 
         int HitHigh
         {
