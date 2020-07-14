@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PokeU.Model.Entity.Data;
 using QuadTrees;
 using SFML.Graphics;
 using SFML.System;
 
 namespace PokeU.Model.Entity
 {
-    public class EntityManager: IUpdatable
+    public class EntityManager: IUpdatable, IDisposable
     {
         // private Dictionary<IntRect, List<IEntity>> entities;
 
@@ -22,6 +21,12 @@ namespace PokeU.Model.Entity
 
         private Dictionary<IEntity, BookingEntity> entitiesToBooking;
 
+
+        public event Action<ILandChunk, IEntity> EntityAdded;
+
+        public event Action<ILandChunk, ILandChunk, IEntity> EntityChunkChanged;
+
+        public event Action<ILandChunk, IEntity> EntityRemoved;
 
         public EntityManager()
         {
@@ -71,6 +76,11 @@ namespace PokeU.Model.Entity
             return this.entitiesToBooking.ContainsKey(entity);
         }
 
+        public BookingEntity GetBookingEntityFor(IEntity entity)
+        {
+            return this.entitiesToBooking[entity];
+        }
+
         public IEnumerable<IEntity> GetEntitiesInCase(int x, int y, int z)
         {
             return this.GetEntitiesInArea(x, y, z, 1, 1, 1);
@@ -103,7 +113,7 @@ namespace PokeU.Model.Entity
             return result;
         }
 
-        public bool MoveEntity(IEntity entity, int x, int y)
+        public bool MoveEntity(IEntity entity, int x, int y, int z)
         {
             if (this.entitiesToBooking.ContainsKey(entity))
             {
@@ -127,7 +137,8 @@ namespace PokeU.Model.Entity
                     this.entitiesToChunks.Add(entity, landChunkTo);
                 }
 
-                entity.Position = new Vector2i(x, y);
+                entity.SetPosition(x, y, z);
+
                 this.entitiesArea.Move(entity);
 
                 return true;
@@ -142,6 +153,8 @@ namespace PokeU.Model.Entity
             {
                 this.entitiesArea.Add(entity);
                 this.entitiesToChunks.Add(entity, landChunk);
+
+                this.NotifyEntityAdded(landChunk, entity);
             }
         }
 
@@ -157,6 +170,8 @@ namespace PokeU.Model.Entity
                 {
                     this.RemoveEntity(entity);
                 }
+
+                this.NotifyEntityRemoved(landChunk, entity);
             }
         }
 
@@ -166,6 +181,8 @@ namespace PokeU.Model.Entity
             this.entitiesToChunks.Add(entity, landChunk);
 
             landChunk.EntitiesInChunk.Add(entity);
+
+            this.NotifyEntityAdded(landChunk, entity);
         }
 
         public void RemoveEntity(IEntity entity)
@@ -190,11 +207,47 @@ namespace PokeU.Model.Entity
                 BookingEntity bookingEntity = entity as BookingEntity;
                 this.entitiesToBooking.Remove(bookingEntity.Owner);
             }
+
+            this.NotifyEntityRemoved(lEntityChunk, entity);
+
+            entity.Dispose();
         }
 
         public void OnAllChunksUpdated(LandWorld world)
         {
             this.area = world.CurrentChunksArea;
+        }
+
+        public void NotifyEntityAdded(ILandChunk landChunk, IEntity entity)
+        {
+            if(this.EntityAdded != null)
+            {
+                this.EntityAdded(landChunk, entity);
+            }
+        }
+
+        public void NotifyEntityRemoved(ILandChunk landChunk, IEntity entity)
+        {
+            if (this.EntityRemoved != null)
+            {
+                this.EntityRemoved(landChunk, entity);
+            }
+        }
+
+        public void NotifyEntityChunkChanged(ILandChunk landChunkFrom, ILandChunk landChunkTo, IEntity entity)
+        {
+            if (this.EntityChunkChanged != null)
+            {
+                this.EntityChunkChanged(landChunkFrom, landChunkTo, entity);
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach(IEntity entity in this.entitiesArea.GetAllObjects())
+            {
+                this.RemoveEntity(entity);
+            }
         }
     }
 }

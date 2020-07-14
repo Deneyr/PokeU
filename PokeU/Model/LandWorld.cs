@@ -500,6 +500,8 @@ namespace PokeU.Model
 
             this.landChunkLoader.LandChunksImported -= this.OnLandChunkImported;
 
+            this.EntityManager.Dispose();
+
             this.ChunkAdded -= this.EntityManager.OnChunkAdded;
             this.ChunkRemoved -= this.EntityManager.OnChunkRemoved;
             this.AllChunksUpdated -= this.EntityManager.OnAllChunksUpdated;

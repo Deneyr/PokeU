@@ -77,34 +77,35 @@ namespace PokeU
                 window.DispatchEvents();
 
 
-                // To remove after.
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Z))
-                {
-                    view.Center += new Vector2f(0, -2f);
-                }
-                else if(Keyboard.IsKeyPressed(Keyboard.Key.S))
-                {
-                    view.Center += new Vector2f(0, 2f);
-                }
+                //// To remove after.
+                //if (Keyboard.IsKeyPressed(Keyboard.Key.Z))
+                //{
+                //    view.Center += new Vector2f(0, -2f);
+                //}
+                //else if(Keyboard.IsKeyPressed(Keyboard.Key.S))
+                //{
+                //    view.Center += new Vector2f(0, 2f);
+                //}
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.D))
-                {
-                    view.Center += new Vector2f(2f, 0);
-                }
-                else if (Keyboard.IsKeyPressed(Keyboard.Key.Q))
-                {
-                    view.Center += new Vector2f(-2f, 0);
-                }
-                // Console.WriteLine(view.Center.X + " : " + view.Center.Y);
+                //if (Keyboard.IsKeyPressed(Keyboard.Key.D))
+                //{
+                //    view.Center += new Vector2f(2f, 0);
+                //}
+                //else if (Keyboard.IsKeyPressed(Keyboard.Key.Q))
+                //{
+                //    view.Center += new Vector2f(-2f, 0);
+                //}
+                //// Console.WriteLine(view.Center.X + " : " + view.Center.Y);
 
-                this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
+                //this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
 
-                this.SetView(window, view);
+                //this.SetView(window, view);
 
                 // Finally, display the rendered frame on screen
                 window.Display();
             }
 
+            this.landWorld2D.Dispose(this.landWorld);
             this.landWorld.Dispose();
 
             AObject2D.StopAnimationManager();

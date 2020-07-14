@@ -3,6 +3,7 @@ using PokeU.Model.GrassObject;
 using PokeU.Model.GroundObject;
 using PokeU.Model.MountainObject;
 using PokeU.Model.WaterObject;
+using PokeU.View.Entity2D;
 using PokeU.View.GrassObject;
 using PokeU.View.GroundObject;
 using PokeU.View.MountainObject;
@@ -24,6 +25,8 @@ namespace PokeU.View
         public static readonly Dictionary<Type, IObject2DFactory> MappingObjectModelView;
 
         public static readonly TextureManager TextureManager;
+
+        private Entity2DManager entity2DManager;
 
         private Dictionary<ILandChunk, LandChunk2D> landChunksDictionary;
 
@@ -61,6 +64,10 @@ namespace PokeU.View
             this.landChunksDictionary = new Dictionary<ILandChunk, LandChunk2D>();
 
             this.chunkResourcesLoader = new ChunkResourcesLoader();
+
+            this.entity2DManager = new Entity2DManager(this);
+            landWorld.EntityManager.EntityAdded += this.entity2DManager.OnEntityAdded;
+            landWorld.EntityManager.EntityRemoved += this.entity2DManager.OnEntityRemoved;
 
             this.currentAltitude = 0;
 
@@ -127,5 +134,13 @@ namespace PokeU.View
             this.landChunksDictionary.Remove(obj);
         }
 
+        public void Dispose(LandWorld landWorld)
+        {
+            landWorld.EntityManager.EntityAdded -= this.entity2DManager.OnEntityAdded;
+            landWorld.EntityManager.EntityRemoved -= this.entity2DManager.OnEntityRemoved;
+
+            landWorld.ChunkAdded -= OnChunkAdded;
+            landWorld.ChunkRemoved -= OnChunkRemoved;
+        }
     }
 }

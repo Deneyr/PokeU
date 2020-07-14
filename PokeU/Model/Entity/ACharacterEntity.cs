@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace PokeU.Model.Entity
 {
-    public class ACharacterEntity : AEntity
+    public class ACharacterEntity : ALifeformEntity
     {
-        public ACharacterEntity(int positionX, int positionY, int positionZ, int hitBaseX, int hitBaseY, int hitHigh)
-            : base(positionX, positionY, positionZ, hitBaseX, hitBaseY, hitHigh)
+        public ACharacterEntity(int positionX, int positionY, int positionZ)
+            : base(positionX, positionY, positionZ, 1, 1, 1)
         {
+            this.InitializeLifeformEntity(100);
         }
     }
 }
