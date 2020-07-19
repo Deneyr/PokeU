@@ -13,6 +13,8 @@ namespace PokeU.Model
     {
         protected List<LandCase[,]> landObjectsArray;
 
+        protected sbyte[,] altitudeArray;
+
         protected HashSet<Type> typesInChunk;
 
         protected HashSet<IEntity> entitiesInChunk;
@@ -56,6 +58,7 @@ namespace PokeU.Model
             this.Area = area;
 
             this.landObjectsArray = new List<LandCase[,]>();
+            this.altitudeArray = new sbyte[this.Area.Height, this.Area.Width];
 
             this.entitiesInChunk = new HashSet<IEntity>();
 
@@ -106,6 +109,16 @@ namespace PokeU.Model
         public LandCase[,] GetLandObjectsAtAltitude(int altitude)
         {
             return this.landObjectsArray[altitude - this.AltitudeMin];
+        }
+
+        public int GetAltitudeAt(int i, int j)
+        {
+            return this.altitudeArray[i, j];
+        }
+
+        public void SetAltitudeAt(int i, int j, int altitude)
+        {
+            this.altitudeArray[i, j] = (sbyte)altitude;
         }
 
         public ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax)

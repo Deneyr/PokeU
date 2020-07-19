@@ -124,6 +124,7 @@
     <Compile Include="Model\WaterObject\WaterLayerGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\ALandObject2D.cs" />
     <Compile Include="View\Animations\Animation.cs" />
     <Compile Include="View\Animations\AnimationManager.cs" />
     <Compile Include="View\Animations\IAnimation.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="View\Animations\ZoomAnimationManager.cs" />
     <Compile Include="View\AObject2D.cs" />
     <Compile Include="View\AObject2DFactory.cs" />
+    <Compile Include="View\Entity2D\ACharacterEntity2D.cs" />
     <Compile Include="View\Entity2D\AEntity2D.cs" />
     <Compile Include="View\Entity2D\Entity2DManager.cs" />
     <Compile Include="View\Entity2D\PlayerEntity2D.cs" />

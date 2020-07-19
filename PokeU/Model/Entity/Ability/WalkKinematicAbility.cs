@@ -19,20 +19,25 @@ namespace PokeU.Model.Entity.Ability
 
         protected override bool BookPosition(LandWorld world, IEntity entity, Vector2i position, int altitude)
         {
-            while(altitude <= LandChunkLoader.ALTITUDE_RANGE && world.GetLandCaseAt(position.X, position.Y, altitude).LandWall != null)
-            {
-                altitude++;
-            }
+            //while(altitude <= LandChunkLoader.ALTITUDE_RANGE && world.GetLandCaseAt(position.X, position.Y, altitude).LandWall != null)
+            //{
+            //    altitude++;
+            //}
+
+            altitude = world.GetAltitudeAt(position.X, position.Y);
 
             if (altitude <= LandChunkLoader.ALTITUDE_RANGE)
             {
                 return base.BookPosition(world, entity, position, altitude);
             }
+
             return false;
         }
 
         public override void UpdateLogic(LandWorld world, IEntity owner, Time deltaTime)
         {
+            base.UpdateLogic(world, owner, deltaTime);
+
             if (world.EntityManager.IsBookingStillValid(owner))
             {
                 BookingEntity bookEntity = world.EntityManager.GetBookingEntityFor(owner);
@@ -77,8 +82,6 @@ namespace PokeU.Model.Entity.Ability
                 }
 
             }
-
-            base.UpdateLogic(world, owner, deltaTime);
         }
 
     }

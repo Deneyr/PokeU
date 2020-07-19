@@ -10,7 +10,7 @@ using SFML.System;
 
 namespace PokeU.View.GroundObject
 {
-    public class GroundObject2D : AObject2D, ILandObject2D
+    public class GroundObject2D : ALandObject2D
     {
         public GroundObject2D()
         {

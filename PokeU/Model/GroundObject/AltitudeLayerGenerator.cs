@@ -43,60 +43,68 @@ namespace PokeU.Model.GroundObject
 
         public override int GenerateLandLayer(WorldGenerator worldGenerator, ILandChunk landChunk, IntRect area, int seed, int minAltitude, int maxAltitude)
         {
+            for (int i = 0; i < area.Height; i++)
+            {
+                for (int j = 0; j < area.Width; j++)
+                {
+                    landChunk.SetAltitudeAt(i, j, this.GetComputedPowerAt(j, i));
+                }
+            }
+
             return seed;
         }
 
-        protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)
-        {
-            int maxValue = int.MinValue;
-            int minValue = int.MaxValue;
+        //protected int GetComputedMatrix(int i, int j, ref int[,] subAreaInt)
+        //{
+        //    int maxValue = int.MinValue;
+        //    int minValue = int.MaxValue;
 
-            for (int y = -1; y < 2; y++)
-            {
-                for (int x = -1; x < 2; x++)
-                {
-                    int altitude = this.GetComputedPowerAt(j + x, i + y);
+        //    for (int y = -1; y < 2; y++)
+        //    {
+        //        for (int x = -1; x < 2; x++)
+        //        {
+        //            int altitude = this.GetComputedPowerAt(j + x, i + y);
 
-                    maxValue = Math.Max(maxValue, altitude);
+        //            maxValue = Math.Max(maxValue, altitude);
 
-                    minValue = Math.Min(minValue, altitude);
+        //            minValue = Math.Min(minValue, altitude);
 
-                    subAreaInt[y + 1, x + 1] = altitude;
-                }
-            }
+        //            subAreaInt[y + 1, x + 1] = altitude;
+        //        }
+        //    }
 
-            return maxValue;
-        }
+        //    return maxValue;
+        //}
 
-        protected void GetComputedLandType(
-            IntRect area,
-            ref int[,] subAreaInt,
-            int maxValue,
-            out LandTransition landtransition)
-        {
-            bool[,] subAreaBool = new bool[3, 3];
+        //protected void GetComputedLandType(
+        //    IntRect area,
+        //    ref int[,] subAreaInt,
+        //    int maxValue,
+        //    out LandTransition landtransition)
+        //{
+        //    bool[,] subAreaBool = new bool[3, 3];
 
-            landtransition = LandTransition.NONE;
+        //    landtransition = LandTransition.NONE;
 
-            if (subAreaInt[1, 1] < maxValue)
-            {
-                for (int y = 0; y < 3; y++)
-                {
-                    for (int x = 0; x < 3; x++)
-                    {
-                        if (subAreaInt[y, x] != maxValue)
-                        {
-                            subAreaBool[y, x] = false;
-                        }
-                        else
-                        {
-                            subAreaBool[y, x] = true;
-                        }
-                    }
-                }
+        //    if (subAreaInt[1, 1] < maxValue)
+        //    {
+        //        for (int y = 0; y < 3; y++)
+        //        {
+        //            for (int x = 0; x < 3; x++)
+        //            {
+        //                if (subAreaInt[y, x] != maxValue)
+        //                {
+        //                    subAreaBool[y, x] = false;
+        //                }
+        //                else
+        //                {
+        //                    subAreaBool[y, x] = true;
+        //                }
+        //            }
+        //        }
 
-                landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
-            }
-        }
+        //        landtransition = ALandLayerGenerator.GetLandTransitionFrom(ref subAreaBool);
+        //    }
+        //}
     }
 }

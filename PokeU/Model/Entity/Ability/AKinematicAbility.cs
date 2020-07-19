@@ -113,11 +113,11 @@ namespace PokeU.Model.Entity.Ability
                     {
                         if(position.X > entity.Position.X)
                         {
-                            this.MovingState = MovingState.DOWN;
+                            this.MovingState = MovingState.MOVE_DOWN;
                         }
                         else
                         {
-                            this.MovingState = MovingState.UP;
+                            this.MovingState = MovingState.MOVE_UP;
                         }
                     }
                     else if(position.Y != entity.Position.Y
@@ -125,11 +125,11 @@ namespace PokeU.Model.Entity.Ability
                     {
                         if (position.Y > entity.Position.Y)
                         {
-                            this.MovingState = MovingState.RIGHT;
+                            this.MovingState = MovingState.MOVE_RIGHT;
                         }
                         else
                         {
-                            this.MovingState = MovingState.LEFT;
+                            this.MovingState = MovingState.MOVE_LEFT;
                         }
                     }
                     else if(altitude != entity.Altitude
@@ -159,6 +159,25 @@ namespace PokeU.Model.Entity.Ability
 
         public override void UpdateLogic(LandWorld world, IEntity owner, Time deltaTime)
         {
+            if(world.EntityManager.IsBookingStillValid(owner) == false)
+            {
+                switch (this.MovingState)
+                {
+                    case MovingState.MOVE_UP:
+                        this.MovingState = MovingState.IDLE_UP;
+                        break;
+                    case MovingState.MOVE_DOWN:
+                        this.MovingState = MovingState.IDLE_DOWN;
+                        break;
+                    case MovingState.MOVE_RIGHT:
+                        this.MovingState = MovingState.IDLE_RIGHT;
+                        break;
+                    case MovingState.MOVE_LEFT:
+                        this.MovingState = MovingState.IDLE_LEFT;
+                        break;
+                }
+            }
+
             this.UpdateDesiredPosition(world, owner);
         }
 
@@ -174,32 +193,63 @@ namespace PokeU.Model.Entity.Ability
         {
             if (this.TryToReach)
             {
-                if (this.DesiredPosition.Equals(owner.Position))
-                {
-                    this.TryToReach = false;
-                }
-                else
-                {
-                    int offsetX = this.DesiredPosition.X - owner.Position.X;
-                    int offsetY = this.DesiredPosition.Y - owner.Position.Y;
-                    int offsetZ = this.DesiredAltitude - owner.Altitude;
 
-                    Vector2i vectX = new Vector2i(owner.Position.X + offsetX, 0);
-                    Vector2i vectY = new Vector2i(0, owner.Position.Y + offsetY);
+                int offsetX = this.DesiredPosition.X - owner.Position.X;
+                int offsetY = this.DesiredPosition.Y - owner.Position.Y;
+                int offsetZ = this.DesiredAltitude - owner.Altitude;
 
-                    if (this.IsPositionValid(world, owner, vectX, owner.Altitude))
+                Vector2i vectX = new Vector2i(owner.Position.X + offsetX, 0);
+                Vector2i vectY = new Vector2i(0, owner.Position.Y + offsetY);
+
+                if (this.IsPositionValid(world, owner, vectX, owner.Altitude))
+                {
+                    this.BookPosition(world, owner, vectX, owner.Altitude);
+                }
+                else if (this.IsPositionValid(world, owner, vectY, owner.Altitude))
+                {
+                    this.BookPosition(world, owner, vectY, owner.Altitude);
+                }
+                else if (this.IsPositionValid(world, owner, owner.Position, owner.Altitude + offsetZ))
+                {
+                    this.BookPosition(world, owner, owner.Position, owner.Altitude + offsetZ);
+                }
+
+                if (world.EntityManager.IsBookingStillValid(owner))
+                {
+                    BookingEntity bookingEntity = world.EntityManager.GetBookingEntityFor(owner);
+
+                    if(bookingEntity.Position == this.DesiredPosition)
                     {
-                        this.BookPosition(world, owner, vectX, owner.Altitude);
-                    }
-                    else if(this.IsPositionValid(world, owner, vectY, owner.Altitude))
-                    {
-                        this.BookPosition(world, owner, vectY, owner.Altitude);
-                    }
-                    else if (this.IsPositionValid(world, owner, owner.Position, owner.Altitude + offsetZ))
-                    {
-                        this.BookPosition(world, owner, owner.Position, owner.Altitude + offsetZ);
+                        this.TryToReach = false;
                     }
                 }
+
+                //if (this.DesiredPosition.Equals(owner.Position))
+                //{
+                //    this.TryToReach = false;
+                //}
+                //else
+                //{
+                //    int offsetX = this.DesiredPosition.X - owner.Position.X;
+                //    int offsetY = this.DesiredPosition.Y - owner.Position.Y;
+                //    int offsetZ = this.DesiredAltitude - owner.Altitude;
+
+                //    Vector2i vectX = new Vector2i(owner.Position.X + offsetX, 0);
+                //    Vector2i vectY = new Vector2i(0, owner.Position.Y + offsetY);
+
+                //    if (this.IsPositionValid(world, owner, vectX, owner.Altitude))
+                //    {
+                //        this.BookPosition(world, owner, vectX, owner.Altitude);
+                //    }
+                //    else if(this.IsPositionValid(world, owner, vectY, owner.Altitude))
+                //    {
+                //        this.BookPosition(world, owner, vectY, owner.Altitude);
+                //    }
+                //    else if (this.IsPositionValid(world, owner, owner.Position, owner.Altitude + offsetZ))
+                //    {
+                //        this.BookPosition(world, owner, owner.Position, owner.Altitude + offsetZ);
+                //    }
+                //}
             }
         }
 
@@ -243,10 +293,14 @@ namespace PokeU.Model.Entity.Ability
 
     public enum MovingState
     {
-        UP,
-        DOWN,
-        RIGHT,
-        LEFT,
+        IDLE_UP,
+        IDLE_DOWN,
+        IDLE_RIGHT,
+        IDLE_LEFT,
+        MOVE_UP,
+        MOVE_DOWN,
+        MOVE_RIGHT,
+        MOVE_LEFT,
         ABOVE,
         UNDER,
         TELEPORT,

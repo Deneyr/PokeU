@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View.MountainObject
 {
-    public class MountainElementObject2D : AObject2D, ILandObject2D
+    public class MountainElementObject2D : ALandObject2D
     {
         public MountainElementObject2D(IObject2DFactory factory, MountainElementLandObject landObject) :
             base()

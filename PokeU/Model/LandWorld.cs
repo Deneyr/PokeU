@@ -317,7 +317,20 @@ namespace PokeU.Model
             ILandChunk landChunk = this.GetLandChunkAt(x, y);
             if(landChunk != null)
             {
-                result = landChunk.GetLandCase(y, x, z);
+                result = landChunk.GetLandCase(y - landChunk.Area.Top, x - landChunk.Area.Left, z);
+            }
+
+            return result;
+        }
+
+        public int GetAltitudeAt(int x, int y)
+        {
+            int result = 0;
+
+            ILandChunk landChunk = this.GetLandChunkAt(x, y);
+            if (landChunk != null)
+            {
+                result = landChunk.GetAltitudeAt(y - landChunk.Area.Top, x - landChunk.Area.Left);
             }
 
             return result;

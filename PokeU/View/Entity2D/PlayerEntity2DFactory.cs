@@ -12,7 +12,7 @@ namespace PokeU.View.Entity2D
     {
         protected override void InitializeFactory()
         {
-            this.texturesPath.Add(@"Autotiles\elementsSand.png");
+            this.texturesPath.Add(@"Autotiles\trainer.png");
 
             base.InitializeFactory();
         }

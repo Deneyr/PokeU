@@ -235,13 +235,6 @@ namespace PokeU.View
                         {
                             landObjectsList.Dispose();
                         }
-
-                        //foreach (ILandObject2D object2D in landObjectsList)
-                        //{
-                        //    object2D.Dispose();
-                        //}
-
-                        //landObjectsList.Clear();
                     }
                 }
             }

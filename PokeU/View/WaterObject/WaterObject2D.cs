@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View.WaterObject
 {
-    public class WaterObject2D : AObject2D, ILandObject2D
+    public class WaterObject2D : ALandObject2D
     {
         private static WaterObject2D singletonWaterObject2D;
 

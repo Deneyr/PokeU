@@ -44,5 +44,9 @@ namespace PokeU.Model
         void AddTypeInChunk(Type type);
 
         ILandChunk GetSubLandChunk(int altitudeMin, int altitudeMax);
+
+        int GetAltitudeAt(int i, int j);
+
+        void SetAltitudeAt(int i, int j, int altitude);
     }
 }

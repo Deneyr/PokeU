@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View.GroundObject
 {
-    public class GroundElementObject2D : AObject2D, ILandObject2D
+    public class GroundElementObject2D : ALandObject2D
     {
         public GroundElementObject2D(IObject2DFactory factory, GroundElementLandObject landObject) :
             base()

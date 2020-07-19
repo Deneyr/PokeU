@@ -1,4 +1,5 @@
 ﻿using PokeU.Model;
+using PokeU.Model.Entity;
 using PokeU.Model.GrassObject;
 using PokeU.Model.GroundObject;
 using PokeU.Model.MountainObject;
@@ -40,6 +41,8 @@ namespace PokeU.View
 
             MappingObjectModelView = new Dictionary<Type, IObject2DFactory>();
 
+            // Land objects
+
             MappingObjectModelView.Add(typeof(GroundLandObject), new GroundObject2DFactory());
             MappingObjectModelView.Add(typeof(GroundElementLandObject), new GroundElementObject2DFactory());
             MappingObjectModelView.Add(typeof(AltitudeLandObject), new AltitudeObject2DFactory());
@@ -48,6 +51,10 @@ namespace PokeU.View
             MappingObjectModelView.Add(typeof(MountainElementLandObject), new MountainElementObject2DFactory());
             MappingObjectModelView.Add(typeof(GrassLandObject), new GrassObject2DFactory());
             MappingObjectModelView.Add(typeof(GrassElementLandObject), new GrassElementObject2DFactory());
+
+            // Entity objects
+
+            MappingObjectModelView.Add(typeof(PlayerEntity), new PlayerEntity2DFactory());
 
             MappingObjectModelView.Add(typeof(LandChunk), new LandChunk2DFactory());
             MappingObjectModelView.Add(typeof(LandCase), new LandCase2DFactory());
@@ -109,6 +116,8 @@ namespace PokeU.View
                     landChunk2D.DrawIn(window, ref boundsView);
                 }
             }
+
+            this.entity2DManager.DrawIn(window, ref boundsView);
 
             //sw.Stop();
 

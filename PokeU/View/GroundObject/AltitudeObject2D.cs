@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View.GroundObject
 {
-    public class AltitudeObject2D : AObject2D, ILandObject2D
+    public class AltitudeObject2D : ALandObject2D
     {
         public AltitudeObject2D(IObject2DFactory factory, AltitudeLandObject landObject)
         {

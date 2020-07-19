@@ -25,9 +25,15 @@ namespace PokeU.View.Entity2D
 
         public void DrawIn(RenderWindow window, ref FloatRect boundsView)
         {
-            foreach(AEntity2D entity2D in this.entitiesToEntities2D.Values)
+            FloatRect entityHitBox;
+            foreach (AEntity2D entity2D in this.entitiesToEntities2D.Values)
             {
-                entity2D.DrawIn(window, ref boundsView);
+                entityHitBox = entity2D.ObjectSprite.GetGlobalBounds();
+
+                if (boundsView.Intersects(entityHitBox))
+                {
+                    entity2D.DrawIn(window, ref boundsView);
+                }
             }
         }
 
@@ -45,6 +51,8 @@ namespace PokeU.View.Entity2D
         {
             if (this.entitiesToEntities2D.ContainsKey(entity))
             {
+                this.entitiesToEntities2D[entity].Dispose();
+
                 this.entitiesToEntities2D.Remove(entity);
             }
         }

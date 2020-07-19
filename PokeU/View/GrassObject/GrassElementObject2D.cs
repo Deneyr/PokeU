@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PokeU.View.GrassObject
 {
-    public class GrassElementObject2D : AObject2D, ILandObject2D
+    public class GrassElementObject2D : ALandObject2D
     {
         public GrassElementObject2D(IObject2DFactory factory, GrassElementLandObject landObject) :
             base()
