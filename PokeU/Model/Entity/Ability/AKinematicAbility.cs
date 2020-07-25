@@ -159,7 +159,9 @@ namespace PokeU.Model.Entity.Ability
 
         public override void UpdateLogic(LandWorld world, IEntity owner, Time deltaTime)
         {
-            if(world.EntityManager.IsBookingStillValid(owner) == false)
+            this.UpdateDesiredPosition(world, owner);
+
+            if (world.EntityManager.IsBookingStillValid(owner) == false)
             {
                 switch (this.MovingState)
                 {
@@ -176,9 +178,12 @@ namespace PokeU.Model.Entity.Ability
                         this.MovingState = MovingState.IDLE_LEFT;
                         break;
                 }
-            }
 
-            this.UpdateDesiredPosition(world, owner);
+                if (owner.OffsetPosition.X != 0 || owner.OffsetPosition.X != 0 || owner.OffsetAltitude != 0)
+                {
+                    owner.SetOffsetPosition(0, 0, 0);
+                }
+            }
         }
 
         private void NotifyMovingStateUpdated()

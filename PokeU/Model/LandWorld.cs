@@ -81,7 +81,7 @@ namespace PokeU.Model
             this.currentChunksArea = new IntRect(0, 0, 0, 0);
         }
 
-        public void OnFocusAreaChanged(Vector2f areaPosition, Vector2f areaSize, int altitude)
+        public void OnFocusAreaChanged(Vector2f areaPosition, Vector2f areaSize)
         {
             List<LandChunkContainer> removedChunk = new List<LandChunkContainer>();
             List<LandChunkContainer> addedChunk = new List<LandChunkContainer>();

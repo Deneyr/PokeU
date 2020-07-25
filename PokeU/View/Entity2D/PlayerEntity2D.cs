@@ -1,4 +1,5 @@
 ﻿using PokeU.Model.Entity;
+using PokeU.Model.Entity.Ability;
 using PokeU.View.Animations;
 using SFML.Graphics;
 using SFML.System;
@@ -93,6 +94,20 @@ namespace PokeU.View.Entity2D
             //this.ObjectSprite.Scale = new Vector2f(0.5f, 0.5f);
 
             this.Position = new Vector2f(playerEntity.Position.X, playerEntity.Position.Y);
+
+            WalkKinematicAbility walkKinematicAbility = this.characterEntity.GetAbilityById("kinematic.walk") as WalkKinematicAbility;
+            walkKinematicAbility.MovingStateUpdated += OnMovingStateUpdated;
+        }
+
+        private void OnMovingStateUpdated(AKinematicAbility obj)
+        {
+            this.PlayAnimation((int)obj.MovingState);
+        }
+
+        public override void Dispose()
+        {
+            WalkKinematicAbility walkKinematicAbility = this.characterEntity.GetAbilityById("kinematic.walk") as WalkKinematicAbility;
+            walkKinematicAbility.MovingStateUpdated -= OnMovingStateUpdated;
         }
     }
 }

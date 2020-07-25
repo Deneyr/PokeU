@@ -15,7 +15,7 @@ namespace PokeU.Model.Entity.Behavior
         {
             if (world.EntityManager.IsBookingStillValid(owner) == false)
             {
-                WalkKinematicAbility walkKinematicAbility = owner.GetAbilityById("walk.kinematic") as WalkKinematicAbility;
+                WalkKinematicAbility walkKinematicAbility = owner.GetAbilityById("kinematic.walk") as WalkKinematicAbility;
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Z))
                 {

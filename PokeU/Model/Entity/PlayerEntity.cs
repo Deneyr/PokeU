@@ -13,7 +13,7 @@ namespace PokeU.Model.Entity
         public PlayerEntity(int positionX, int positionY, int positionZ) : base(positionX, positionY, positionZ)
         {
             WalkKinematicAbility walkKinematicAbility = new WalkKinematicAbility(1f);
-            this.idToAbilities.Add("walk.kinematic", walkKinematicAbility);
+            this.idToAbilities.Add("kinematic.walk", walkKinematicAbility);
 
             PlayerBehavior playerBehavior = new PlayerBehavior();
             this.idToBehaviors.Add("player", playerBehavior);

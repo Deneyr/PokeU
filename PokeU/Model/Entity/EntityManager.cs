@@ -26,6 +26,8 @@ namespace PokeU.Model.Entity
 
         public event Action<ILandChunk, ILandChunk, IEntity> EntityChunkChanged;
 
+        public event Action<IEntity> EntityCaseChanged;
+
         public event Action<ILandChunk, IEntity> EntityRemoved;
 
         public EntityManager()
@@ -135,11 +137,15 @@ namespace PokeU.Model.Entity
 
                     this.entitiesToChunks.Remove(entity);
                     this.entitiesToChunks.Add(entity, landChunkTo);
+
+                    this.NotifyEntityChunkChanged(landChunkFrom, landChunkTo, entity);
                 }
 
                 entity.SetPosition(x, y, z);
 
                 this.entitiesArea.Move(entity);
+
+                this.NotifyEntityCaseChanged(entity);
 
                 return true;
             }
@@ -239,6 +245,14 @@ namespace PokeU.Model.Entity
             if (this.EntityChunkChanged != null)
             {
                 this.EntityChunkChanged(landChunkFrom, landChunkTo, entity);
+            }
+        }
+
+        public void NotifyEntityCaseChanged(IEntity entity)
+        {
+            if (this.EntityCaseChanged != null)
+            {
+                this.EntityCaseChanged(entity);
             }
         }
 

@@ -80,7 +80,6 @@ namespace PokeU.Model.Entity.Ability
                 {
                     owner.SetOffsetPosition(elapOffsetPosition.X, elapOffsetPosition.Y, elapOffsetAltitude);
                 }
-
             }
         }
 

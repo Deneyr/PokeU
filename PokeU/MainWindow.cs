@@ -56,7 +56,7 @@ namespace PokeU
 
             Clock clock = new Clock();
 
-            this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW, 0);
+            this.landWorld.OnFocusAreaChanged(view.Center / MODEL_TO_VIEW, this.resolutionScreen / MODEL_TO_VIEW);
 
             // Start the game loop
             while (window.IsOpen)

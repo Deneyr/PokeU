@@ -9,7 +9,7 @@ namespace PokeU.View.Entity2D
 {
     public abstract class ACharacterEntity2D : AEntity2D
     {
-        private ACharacterEntity characterEntity;
+        protected ACharacterEntity characterEntity;
 
         public ACharacterEntity2D(IObject2DFactory factory, ACharacterEntity characterEntity):
             base()
