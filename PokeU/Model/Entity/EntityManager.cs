@@ -11,8 +11,6 @@ namespace PokeU.Model.Entity
 {
     public class EntityManager: IUpdatable, IDisposable
     {
-        // private Dictionary<IntRect, List<IEntity>> entities;
-
         private IntRect area;
 
         private QuadTreeRect<IEntity> entitiesArea;

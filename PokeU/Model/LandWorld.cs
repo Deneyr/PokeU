@@ -46,6 +46,12 @@ namespace PokeU.Model
             private set;
         }
 
+        public WorldUpdater WorldUpdater
+        {
+            get;
+            private set;
+        }
+
         public IntRect CurrentChunksArea
         {
             get
@@ -65,6 +71,12 @@ namespace PokeU.Model
             this.ChunkRemoved += this.EntityManager.OnChunkRemoved;
             this.AllChunksUpdated += this.EntityManager.OnAllChunksUpdated;
 
+            this.WorldUpdater = new WorldUpdater();
+            this.EntityManager.EntityAdded += this.WorldUpdater.OnEntityAddedToManager;
+            this.EntityManager.EntityRemoved += this.WorldUpdater.OnEntityRemovedToManager;
+            this.EntityManager.EntityCaseChanged += this.WorldUpdater.OnEntityCaseChanged;
+
+
             this.landChunkLoader = new LandChunkLoader();
             this.landChunkLoader.LandChunksImported += this.OnLandChunkImported;
 
@@ -79,6 +91,10 @@ namespace PokeU.Model
             this.landChunkArea = new List<List<LandChunkContainer>>();
 
             this.currentChunksArea = new IntRect(0, 0, 0, 0);
+
+            // Add player
+            PlayerEntity player = new PlayerEntity(9492 / MainWindow.MODEL_TO_VIEW, -12595 / MainWindow.MODEL_TO_VIEW, 0);
+            this.WorldUpdater.AddPlayer(player);
         }
 
         public void OnFocusAreaChanged(Vector2f areaPosition, Vector2f areaSize)
@@ -386,6 +402,9 @@ namespace PokeU.Model
 
         public void UpdateLogic(LandWorld world, Time deltaTime)
         {
+            // World update
+            this.WorldUpdater.UpdateLogic(this, deltaTime);
+
             // Chunks adding. 
             this.UpdateLandChunks();
 
@@ -518,6 +537,10 @@ namespace PokeU.Model
             this.ChunkAdded -= this.EntityManager.OnChunkAdded;
             this.ChunkRemoved -= this.EntityManager.OnChunkRemoved;
             this.AllChunksUpdated -= this.EntityManager.OnAllChunksUpdated;
+
+            this.EntityManager.EntityAdded -= this.WorldUpdater.OnEntityAddedToManager;
+            this.EntityManager.EntityRemoved -= this.WorldUpdater.OnEntityRemovedToManager;
+            this.EntityManager.EntityCaseChanged -= this.WorldUpdater.OnEntityCaseChanged;
         }
     }
 }

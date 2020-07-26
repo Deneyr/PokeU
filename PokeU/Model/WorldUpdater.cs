@@ -55,6 +55,15 @@ namespace PokeU.Model
             }
         }
 
+        public void OnEntityCaseChanged(IEntity entity)
+        {
+            if (entity is PlayerEntity
+                && this.playerEntityToAdded.ContainsKey(entity as PlayerEntity))
+            {
+                this.playerEntitiesUpdated.Add(entity as PlayerEntity);
+            }
+        }
+
         public void OnEntityRemovedToManager(ILandChunk landChunk, IEntity entity)
         {
             if (entity is PlayerEntity
@@ -82,8 +91,12 @@ namespace PokeU.Model
                 {
                     ILandChunk landChunk = world.GetLandChunkAt(playerEntityEntry.Key.Position.X, playerEntityEntry.Key.Position.Y);
 
-                    if(landChunk != null)
+                    if (landChunk != null)
                     {
+                        // Update player altitude
+                        int altitude = world.GetAltitudeAt(playerEntityEntry.Key.Position.X, playerEntityEntry.Key.Position.Y);
+                        playerEntityEntry.Key.SetPosition(playerEntityEntry.Key.Position.X, playerEntityEntry.Key.Position.Y, altitude);
+
                         world.EntityManager.AddEntity(playerEntityEntry.Key, landChunk);
                     }
                 }
