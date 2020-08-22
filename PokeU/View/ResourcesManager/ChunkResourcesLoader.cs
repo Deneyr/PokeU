@@ -1,4 +1,5 @@
 ﻿using PokeU.Model;
+using PokeU.Model.Entity;
 using SFML.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace PokeU.View.ResourcesManager
     {
         private static readonly int NB_MAX_CACHE_CHUNKS = 0;
 
+        private static readonly int NB_MAX_CACHE_ENTITIES = 0;
+
         private HashSet<IntRect> loadedChunks;
 
         private List<IntRect> chunksInCache;
@@ -19,6 +22,16 @@ namespace PokeU.View.ResourcesManager
         private Dictionary<string, HashSet<IntRect>> pathToChunksDictionary;
 
         private Dictionary<IntRect, HashSet<string>> chunksToPathsDictionary;
+
+        // Entities
+        private HashSet<IEntity> loadedEntities;
+
+        private List<IEntity> entitiesInCache;
+
+        private Dictionary<string, HashSet<IEntity>> pathToEntitiesDictionary;
+
+        private Dictionary<IEntity, HashSet<string>> entitiesToPathsDictionary;
+
 
 
         public ChunkResourcesLoader()
@@ -31,16 +44,18 @@ namespace PokeU.View.ResourcesManager
 
             this.chunksInCache = new List<IntRect>();
 
+            // Entities
+            this.pathToEntitiesDictionary = new Dictionary<string, HashSet<IEntity>>();
 
+            this.entitiesToPathsDictionary = new Dictionary<IEntity, HashSet<string>>();
+
+            this.loadedEntities = new HashSet<IEntity>();
+
+            this.entitiesInCache = new List<IEntity>();
         }
 
-        public void LoadChunkResources(LandWorld2D world, ILandChunk landChunk)
+        public void LoadChunkResources(ILandChunk landChunk)
         {
-            /*for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
-            {
-                this.LoadAltitudeResources(world, landChunk, i);
-            }*/
-
             IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, 0, 0);
 
             if (this.loadedChunks.Contains(altitudeRect))
@@ -55,8 +70,6 @@ namespace PokeU.View.ResourcesManager
             else
             {
                 HashSet<string> resourcesPath = new HashSet<string>();
-
-                LandCase[,] landCases = landChunk.GetLandObjectsAtAltitude(altitudeRect.Width);
 
                 HashSet<Type> landObjectTypes = landChunk.TypesInChunk;
 
@@ -93,13 +106,8 @@ namespace PokeU.View.ResourcesManager
             loadedChunks.Add(altitudeRect);
         }
 
-        public void UnloadChunkResources(LandWorld2D world, ILandChunk landChunk)
+        public void UnloadChunkResources(ILandChunk landChunk)
         {
-            /*for (int i = landChunk.AltitudeMin; i <= landChunk.AltitudeMax; i++)
-            {
-                this.UnloadAltitudeResources(world, landChunk, i);
-            }*/
-
             IntRect altitudeRect = new IntRect(landChunk.Area.Left, landChunk.Area.Top, 0, 0);
 
             if (this.loadedChunks.Contains(altitudeRect) == false)
@@ -138,6 +146,96 @@ namespace PokeU.View.ResourcesManager
             }
 
             this.loadedChunks.Remove(altitudeRect);
+        }
+
+        // Entities
+        public void LoadEntitiesResources(IEntity entity)
+        {
+
+            if (this.loadedEntities.Contains(entity))
+            {
+                throw new Exception("Try to load an already loaded entity");
+            }
+
+            if (entitiesInCache.Contains(entity))
+            {
+                entitiesInCache.Remove(entity);
+            }
+            else
+            {
+                HashSet<string> resourcesPath = new HashSet<string>();
+
+                Type type = entity.GetType();
+
+                IEnumerable<string> resources = LandWorld2D.MappingObjectModelView[type].Resources.Keys;
+
+                foreach (string path in resources)
+                {
+                    resourcesPath.Add(path);
+                }
+
+                HashSet<string> realResourcesToLoad = new HashSet<string>();
+                foreach (string path in resourcesPath)
+                {
+                    if (this.pathToEntitiesDictionary.ContainsKey(path) == false)
+                    {
+                        this.pathToEntitiesDictionary.Add(path, new HashSet<IEntity>());
+
+                        realResourcesToLoad.Add(path);
+                    }
+
+                    this.pathToEntitiesDictionary[path].Add(entity);
+                }
+
+                this.entitiesToPathsDictionary.Add(entity, resourcesPath);
+
+                if (realResourcesToLoad.Any())
+                {
+                    LandWorld2D.TextureManager.LoadTextures(realResourcesToLoad);
+                }
+            }
+            loadedEntities.Add(entity);
+        }
+
+        public void UnloadEntitiesResources(IEntity entity)
+        {
+
+            if (this.loadedEntities.Contains(entity) == false)
+            {
+                throw new Exception("Try to unload a not loaded entity");
+            }
+
+            this.entitiesInCache.Add(entity);
+
+            if (this.entitiesInCache.Count > NB_MAX_CACHE_ENTITIES)
+            {
+                IEntity entityToRemove = this.entitiesInCache.First();
+                this.entitiesInCache.RemoveAt(0);
+
+                HashSet<string> pathsEntitiesToRemove = this.entitiesToPathsDictionary[entityToRemove];
+                HashSet<string> pathsToRemove = new HashSet<string>();
+
+                foreach (string path in pathsEntitiesToRemove)
+                {
+                    HashSet<IEntity> entities = this.pathToEntitiesDictionary[path];
+                    entities.Remove(entity);
+
+                    if (entities.Any() == false)
+                    {
+                        pathsToRemove.Add(path);
+                        this.pathToEntitiesDictionary.Remove(path);
+                    }
+                }
+
+                this.entitiesToPathsDictionary.Remove(entity);
+
+                if (pathsToRemove.Any())
+                {
+                    LandWorld2D.TextureManager.UnloadTextures(pathsToRemove);
+                }
+            }
+
+            this.loadedEntities.Remove(entity);
         }
     }
 }

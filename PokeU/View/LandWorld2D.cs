@@ -82,6 +82,14 @@ namespace PokeU.View
             landWorld.ChunkRemoved += OnChunkRemoved;
         }
 
+        public ChunkResourcesLoader ResourcesLoader
+        {
+            get
+            {
+                return this.chunkResourcesLoader;
+            }
+        }
+
         public int CurrentAltitude
         {
             get
@@ -126,7 +134,7 @@ namespace PokeU.View
 
         private void OnChunkAdded(ILandChunk obj)
         {
-            this.chunkResourcesLoader.LoadChunkResources(this, obj);
+            this.chunkResourcesLoader.LoadChunkResources(obj);
 
             IObject2DFactory landChunk2DFactory = LandWorld2D.MappingObjectModelView[obj.GetType()];
 
@@ -136,7 +144,7 @@ namespace PokeU.View
 
         private void OnChunkRemoved(ILandChunk obj)
         {
-            this.chunkResourcesLoader.UnloadChunkResources(this, obj);
+            this.chunkResourcesLoader.UnloadChunkResources(obj);
 
             this.landChunksDictionary[obj].Dispose();
 

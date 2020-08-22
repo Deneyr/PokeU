@@ -43,6 +43,8 @@ namespace PokeU.View.Entity2D
 
             if (this.landWorld2D.TryGetTarget(out LandWorld2D world2D))
             {
+                world2D.ResourcesLoader.LoadEntitiesResources(entity);
+
                 this.entitiesToEntities2D.Add(entity, entityFactory.CreateObject2D(world2D, entity) as AEntity2D);
             }
         }
@@ -51,6 +53,11 @@ namespace PokeU.View.Entity2D
         {
             if (this.entitiesToEntities2D.ContainsKey(entity))
             {
+                if (this.landWorld2D.TryGetTarget(out LandWorld2D world2D))
+                {
+                    world2D.ResourcesLoader.UnloadEntitiesResources(entity);
+                }
+
                 this.entitiesToEntities2D[entity].Dispose();
 
                 this.entitiesToEntities2D.Remove(entity);
